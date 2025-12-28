@@ -4082,32 +4082,69 @@
 
     <script>
 // ==================== RAW WEALTHY FRONTEND v40.0 - PRODUCTION READY ====================
-const app = {
-    // ==================== CONFIGURATION ====================
-    config: {
-        API_BASE_URL: (() => {
-            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                return 'http://localhost:10000/api';
-            }
-            return window.location.origin.includes('vercel.app') 
-                ? 'https://real-wealthy-1.onrender.com'
-                : '/api';
-        })(),
+// Replace the existing config section with this:
+config: {
+    API_BASE_URL: (() => {
+        // Auto-detect environment and use appropriate URL
+        if (window.location.hostname === 'localhost' || 
+            window.location.hostname === '127.0.0.1' ||
+            window.location.hostname === '0.0.0.0') {
+            // Local development
+            return 'http://localhost:10000/api';
+        }
         
-        VERSION: '40.0.0',
-        ENVIRONMENT: window.location.hostname === 'localhost' ? 'development' : 'production',
-        MIN_INVESTMENT: 3500,
-        MIN_DEPOSIT: 500,
-        MIN_WITHDRAWAL: 1000,
-        PLATFORM_FEE_PERCENT: 5,
-        REFERRAL_COMMISSION_PERCENT: 15,
-        WELCOME_BONUS: 10000,
-        SESSION_TIMEOUT: 30 * 60 * 1000,
-        RETRY_ATTEMPTS: 3,
-        RETRY_DELAY: 1000,
-        CACHE_DURATION: 5 * 60 * 1000, // 5 minutes
-        AUTO_REFRESH_INTERVAL: 60 * 1000 // 1 minute
+        // Production - using the same URLs as backend CORS configuration
+        const currentOrigin = window.location.origin;
+        
+        // Check if we're on any of the allowed origins from backend
+        const allowedOrigins = [
+            'https://us-raw-wealthy.vercel.app',
+            'https://rawwealthy.com',
+            'https://www.rawwealthy.com',
+            'https://uun-rawwealthy.vercel.app',
+            'https://real-wealthy-1.onrender.com'
+        ];
+        
+        // If current origin is in allowed list, use relative path (same domain)
+        if (allowedOrigins.includes(currentOrigin)) {
+            return '/api';
+        }
+        
+        // For cross-origin deployments, use the backend URL directly
+        // You can set this via localStorage or environment variable
+        const backendUrl = localStorage.getItem('backend_url') || 
+                          window.__BACKEND_URL__ || 
+                          'https://real-wealthy-1.onrender.com';
+        
+        return backendUrl + '/api';
+    })(),
+    
+    // Enhanced backend detection
+    BACKEND_URLS: {
+        production: 'https://real-wealthy-1.onrender.com',
+        development: 'http://localhost:10000',
+        test: 'http://localhost:10000'
     },
+    
+    VERSION: '40.0.0',
+    ENVIRONMENT: window.location.hostname === 'localhost' ? 'development' : 'production',
+    
+    // Business logic (must match backend config)
+    MIN_INVESTMENT: 3500,
+    MIN_DEPOSIT: 3500,
+    MIN_WITHDRAWAL: 3500,
+    PLATFORM_FEE_PERCENT: 10,
+    REFERRAL_COMMISSION_PERCENT: 10,
+    WELCOME_BONUS: 100,
+    
+    // Session management
+    SESSION_TIMEOUT: 30 * 60 * 1000, // 30 minutes
+    RETRY_ATTEMPTS: 3,
+    RETRY_DELAY: 1000,
+    CACHE_DURATION: 5 * 60 * 1000, // 5 minutes
+    AUTO_REFRESH_INTERVAL: 60 * 1000, // 1 minute
+    FILE_UPLOAD_LIMIT: 10 * 1024 * 1024 // 10MB (matches backend)
+},
 
     // ==================== APPLICATION STATE ====================
     state: {
