@@ -4082,10 +4082,21 @@
 
 const app = {
     // ==================== CONFIGURATION ====================
-    
-    API_BASE_URL: 'https://real-wealthy-03bf.onrender.com/api',
-    // Make sure it's EXACTLY this
-        }
+    config: {
+        API_BASE_URL: (() => {
+            const isLocal = window.location.hostname === 'localhost' || 
+                           window.location.hostname === '127.0.0.1';
+            const isVercel = window.location.origin.includes('vercel.app');
+            const isProduction = window.location.origin.includes('rawwealthy.com');
+            
+            if (isProduction) {
+                return window.location.origin + '/api';
+            } else if (isLocal) {
+                return 'http://localhost:10000/api';
+            } else {
+                return 'https://real-wealthy-1.onrender.com/api';
+            }
+        })(),
         
         // Platform configuration (must match backend)
         VERSION: '50.0.0',
