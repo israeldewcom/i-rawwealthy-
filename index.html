@@ -4079,25 +4079,17 @@
         <i class="fas fa-chevron-up"></i>
     </div><script>//// ==================== RAW WEALTHY INVESTMENT PLATFORM v50.0 ====================
 // Enhanced with AI-powered features, advanced analytics, and real-time updates
+API_BASE_URL: (() => {
+    const isLocal = window.location.hostname === 'localhost' || 
+                   window.location.hostname === '127.0.0.1';
+    const isVercel = window.location.origin.includes('vercel.app');
+    
+    if (isLocal || isVercel) {
+        return 'https://real-wealthy-1.onrender.com/api';  // ✅ Lowercase https
+    }
+    return window.location.origin + '/api';
+})(),
 
-const app = {
-    // ==================== CONFIGURATION ====================
-    config: {
-        // Dynamic backend URL detection
-        API_BASE_URL: (() => {
-            const isLocalhost = ['localhost', '127.0.0.1', '0.0.0.0'].includes(window.location.hostname);
-            if (isLocalhost) return 'http://localhost:10000/api';
-            
-            // Production URLs (match your backend CORS)
-            const productionUrls = [
-                'https://real-wealthy-1.onrender.com',
-                'https://raw-wealthy-backend.onrender.com',
-                'https://rawwealthy-backend.herokuapp.com'
-            ];
-            
-            // Try to auto-detect
-            return productionUrls[0] + '/api';
-        })(),
         
         // Platform configuration (must match backend)
         VERSION: '50.0.0',
