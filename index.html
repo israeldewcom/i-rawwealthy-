@@ -4077,19 +4077,26 @@
     <!-- Back to Top Button -->
     <div class="back-to-top" id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
         <i class="fas fa-chevron-up"></i>
-    </div><script>//// ==================== RAW WEALTHY INVESTMENT PLATFORM v50.0 ====================
+    </div><script>// ==================== RAW WEALTHY INVESTMENT PLATFORM v50.0 ====================
 // Enhanced with AI-powered features, advanced analytics, and real-time updates
-API_BASE_URL: (() => {
-    const isLocal = window.location.hostname === 'localhost' || 
-                   window.location.hostname === '127.0.0.1';
-    const isVercel = window.location.origin.includes('vercel.app');
-    
-    if (isLocal || isVercel) {
-        return 'https://real-wealthy-1.onrender.com/api';  // ✅ Lowercase https
-    }
-    return window.location.origin + '/api';
-})(),
 
+const app = {
+    // ==================== CONFIGURATION ====================
+    config: {
+        API_BASE_URL: (() => {
+            const isLocal = window.location.hostname === 'localhost' || 
+                           window.location.hostname === '127.0.0.1';
+            const isVercel = window.location.origin.includes('vercel.app');
+            const isProduction = window.location.origin.includes('rawwealthy.com');
+            
+            if (isProduction) {
+                return window.location.origin + '/api';
+            } else if (isLocal) {
+                return 'http://localhost:10000/api';
+            } else {
+                return 'https://real-wealthy-1.onrender.com/api';
+            }
+        })(),
         
         // Platform configuration (must match backend)
         VERSION: '50.0.0',
@@ -6176,7 +6183,7 @@ API_BASE_URL: (() => {
     },
 
     // ==================== UTILITY FUNCTIONS ====================
-    apiRequest(endpoint, options = {}) {
+    async apiRequest(endpoint, options = {}) {
         const url = this.config.API_BASE_URL + endpoint;
         
         const headers = {
@@ -8061,4 +8068,4 @@ window.app = app;
 
 console.log('✨ Raw Wealthy Investment Platform v50.0 Loaded Successfully!');</script>
 </body>
-</html>
+</html> 
