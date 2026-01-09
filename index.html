@@ -5220,12 +5220,60 @@ const app = {
                         
                         // Safe user access - handle multiple possible user field names
                         const user = deposit.user || deposit.user_details || {};
-                        const userName = user.full_name || user.name || 'Unknown User';
+                        // SAFE way to get user name with multiple fallbacks
+
                         const amount = deposit.amount || 0;
                         const paymentMethod = deposit.payment_method || 'N/A';
                         const date = deposit.createdAt ? new Date(deposit.createdAt).toLocaleDateString() : 'N/A';
                         const status = deposit.status || 'pending';
-                        
+                        let userName = 'Unknown User';
+let userEmail = 'N/A';
+let userPhone = 'N/A';
+let userBalance = 0;
+
+// Try multiple possible data structures
+if (deposit.user && typeof deposit.user === 'object') {
+    // Case 1: deposit.user is populated object
+    userName = deposit.user.full_name || deposit.user.name || 'Unknown User';
+    userEmail = deposit.user.email || 'N/A';
+    userPhone = deposit.user.phone || 'N/A';
+    userBalance = deposit.user.balance || 0;
+} else if (deposit.user_details && typeof deposit.user_details === 'object') {
+    // Case 2: deposit.user_details exists
+    userName = deposit.user_details.name || deposit.user_details.full_name || 'Unknown User';
+    userEmail = deposit.user_details.email || 'N/A';
+    userPhone = deposit.user_details.phone || 'N/A';
+    userBalance = deposit.user_details.current_balance || deposit.user_details.balance || 0;
+} else if (deposit.userId) {
+    // Case 3: Only has user ID
+    userName = `User ${deposit.userId.substring(0, 8)}...`;
+}
+
+// Now use these safe variables
+const tableRow = `
+    <tr>
+        <td>${userName}</td>
+        <td>₦${deposit.amount?.toLocaleString() || '0'}</td>
+        <td>${deposit.payment_method || 'N/A'}</td>
+        <td>${deposit.createdAt ? new Date(deposit.createdAt).toLocaleDateString() : 'N/A'}</td>
+        <td>
+            <span class="status-badge ${deposit.status || 'pending'}">
+                ${deposit.status || 'pending'}
+            </span>
+        </td>
+        <td>
+            ${(deposit.status === 'pending') ? `
+                <button class="btn btn-outline" onclick="app.approveDeposit('${deposit._id}')">
+                    Approve
+                </button>
+                <button class="btn btn-outline" style="background: var(--error); color: white;"
+                        onclick="app.rejectDeposit('${deposit._id}')">
+                    Reject
+                </button>
+            ` : 'Processed'}
+        </td>
+    </tr>
+`;';
                         return `
                             <tr>
                                 <td>${userName}</td>
