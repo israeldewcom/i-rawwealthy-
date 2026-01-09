@@ -4381,48 +4381,56 @@
                 }
             },
 
-            async loadAdminDeposits() {
-                try {
-                    const status = document.getElementById('deposit-status-filter')?.value || 'pending';
-                    const query = status !== 'all' ? `?status=${status}` : '';
-                    
-                    const response = await this.apiRequest(`/api/admin/pending-deposits${query}`);
-                    const deposits = response.data.deposits || [];
-                    const table = document.getElementById('admin-deposits-table');
+          async loadAdminDeposits() {
+  try {
+    const status = document.getElementById('deposit-status-filter')?.value || 'pending';
+    const query = status !== 'all' ? `?status=${status}` : '';
+    
+    const response = await this.apiRequest(`/api/admin/pending-deposits${query}`);
+    const deposits = response.data.deposits || [];
+    const table = document.getElementById('admin-deposits-table');
 
-                    if (table) {
-                        table.innerHTML = deposits.map(deposit => `
-                            <tr>
-                                <td>${deposit.user?.full_name || 'Unknown'}</td>
-                                <td>₦${(deposit.amount || 0).toLocaleString()}</td>
-                                <td>${deposit.payment_method || 'N/A'}</td>
-                                <td>${new Date(deposit.createdAt).toLocaleDateString()}</td>
-                                <td>
-                                    <span class="status-badge ${deposit.status || 'pending'}">
-                                        ${deposit.status || 'Pending'}
-                                    </span>
-                                </td>
-                                <td>
-                                    ${deposit.status === 'pending' ? `
-                                        <button class="btn btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.8rem; margin-right: 0.5rem;"
-                                                onclick="app.approveDeposit('${deposit._id}')">
-                                            Approve
-                                        </button>
-                                        <button class="btn btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.8rem; background: var(--error); color: white;"
-                                                onclick="app.rejectDeposit('${deposit._id}')">
-                                            Reject
-                                        </button>
-                                    ` : `
-                                        <span>Processed</span>
-                                    `}
-                                </td>
-                            </tr>
-                        `).join('');
-                    }
-                } catch (error) {
-                    console.error('Failed to load admin deposits:', error);
-                }
-            },
+    if (table) {
+      table.innerHTML = deposits.map(deposit => {
+        // SAFE NULL CHECKING - Get user name safely
+        const userName = deposit.user?.full_name || 
+                        deposit.user_details?.name || 
+                        'Unknown User';
+        
+        return `
+          <tr>
+            <td>${userName}</td>
+            <td>₦${(deposit.amount || 0).toLocaleString()}</td>
+            <td>${deposit.payment_method || 'N/A'}</td>
+            <td>${new Date(deposit.createdAt).toLocaleDateString()}</td>
+            <td>
+              <span class="status-badge ${deposit.status || 'pending'}">
+                ${deposit.status || 'Pending'}
+              </span>
+            </td>
+            <td>
+              ${deposit.status === 'pending' ? `
+                <button class="btn btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.8rem; margin-right: 0.5rem;"
+                        onclick="app.approveDeposit('${deposit._id}')">
+                  Approve
+                </button>
+                <button class="btn btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.8rem; background: var(--error); color: white;"
+                        onclick="app.rejectDeposit('${deposit._id}')">
+                  Reject
+                </button>
+              ` : `
+                <span>Processed</span>
+              `}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+  } catch (error) {
+    console.error('Failed to load admin deposits:', error);
+    this.showToast('Error loading deposits: ' + error.message, 'error');
+  }
+          }  
 
             async loadAdminWithdrawals() {
                 try {
