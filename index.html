@@ -9,7 +9,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
-     
         :root {
             --primary: #0f172a;
             --secondary: #1e293b;
@@ -57,903 +56,896 @@
             color: var(--text-light);
         }
 
-        /* ALL OTHER STYLES REMAIN EXACTLY AS YOU HAD THEM */
-        /* ... */
-        
-        body.light-mode {
-        --primary: #f8fafc;
-        --secondary: #e2e8f0;
-        --text-light: #0f172a;
-        --text-muted: #64748b;
-        --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        background-color: var(--primary);
-        color: var(--text-light);
-        }
-        
         /* Loading Spinner */
         .loading-spinner {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(15, 23, 42, 0.9);
-        z-index: 9999;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
         }
-        
+
         .spinner {
-        width: 50px;
-        height: 50px;
-        border: 5px solid rgba(251, 191, 36, 0.3);
-        border-radius: 50%;
-        border-top-color: var(--accent-gold);
-        animation: spin 1s linear infinite;
-        margin-bottom: 1rem;
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(251, 191, 36, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent-gold);
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
         }
-        
+
         @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
-        
+
         /* Toast Notifications */
         .toast-container {
-        position: fixed;
-        top: 100px;
-        right: 20px;
-        z-index: 9998;
-        max-width: 350px;
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 9998;
+            max-width: 350px;
         }
-        
+
         .toast {
-        padding: 1rem 1.5rem;
-        margin-bottom: 1rem;
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        display: flex;
-        align-items: center;
-        animation: slideInRight 0.3s, slideOutRight 0.5s 2.5s;
-        animation-fill-mode: forwards;
-        opacity: 0;
-        transform: translateX(100%);
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            animation: slideInRight 0.3s, slideOutRight 0.5s 2.5s;
+            animation-fill-mode: forwards;
+            opacity: 0;
+            transform: translateX(100%);
         }
-        
+
         .toast.success {
-        background: var(--success);
-        color: white;
+            background: var(--success);
+            color: white;
         }
-        
+
         .toast.error {
-        background: var(--error);
-        color: white;
+            background: var(--error);
+            color: white;
         }
-        
+
         .toast.warning {
-        background: var(--warning);
-        color: white;
+            background: var(--warning);
+            color: white;
         }
-        
+
         .toast.info {
-        background: var(--info);
-        color: white;
+            background: var(--info);
+            color: white;
         }
-        
+
         .toast i {
-        margin-right: 0.5rem;
-        font-size: 1.2rem;
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
         }
-        
+
         @keyframes slideInRight {
-        from {
-        opacity: 0;
-        transform: translateX(100%);
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
-        to {
-        opacity: 1;
-        transform: translateX(0);
-        }
-        }
-        
+
         @keyframes slideOutRight {
-        from {
-        opacity: 1;
-        transform: translateX(0);
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
         }
-        to {
-        opacity: 0;
-        transform: translateX(100%);
-        }
-        }
-        
+
         /* Navbar */
         .navbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1.5rem 5%;
-        background-color: rgba(15, 23, 42, 0.95);
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 1000;
-        box-shadow: var(--shadow);
-        transition: var(--transition);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background-color: rgba(15, 23, 42, 0.95);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
         }
-        
+
         .light-mode .navbar {
-        background-color: rgba(248, 250, 252, 0.95);
+            background-color: rgba(248, 250, 252, 0.95);
         }
-        
+
         .navbar.scrolled {
-        padding: 1rem 5%;
-        background-color: rgba(15, 23, 42, 0.98);
+            padding: 1rem 5%;
+            background-color: rgba(15, 23, 42, 0.98);
         }
-        
+
         .light-mode .navbar.scrolled {
-        background-color: rgba(248, 250, 252, 0.98);
+            background-color: rgba(248, 250, 252, 0.98);
         }
-        
+
         .logo {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: var(--accent-gold);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-gold);
         }
-        
+
         .logo i {
-        color: var(--accent-emerald);
+            color: var(--accent-emerald);
         }
-        
+
         .nav-links {
-        display: flex;
-        gap: 2rem;
+            display: flex;
+            gap: 2rem;
         }
-        
+
         .nav-links a {
-        text-decoration: none;
-        color: var(--text-light);
-        font-weight: 500;
-        transition: var(--transition);
-        position: relative;
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
         }
-        
+
         .light-mode .nav-links a {
-        color: var(--text-light);
+            color: var(--text-light);
         }
-        
+
         .nav-links a:hover {
-        color: var(--accent-gold);
+            color: var(--accent-gold);
         }
-        
+
         .nav-links a::after {
-        content: '';
-        position: absolute;
-        width: 0;
-        height: 2px;
-        bottom: -5px;
-        left: 0;
-        background-color: var(--accent-gold);
-        transition: var(--transition);
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--accent-gold);
+            transition: var(--transition);
         }
-        
+
         .nav-links a:hover::after {
-        width: 100%;
+            width: 100%;
         }
-        
+
         .nav-buttons {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
         }
-        
+
         .btn {
-        padding: 0.7rem 1.5rem;
-        border-radius: 5px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: var(--transition);
-        border: none;
-        outline: none;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
+            padding: 0.7rem 1.5rem;
+            border-radius: 5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            outline: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
-        
+
         .btn:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
+            opacity: 0.6;
+            cursor: not-allowed;
         }
-        
+
         .btn-outline {
-        background: transparent;
-        border: 1px solid var(--accent-emerald);
-        color: var(--accent-emerald);
+            background: transparent;
+            border: 1px solid var(--accent-emerald);
+            color: var(--accent-emerald);
         }
-        
+
         .btn-outline:hover:not(:disabled) {
-        background: var(--accent-emerald);
-        color: var(--primary);
+            background: var(--accent-emerald);
+            color: var(--primary);
         }
-        
+
         .light-mode .btn-outline:hover:not(:disabled) {
-        color: var(--text-light);
+            color: var(--text-light);
         }
-        
+
         .btn-primary {
-        background: linear-gradient(135deg, var(--accent-gold), #f59e0b);
-        color: var(--primary);
+            background: linear-gradient(135deg, var(--accent-gold), #f59e0b);
+            color: var(--primary);
         }
-        
+
         .btn-primary:hover:not(:disabled) {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(251, 191, 36, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(251, 191, 36, 0.3);
         }
-        
+
         .theme-toggle {
-        background: transparent;
-        border: none;
-        color: var(--text-light);
-        font-size: 1.2rem;
-        cursor: pointer;
-        transition: var(--transition);
-        padding: 0.5rem;
-        border-radius: 50%;
+            background: transparent;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 0.5rem;
+            border-radius: 50%;
         }
-        
+
         .theme-toggle:hover {
-        background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.1);
         }
-        
+
         .light-mode .theme-toggle {
-        color: var(--text-light);
+            color: var(--text-light);
         }
-        
+
         .hamburger {
-        display: none;
-        cursor: pointer;
-        font-size: 1.5rem;
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
         }
-        
+
         /* Mobile Menu */
         .mobile-menu {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        width: 280px;
-        height: 100vh;
-        background: var(--primary);
-        z-index: 1001;
-        padding: 2rem;
-        transition: var(--transition);
-        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-        display: flex;
-        flex-direction: column;
-        gap: 2rem;
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 280px;
+            height: 100vh;
+            background: var(--primary);
+            z-index: 1001;
+            padding: 2rem;
+            transition: var(--transition);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
         }
-        
+
         .light-mode .mobile-menu {
-        background: var(--primary);
+            background: var(--primary);
         }
-        
+
         .mobile-menu.active {
-        right: 0;
+            right: 0;
         }
-        
+
         .mobile-menu-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
         }
-        
+
         .mobile-menu-links {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
         }
-        
+
         .mobile-menu-links a {
-        color: var(--text-light);
-        text-decoration: none;
-        font-size: 1.1rem;
-        padding: 0.5rem 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        transition: var(--transition);
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
         }
-        
+
         .light-mode .mobile-menu-links a {
-        color: var(--text-light);
+            color: var(--text-light);
         }
-        
+
         .mobile-menu-links a:hover {
-        color: var(--accent-gold);
-        padding-left: 0.5rem;
+            color: var(--accent-gold);
+            padding-left: 0.5rem;
         }
-        
+
         .mobile-menu-buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: auto;
         }
-        
+
         .mobile-menu-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 1000;
-        display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
         }
-        
+
         .mobile-menu-overlay.active {
-        display: block;
+            display: block;
         }
-        
+
         /* Hero Section */
         .hero {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        padding: 0 5%;
-        background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.8)), url('https://images.unsplash.com/photo-1642790553125-43a195c07ed7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
-        background-size: cover;
-        background-position: center;
-        position: relative;
-        overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 0 5%;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.8)),
+                        url('https://images.unsplash.com/photo-1642790553125-43a195c07ed7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
         }
-        
+
         .light-mode .hero {
-        background: linear-gradient(135deg, rgba(248, 250, 252, 0.9), rgba(226, 232, 240, 0.8)), url('https://images.unsplash.com/photo-1642790553125-43a195c07ed7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background: linear-gradient(135deg, rgba(248, 250, 252, 0.9), rgba(226, 232, 240, 0.8)),
+                        url('https://images.unsplash.com/photo-1642790553125-43a195c07ed7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
         }
-        
+
         .hero-content {
-        max-width: 600px;
-        z-index: 1;
+            max-width: 600px;
+            z-index: 1;
         }
-        
+
         .hero h1 {
-        font-size: 3.5rem;
-        margin-bottom: 1.5rem;
-        line-height: 1.2;
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
         }
-        
+
         .hero p {
-        font-size: 1.2rem;
-        margin-bottom: 2rem;
-        color: var(--text-muted);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: var(--text-muted);
         }
-        
+
         .hero-buttons {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 2rem;
-        flex-wrap: wrap;
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
         }
-        
+
         .hero-stats {
-        display: flex;
-        gap: 2rem;
-        flex-wrap: wrap;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
         }
-        
+
         .stat {
-        display: flex;
-        flex-direction: column;
+            display: flex;
+            flex-direction: column;
         }
-        
+
         .stat-value {
-        font-size: 2rem;
-        font-weight: 700;
-        color: var(--accent-gold);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-gold);
         }
-        
+
         .stat-label {
-        font-size: 0.9rem;
-        color: var(--text-muted);
+            font-size: 0.9rem;
+            color: var(--text-muted);
         }
-        
+
         .hero-visual {
-        position: absolute;
-        right: 5%;
-        bottom: 10%;
-        width: 500px;
-        height: 400px;
-        background: linear-gradient(135deg, var(--accent-emerald), var(--accent-gold));
-        border-radius: 20px;
-        opacity: 0.1;
-        transform: rotate(10deg);
-        animation: float 6s ease-in-out infinite;
+            position: absolute;
+            right: 5%;
+            bottom: 10%;
+            width: 500px;
+            height: 400px;
+            background: linear-gradient(135deg, var(--accent-emerald), var(--accent-gold));
+            border-radius: 20px;
+            opacity: 0.1;
+            transform: rotate(10deg);
+            animation: float 6s ease-in-out infinite;
         }
-        
+
         @keyframes float {
-        0% { transform: translateY(0px) rotate(10deg); }
-        50% { transform: translateY(-20px) rotate(10deg); }
-        100% { transform: translateY(0px) rotate(10deg); }
+            0% { transform: translateY(0px) rotate(10deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+            100% { transform: translateY(0px) rotate(10deg); }
         }
-        
+
         /* About Section */
         .section {
-        padding: 5rem 5%;
+            padding: 5rem 5%;
         }
-        
+
         .section-title {
-        text-align: center;
-        margin-bottom: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
         }
-        
+
         .section-title h2 {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-        position: relative;
-        display: inline-block;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
         }
-        
+
         .section-title h2::after {
-        content: '';
-        position: absolute;
-        bottom: -10px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 80px;
-        height: 4px;
-        background: var(--accent-gold);
-        border-radius: 2px;
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--accent-gold);
+            border-radius: 2px;
         }
-        
+
         .section-title p {
-        color: var(--text-muted);
-        max-width: 600px;
-        margin: 0 auto;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
         }
-        
+
         .about-content {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 3rem;
-        align-items: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            align-items: center;
         }
-        
+
         .about-text h3 {
-        font-size: 1.8rem;
-        margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
         }
-        
+
         .about-features {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
-        margin-top: 2rem;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
         }
-        
+
         .feature {
-        display: flex;
-        align-items: flex-start;
-        gap: 1rem;
-        transition: var(--transition);
-        padding: 1rem;
-        border-radius: var(--radius);
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            transition: var(--transition);
+            padding: 1rem;
+            border-radius: var(--radius);
         }
-        
+
         .feature:hover {
-        background: var(--secondary);
-        transform: translateY(-5px);
+            background: var(--secondary);
+            transform: translateY(-5px);
         }
-        
+
         .light-mode .feature:hover {
-        background: rgba(30, 41, 59, 0.1);
+            background: rgba(30, 41, 59, 0.1);
         }
-        
+
         .feature-icon {
-        width: 50px;
-        height: 50px;
-        background: var(--secondary);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--accent-gold);
-        font-size: 1.2rem;
-        flex-shrink: 0;
+            width: 50px;
+            height: 50px;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-gold);
+            font-size: 1.2rem;
+            flex-shrink: 0;
         }
-        
+
         .light-mode .feature-icon {
-        background: rgba(30, 41, 59, 0.1);
+            background: rgba(30, 41, 59, 0.1);
         }
-        
+
         .feature-content h4 {
-        margin-bottom: 0.5rem;
+            margin-bottom: 0.5rem;
         }
-        
+
         .feature-content p {
-        color: var(--text-muted);
-        font-size: 0.9rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
         }
-        
+
         .about-image {
-        position: relative;
-        border-radius: 15px;
-        overflow: hidden;
-        box-shadow: var(--shadow);
-        transform: perspective(1000px) rotateY(-5deg);
-        transition: var(--transition);
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transform: perspective(1000px) rotateY(-5deg);
+            transition: var(--transition);
         }
-        
+
         .about-image:hover {
-        transform: perspective(1000px) rotateY(0deg);
+            transform: perspective(1000px) rotateY(0deg);
         }
-        
+
         .about-image img {
-        width: 100%;
-        height: auto;
-        display: block;
+            width: 100%;
+            height: auto;
+            display: block;
         }
-        
+
         /* Plans Section */
         .plans {
-        background-color: var(--secondary);
+            background-color: var(--secondary);
         }
-        
+
         .light-mode .plans {
-        background-color: rgba(30, 41, 59, 0.1);
+            background-color: rgba(30, 41, 59, 0.1);
         }
-        
+
         .plans-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        margin-top: 3rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
         }
-        
+
         .plan-card {
-        background: var(--primary);
-        border-radius: 15px;
-        padding: 2rem;
-        box-shadow: var(--shadow);
-        transition: var(--transition);
-        position: relative;
-        overflow: hidden;
-        border: 1px solid rgba(251, 191, 36, 0.1);
-        display: flex;
-        flex-direction: column;
+            background: var(--primary);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(251, 191, 36, 0.1);
+            display: flex;
+            flex-direction: column;
         }
-        
+
         .light-mode .plan-card {
-        background: white;
+            background: white;
         }
-        
+
         .plan-card:hover {
-        transform: translateY(-10px);
-        border-color: var(--accent-gold);
+            transform: translateY(-10px);
+            border-color: var(--accent-gold);
         }
-        
+
         .plan-badge {
-        position: absolute;
-        top: 20px;
-        right: -30px;
-        background: var(--accent-emerald);
-        color: var(--primary);
-        padding: 5px 30px;
-        transform: rotate(45deg);
-        font-size: 0.8rem;
-        font-weight: 600;
+            position: absolute;
+            top: 20px;
+            right: -30px;
+            background: var(--accent-emerald);
+            color: var(--primary);
+            padding: 5px 30px;
+            transform: rotate(45deg);
+            font-size: 0.8rem;
+            font-weight: 600;
         }
-        
+
         .plan-header {
-        text-align: center;
-        margin-bottom: 2rem;
-        padding-bottom: 1.5rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
+
         .light-mode .plan-header {
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         }
-        
+
         .plan-name {
-        font-size: 1.5rem;
-        margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
         }
-        
+
         .plan-price {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: var(--accent-gold);
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-gold);
         }
-        
+
         .plan-period {
-        color: var(--text-muted);
-        font-size: 0.9rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
         }
-        
+
         .plan-features {
-        margin-bottom: 2rem;
-        flex-grow: 1;
+            margin-bottom: 2rem;
+            flex-grow: 1;
         }
-        
+
         .plan-feature {
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-        margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
         }
-        
+
         .plan-feature i {
-        color: var(--accent-emerald);
+            color: var(--accent-emerald);
         }
-        
+
         .plan-button {
-        width: 100%;
-        padding: 1rem;
-        text-align: center;
-        margin-top: auto;
+            width: 100%;
+            padding: 1rem;
+            text-align: center;
+            margin-top: auto;
         }
-        
+
         /* How It Works */
         .steps {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 3rem;
-        position: relative;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            position: relative;
         }
-        
+
         .steps::before {
-        content: '';
-        position: absolute;
-        top: 50px;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: var(--accent-emerald);
-        z-index: 0;
+            content: '';
+            position: absolute;
+            top: 50px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent-emerald);
+            z-index: 0;
         }
-        
+
         .step {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        max-width: 250px;
-        position: relative;
-        z-index: 1;
-        background: var(--secondary);
-        padding: 2rem 1.5rem;
-        border-radius: var(--radius);
-        transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            max-width: 250px;
+            position: relative;
+            z-index: 1;
+            background: var(--secondary);
+            padding: 2rem 1.5rem;
+            border-radius: var(--radius);
+            transition: var(--transition);
         }
-        
+
         .light-mode .step {
-        background: rgba(30, 41, 59, 0.1);
+            background: rgba(30, 41, 59, 0.1);
         }
-        
+
         .step:hover {
-        transform: translateY(-10px);
-        box-shadow: var(--shadow);
+            transform: translateY(-10px);
+            box-shadow: var(--shadow);
         }
-        
+
         .step-number {
-        width: 60px;
-        height: 60px;
-        background: var(--accent-gold);
-        color: var(--primary);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-bottom: 1.5rem;
+            width: 60px;
+            height: 60px;
+            background: var(--accent-gold);
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
         }
-        
+
         .step-title {
-        font-size: 1.2rem;
-        margin-bottom: 1rem;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
         }
-        
+
         .step-description {
-        color: var(--text-muted);
+            color: var(--text-muted);
         }
-        
+
         /* Testimonials */
         .testimonials {
-        background-color: var(--secondary);
+            background-color: var(--secondary);
         }
-        
+
         .light-mode .testimonials {
-        background-color: rgba(30, 41, 59, 0.1);
+            background-color: rgba(30, 41, 59, 0.1);
         }
-        
+
         .testimonials-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        margin-top: 3rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
         }
-        
+
         .testimonial-card {
-        background: var(--primary);
-        border-radius: 15px;
-        padding: 2rem;
-        box-shadow: var(--shadow);
-        transition: var(--transition);
+            background: var(--primary);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
         }
-        
+
         .light-mode .testimonial-card {
-        background: white;
+            background: white;
         }
-        
+
         .testimonial-card:hover {
-        transform: translateY(-5px);
+            transform: translateY(-5px);
         }
-        
+
         .testimonial-content {
-        margin-bottom: 1.5rem;
-        font-style: italic;
-        position: relative;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+            position: relative;
         }
-        
+
         .testimonial-content::before {
-        content: '"';
-        font-size: 4rem;
-        color: var(--accent-gold);
-        position: absolute;
-        top: -20px;
-        left: -10px;
-        opacity: 0.3;
-        line-height: 1;
+            content: '"';
+            font-size: 4rem;
+            color: var(--accent-gold);
+            position: absolute;
+            top: -20px;
+            left: -10px;
+            opacity: 0.3;
+            line-height: 1;
         }
-        
+
         .testimonial-author {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
-        
+
         .author-avatar {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        overflow: hidden;
-        border: 2px solid var(--accent-gold);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid var(--accent-gold);
         }
-        
+
         .author-avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
-        
+
         .author-info h4 {
-        margin-bottom: 0.2rem;
+            margin-bottom: 0.2rem;
         }
-        
+
         .author-info p {
-        color: var(--text-muted);
-        font-size: 0.9rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
         }
-        
+
         /* Footer */
         footer {
-        background-color: #0a0f1c;
-        padding: 4rem 5% 2rem;
+            background-color: #0a0f1c;
+            padding: 4rem 5% 2rem;
         }
-        
+
         .light-mode footer {
-        background-color: #e2e8f0;
+            background-color: #e2e8f0;
         }
-        
+
         .footer-content {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 3rem;
-        margin-bottom: 3rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
         }
-        
+
         .footer-column h3 {
-        font-size: 1.2rem;
-        margin-bottom: 1.5rem;
-        position: relative;
-        padding-bottom: 0.5rem;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
         }
-        
+
         .footer-column h3::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 40px;
-        height: 2px;
-        background: var(--accent-gold);
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: var(--accent-gold);
         }
-        
+
         .footer-links {
-        list-style: none;
+            list-style: none;
         }
-        
+
         .footer-links li {
-        margin-bottom: 0.8rem;
+            margin-bottom: 0.8rem;
         }
-        
+
         .footer-links a {
-        color: var(--text-muted);
-        text-decoration: none;
-        transition: var(--transition);
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-        
+
         .footer-links a:hover {
-        color: var(--accent-gold);
-        padding-left: 5px;
+            color: var(--accent-gold);
+            padding-left: 5px;
         }
-        
+
         .social-links {
-        display: flex;
-        gap: 1rem;
-        margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
         }
-        
+
         .social-links a {
-        width: 40px;
-        height: 40px;
-        background: var(--secondary);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--text-light);
-        transition: var(--transition);
+            width: 40px;
+            height: 40px;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            transition: var(--transition);
         }
-        
+
         .light-mode .social-links a {
-        background: rgba(30, 41, 59, 0.1);
-        color: var(--text-light);
+            background: rgba(30, 41, 59, 0.1);
+            color: var(--text-light);
         }
-        
+
         .social-links a:hover {
-        background: var(--accent-gold);
-        color: var(--primary);
-        transform: translateY(-3px);
+            background: var(--accent-gold);
+            color: var(--primary);
+            transform: translateY(-3px);
         }
-        
+
         .footer-bottom {
-        text-align: center;
-        padding-top: 2rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        color: var(--text-muted);
-        font-size: 0.9rem;
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            font-size: 0.9rem;
         }
-        
+
         .light-mode .footer-bottom {
-        border-top: 1px solid rgba(0, 0, 0, 0.1);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
         }
-        
+
         /* Registration Page */
-        .registration-page, .login-page, .dashboard-page, .investment-plans-page, .profile-page, .kyc-page, .investment-history-page, .transaction-history-page, .referral-page, .support-page, .admin-page {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 2rem 5%;
-        background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.9)), url('https://images.unsplash.com/photo-1642790553125-43a195c07ed7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
-        background-size: cover;
-        background-position: center;
+        .registration-page, .login-page, .dashboard-page,
+        .investment-plans-page, .profile-page, .kyc-page,
+        .investment-history-page, .transaction-history-page, .referral-page,
+        .support-page, .admin-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 5%;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.9)),
+                        url('https://images.unsplash.com/photo-1642790553125-43a195c07ed7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
         }
-        
-        .light-mode .registration-page, 
-        .light-mode .login-page, 
-        .light-mode .dashboard-page, 
+
+        .light-mode .registration-page,
+        .light-mode .login-page,
+        .light-mode .dashboard-page,
         .light-mode .investment-plans-page,
         .light-mode .profile-page,
         .light-mode .kyc-page,
@@ -962,22 +954,26 @@
         .light-mode .referral-page,
         .light-mode .support-page,
         .light-mode .admin-page {
-        background: linear-gradient(135deg, rgba(248, 250, 252, 0.9), rgba(226, 232, 240, 0.9)), url('https://images.unsplash.com/photo-1642790553125-43a195c07ed7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background: linear-gradient(135deg, rgba(248, 250, 252, 0.9), rgba(226, 232, 240, 0.9)),
+                        url('https://images.unsplash.com/photo-1642790553125-43a195c07ed7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
         }
-        
-        .registration-container, .login-container, .dashboard-container, .investment-plans-container, .profile-container, .kyc-container, .investment-history-container, .transaction-history-container, .referral-container, .support-container, .admin-container {
-        display: flex;
-        max-width: 1000px;
-        width: 100%;
-        background: var(--primary);
-        border-radius: 20px;
-        overflow: hidden;
-        box-shadow: var(--shadow);
+
+        .registration-container, .login-container, .dashboard-container,
+        .investment-plans-container, .profile-container, .kyc-container,
+        .investment-history-container, .transaction-history-container,
+        .referral-container, .support-container, .admin-container {
+            display: flex;
+            max-width: 1000px;
+            width: 100%;
+            background: var(--primary);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
         }
-        
-        .light-mode .registration-container, 
-        .light-mode .login-container, 
-        .light-mode .dashboard-container, 
+
+        .light-mode .registration-container,
+        .light-mode .login-container,
+        .light-mode .dashboard-container,
         .light-mode .investment-plans-container,
         .light-mode .profile-container,
         .light-mode .kyc-container,
@@ -986,1412 +982,1382 @@
         .light-mode .referral-container,
         .light-mode .support-container,
         .light-mode .admin-container {
-        background: white;
+            background: white;
         }
-        
+
         .registration-info, .login-info {
-        flex: 1;
-        padding: 3rem;
-        background: linear-gradient(135deg, var(--accent-emerald), var(--accent-gold));
-        color: var(--primary);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+            flex: 1;
+            padding: 3rem;
+            background: linear-gradient(135deg, var(--accent-emerald), var(--accent-gold));
+            color: var(--primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
-        
+
         .registration-info h2, .login-info h2 {
-        font-size: 2rem;
-        margin-bottom: 1.5rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
         }
-        
+
         .registration-info p, .login-info p {
-        margin-bottom: 2rem;
+            margin-bottom: 2rem;
         }
-        
+
         .info-features {
-        list-style: none;
+            list-style: none;
         }
-        
+
         .info-features li {
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
         }
-        
+
         .info-features i {
-        font-size: 1.2rem;
+            font-size: 1.2rem;
         }
-        
+
         .registration-form, .login-form {
-        flex: 1;
-        padding: 3rem;
+            flex: 1;
+            padding: 3rem;
         }
-        
+
         .form-header, .login-form-header {
-        text-align: center;
-        margin-bottom: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
         }
-        
+
         .form-header h2, .login-form-header h2 {
-        font-size: 2rem;
-        margin-bottom: 0.5rem;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
         }
-        
+
         .form-header p, .login-form-header p {
-        color: var(--text-muted);
+            color: var(--text-muted);
         }
-        
+
         .form-group {
-        margin-bottom: 1.5rem;
-        position: relative;
+            margin-bottom: 1.5rem;
+            position: relative;
         }
-        
+
         .form-group label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 500;
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
         }
-        
+
         .form-control {
-        width: 100%;
-        padding: 1rem;
-        background: var(--secondary);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 8px;
-        color: var(--text-light);
-        font-size: 1rem;
-        transition: var(--transition);
+            width: 100%;
+            padding: 1rem;
+            background: var(--secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: var(--transition);
         }
-        
+
         .light-mode .form-control {
-        background: rgba(30, 41, 59, 0.1);
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        color: var(--text-light);
+            background: rgba(30, 41, 59, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--text-light);
         }
-        
+
         .form-control:focus {
-        border-color: var(--accent-emerald);
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+            border-color: var(--accent-emerald);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
         }
-        
+
         .password-strength {
-        height: 4px;
-        margin-top: 0.5rem;
-        border-radius: 2px;
-        transition: var(--transition);
+            height: 4px;
+            margin-top: 0.5rem;
+            border-radius: 2px;
+            transition: var(--transition);
         }
-        
+
         .password-strength.weak {
-        background: var(--error);
-        width: 25%;
+            background: var(--error);
+            width: 25%;
         }
-        
+
         .password-strength.medium {
-        background: var(--warning);
-        width: 50%;
+            background: var(--warning);
+            width: 50%;
         }
-        
+
         .password-strength.strong {
-        background: var(--success);
-        width: 100%;
+            background: var(--success);
+            width: 100%;
         }
-        
+
         .password-toggle {
-        position: absolute;
-        right: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
-        color: var(--text-muted);
-        cursor: pointer;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
         }
-        
+
         .form-footer, .login-form-footer {
-        margin-top: 2rem;
-        text-align: center;
+            margin-top: 2rem;
+            text-align: center;
         }
-        
+
         .form-footer p, .login-form-footer p {
-        color: var(--text-muted);
-        margin-top: 1rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
         }
-        
+
         .form-footer a, .login-form-footer a {
-        color: var(--accent-gold);
-        text-decoration: none;
+            color: var(--accent-gold);
+            text-decoration: none;
         }
-        
+
         .forgot-password {
-        display: block;
-        text-align: right;
-        margin-top: 0.5rem;
-        color: var(--accent-emerald);
-        text-decoration: none;
-        font-size: 0.9rem;
+            display: block;
+            text-align: right;
+            margin-top: 0.5rem;
+            color: var(--accent-emerald);
+            text-decoration: none;
+            font-size: 0.9rem;
         }
-        
+
         .forgot-password:hover {
-        text-decoration: underline;
+            text-decoration: underline;
         }
-        
+
         /* Dashboard Page */
         .dashboard-container {
-        max-width: 1200px;
-        flex-direction: column;
-        padding: 0;
+            max-width: 1200px;
+            flex-direction: column;
+            padding: 0;
         }
-        
+
         .dashboard-header {
-        padding: 2rem;
-        background: var(--secondary);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 1rem;
+            padding: 2rem;
+            background: var(--secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
-        
+
         .light-mode .dashboard-header {
-        background: rgba(30, 41, 59, 0.1);
+            background: rgba(30, 41, 59, 0.1);
         }
-        
+
         .dashboard-header h1 {
-        font-size: 2rem;
-        color: var(--accent-gold);
+            font-size: 2rem;
+            color: var(--accent-gold);
         }
-        
+
         .user-info {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
-        
+
         .user-avatar {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background: var(--accent-emerald);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--primary);
-        font-weight: bold;
-        border: 2px solid var(--accent-gold);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent-emerald);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-weight: bold;
+            border: 2px solid var(--accent-gold);
         }
-        
+
         .dashboard-content {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 2rem;
-        padding: 2rem;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            padding: 2rem;
         }
-        
+
         .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
-        margin-bottom: 2rem;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
         }
-        
+
         .stat-card {
-        background: var(--secondary);
-        padding: 1.5rem;
-        border-radius: 10px;
-        box-shadow: var(--shadow);
-        display: flex;
-        flex-direction: column;
-        transition: var(--transition);
+            background: var(--secondary);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
         }
-        
+
         .light-mode .stat-card {
-        background: rgba(30, 41, 59, 0.1);
+            background: rgba(30, 41, 59, 0.1);
         }
-        
+
         .stat-card:hover {
-        transform: translateY(-5px);
+            transform: translateY(-5px);
         }
-        
+
         .stat-card h3 {
-        font-size: 1rem;
-        color: var(--text-muted);
-        margin-bottom: 0.5rem;
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
         }
-        
+
         .stat-card .value {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: var(--accent-gold);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-gold);
         }
-        
+
         .chart-container {
-        background: var(--secondary);
-        padding: 1.5rem;
-        border-radius: 10px;
-        box-shadow: var(--shadow);
-        margin-bottom: 2rem;
+            background: var(--secondary);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
         }
-        
+
         .light-mode .chart-container {
-        background: rgba(30, 41, 59, 0.1);
+            background: rgba(30, 41, 59, 0.1);
         }
-        
+
         .chart-container h3 {
-        margin-bottom: 1rem;
+            margin-bottom: 1rem;
         }
-        
+
         .investments-list, .transactions-list {
-        background: var(--secondary);
-        padding: 1.5rem;
-        border-radius: 10px;
-        box-shadow: var(--shadow);
+            background: var(--secondary);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
         }
-        
+
         .light-mode .investments-list, .light-mode .transactions-list {
-        background: rgba(30, 41, 59, 0.1);
+            background: rgba(30, 41, 59, 0.1);
         }
-        
+
         .investments-list h3, .transactions-list h3 {
-        margin-bottom: 1rem;
+            margin-bottom: 1rem;
         }
-        
+
         .investment-item, .transaction-item {
-        display: flex;
-        justify-content: space-between;
-        padding: 1rem 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        transition: var(--transition);
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
         }
-        
+
         .light-mode .investment-item, .light-mode .transaction-item {
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         }
-        
+
         .investment-item:hover, .transaction-item:hover {
-        background: rgba(255, 255, 255, 0.05);
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-        border-radius: 5px;
+            background: rgba(255, 255, 255, 0.05);
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            border-radius: 5px;
         }
-        
+
         .light-mode .investment-item:hover, .light-mode .transaction-item:hover {
-        background: rgba(0, 0, 0, 0.05);
+            background: rgba(0, 0, 0, 0.05);
         }
-        
+
         .investment-item:last-child, .transaction-item:last-child {
-        border-bottom: none;
+            border-bottom: none;
         }
-        
+
         .investment-name, .transaction-type {
-        font-weight: 500;
+            font-weight: 500;
         }
-        
+
         .investment-amount, .transaction-amount {
-        color: var(--accent-gold);
-        font-weight: 600;
+            color: var(--accent-gold);
+            font-weight: 600;
         }
-        
+
         .investment-status, .transaction-date {
-        color: var(--text-muted);
-        font-size: 0.9rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
         }
-        
+
         .quick-actions {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 1rem;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
         }
-        
+
         .action-card {
-        background: var(--secondary);
-        padding: 1.5rem;
-        border-radius: 10px;
-        box-shadow: var(--shadow);
-        text-align: center;
-        transition: var(--transition);
-        cursor: pointer;
+            background: var(--secondary);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
         }
-        
+
         .light-mode .action-card {
-        background: rgba(30, 41, 59, 0.1);
+            background: rgba(30, 41, 59, 0.1);
         }
-        
+
         .action-card:hover {
-        transform: translateY(-5px);
-        background: rgba(30, 41, 59, 0.8);
+            transform: translateY(-5px);
+            background: rgba(30, 41, 59, 0.8);
         }
-        
+
         .light-mode .action-card:hover {
-        background: rgba(30, 41, 59, 0.2);
+            background: rgba(30, 41, 59, 0.2);
         }
-        
+
         .action-card i {
-        font-size: 2rem;
-        margin-bottom: 1rem;
-        color: var(--accent-emerald);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--accent-emerald);
         }
-        
+
         /* Investment Plans Page */
         .investment-plans-container {
-        max-width: 1200px;
-        flex-direction: column;
-        padding: 0;
+            max-width: 1200px;
+            flex-direction: column;
+            padding: 0;
         }
-        
+
         .investment-plans-header {
-        padding: 2rem;
-        background: var(--secondary);
-        text-align: center;
+            padding: 2rem;
+            background: var(--secondary);
+            text-align: center;
         }
-        
+
         .light-mode .investment-plans-header {
-        background: rgba(30, 41, 59, 0.1);
+            background: rgba(30, 41, 59, 0.1);
         }
-        
+
         .investment-plans-header h1 {
-        font-size: 2rem;
-        color: var(--accent-gold);
+            font-size: 2rem;
+            color: var(--accent-gold);
         }
-        
+
         .investment-plans-content {
-        padding: 2rem;
+            padding: 2rem;
         }
-        
+
         /* Profile Page */
         .profile-container {
-        max-width: 1000px;
-        flex-direction: column;
-        padding: 0;
+            max-width: 1000px;
+            flex-direction: column;
+            padding: 0;
         }
-        
+
         .profile-header {
-        padding: 2rem;
-        background: var(--secondary);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+            padding: 2rem;
+            background: var(--secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        
+
         .light-mode .profile-header {
-        background: rgba(30, 41, 59, 0.1);
+            background: rgba(30, 41, 59, 0.1);
         }
-        
+
         .profile-header h1 {
-        font-size: 2rem;
-        color: var(--accent-gold);
+            font-size: 2rem;
+            color: var(--accent-gold);
         }
-        
+
         .profile-content {
-        display: grid;
-        grid-template-columns: 1fr 2fr;
-        gap: 2rem;
-        padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            padding: 2rem;
         }
-        
+
         .profile-sidebar {
-        background: var(--secondary);
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: var(--shadow);
-        height: fit-content;
+            background: var(--secondary);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            height: fit-content;
         }
-        
+
         .light-mode .profile-sidebar {
-        background: rgba(30, 41, 59, 0.1);
+            background: rgba(30, 41, 59, 0.1);
         }
-        
+
         .profile-nav {
-        list-style: none;
+            list-style: none;
         }
-        
+
         .profile-nav li {
-        margin-bottom: 1rem;
+            margin-bottom: 1rem;
         }
-        
+
         .profile-nav a {
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-        padding: 0.8rem 1rem;
-        color: var(--text-light);
-        text-decoration: none;
-        border-radius: 8px;
-        transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 1rem;
+            color: var(--text-light);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: var(--transition);
         }
-        
+
         .light-mode .profile-nav a {
-        color: var(--text-light);
+            color: var(--text-light);
         }
-        
+
         .profile-nav a:hover, .profile-nav a.active {
-        background: rgba(251, 191, 36, 0.1);
-        color: var(--accent-gold);
+            background: rgba(251, 191, 36, 0.1);
+            color: var(--accent-gold);
         }
-        
+
         .profile-main {
-        background: var(--secondary);
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: var(--shadow);
+            background: var(--secondary);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
         }
-        
+
         .light-mode .profile-main {
-        background: rgba(30, 41, 59, 0.1);
+            background: rgba(30, 41, 59, 0.1);
         }
-        
+
         .profile-section {
-        margin-bottom: 2rem;
+            margin-bottom: 2rem;
         }
-        
+
         .profile-section h2 {
-        font-size: 1.5rem;
-        margin-bottom: 1.5rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
+
         .light-mode .profile-section h2 {
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         }
-        
+
         .two-factor-setup {
-        background: rgba(16, 185, 129, 0.1);
-        padding: 1.5rem;
-        border-radius: 10px;
-        margin-top: 1rem;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
         }
-        
+
         .two-factor-code {
-        display: flex;
-        gap: 1rem;
-        margin: 1rem 0;
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
         }
-        
+
         .two-factor-code input {
-        width: 40px;
-        height: 40px;
-        text-align: center;
-        font-size: 1.2rem;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 5px;
-        background: var(--primary);
-        color: var(--text-light);
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            font-size: 1.2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            background: var(--primary);
+            color: var(--text-light);
         }
-        
+
         .light-mode .two-factor-code input {
-        background: white;
-        color: var(--text-light);
+            background: white;
+            color: var(--text-light);
         }
-        
+
         /* KYC Page */
         .kyc-container {
-        max-width: 800px;
-        flex-direction: column;
-        padding: 0;
+            max-width: 800px;
+            flex-direction: column;
+            padding: 0;
         }
-        
+
         .kyc-header {
-        padding: 2rem;
-        background: var(--secondary);
-        text-align: center;
+            padding: 2rem;
+            background: var(--secondary);
+            text-align: center;
         }
-        
+
         .light-mode .kyc-header {
-        background: rgba(30, 41, 59, 0.1);
+            background: rgba(30, 41, 59, 0.1);
         }
-        
+
         .kyc-header h1 {
-        font-size: 2rem;
-        color: var(--accent-gold);
+            font-size: 2rem;
+            color: var(--accent-gold);
         }
-        
+
         .kyc-content {
-        padding: 2rem;
+            padding: 2rem;
         }
-        
+
         .kyc-steps {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 2rem;
-        position: relative;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
         }
-        
+
         .kyc-steps::before {
-        content: '';
-        position: absolute;
-        top: 20px;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: var(--accent-emerald);
-        z-index: 0;
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent-emerald);
+            z-index: 0;
         }
-        
+
         .kyc-step {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        position: relative;
-        z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            z-index: 1;
         }
-        
+
         .kyc-step-number {
-        width: 40px;
-        height: 40px;
-        background: var(--secondary);
-        color: var(--text-light);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-        border: 2px solid var(--accent-emerald);
+            width: 40px;
+            height: 40px;
+            background: var(--secondary);
+            color: var(--text-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            border: 2px solid var(--accent-emerald);
         }
-        
+
         .kyc-step.active .kyc-step-number {
-        background: var(--accent-emerald);
-        color: var(--primary);
+            background: var(--accent-emerald);
+            color: var(--primary);
         }
-        
+
         .kyc-step.completed .kyc-step-number {
-        background: var(--accent-emerald);
-        color: var(--primary);
+            background: var(--accent-emerald);
+            color: var(--primary);
         }
-        
+
         .kyc-step-label {
-        font-size: 0.9rem;
-        color: var(--text-muted);
+            font-size: 0.9rem;
+            color: var(--text-muted);
         }
-        
+
         .kyc-step.active .kyc-step-label {
-        color: var(--accent-emerald);
-        font-weight: 600;
+            color: var(--accent-emerald);
+            font-weight: 600;
         }
-        
+
         .kyc-form-section {
-        background: var(--secondary);
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: var(--shadow);
-        margin-bottom: 2rem;
+            background: var(--secondary);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
         }
-        
+
         .light-mode .kyc-form-section {
-        background: rgba(30, 41, 59, 0.1);
+            background: rgba(30, 41, 59, 0.1);
         }
-        
+
         .file-upload {
-        border: 2px dashed rgba(255, 255, 255, 0.2);
-        border-radius: 10px;
-        padding: 2rem;
-        text-align: center;
-        cursor: pointer;
-        transition: var(--transition);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
         }
-        
+
         .light-mode .file-upload {
-        border: 2px dashed rgba(0, 0, 0, 0.2);
+            border: 2px dashed rgba(0, 0, 0, 0.2);
         }
-        
+
         .file-upload:hover {
-        border-color: var(--accent-emerald);
+            border-color: var(--accent-emerald);
         }
-        
+
         .file-upload i {
-        font-size: 3rem;
-        color: var(--accent-emerald);
-        margin-bottom: 1rem;
+            font-size: 3rem;
+            color: var(--accent-emerald);
+            margin-bottom: 1rem;
         }
-        
+
         /* Investment History Page */
         .investment-history-container {
-        max-width: 1200px;
-        flex-direction: column;
-        padding: 0;
+            max-width: 1200px;
+            flex-direction: column;
+            padding: 0;
         }
-        
+
         .investment-history-header {
-        padding: 2rem;
-        background: var(--secondary);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 1rem;
+            padding: 2rem;
+            background: var(--secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
-        
+
         .light-mode .investment-history-header {
-        background: rgba(30, 41, 59, 0.1);
+            background: rgba(30, 41, 59, 0.1);
         }
-        
+
         .investment-history-header h1 {
-        font-size: 2rem;
-        color: var(--accent-gold);
+            font-size: 2rem;
+            color: var(--accent-gold);
         }
-        
+
         .investment-history-content {
-        padding: 2rem;
+            padding: 2rem;
         }
-        
+
         .filters {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 2rem;
-        flex-wrap: wrap;
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
         }
-        
+
         .filter-select {
-        padding: 0.7rem 1rem;
-        background: var(--secondary);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 5px;
-        color: var(--text-light);
-        min-width: 150px;
+            padding: 0.7rem 1rem;
+            background: var(--secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            color: var(--text-light);
+            min-width: 150px;
         }
-        
+
         .light-mode .filter-select {
-        background: rgba(30, 41, 59, 0.1);
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        color: var(--text-light);
+            background: rgba(30, 41, 59, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--text-light);
         }
-        
+
         /* Transaction History Page */
         .transaction-history-container {
-        max-width: 1200px;
-        flex-direction: column;
-        padding: 0;
+            max-width: 1200px;
+            flex-direction: column;
+            padding: 0;
         }
-        
+
         .transaction-history-header {
-        padding: 2rem;
-        background: var(--secondary);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 1rem;
+            padding: 2rem;
+            background: var(--secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
-        
+
         .light-mode .transaction-history-header {
-        background: rgba(30, 41, 59, 0.1);
+            background: rgba(30, 41, 59, 0.1);
         }
-        
+
         .transaction-history-header h1 {
-        font-size: 2rem;
-        color: var(--accent-gold);
+            font-size: 2rem;
+            color: var(--accent-gold);
         }
-        
+
         .transaction-history-content {
-        padding: 2rem;
+            padding: 2rem;
         }
-        
+
         /* Referral Page */
         .referral-container {
-        max-width: 1000px;
-        flex-direction: column;
-        padding: 0;
+            max-width: 1000px;
+            flex-direction: column;
+            padding: 0;
         }
-        
+
         .referral-header {
-        padding: 2rem;
-        background: var(--secondary);
-        text-align: center;
+            padding: 2rem;
+            background: var(--secondary);
+            text-align: center;
         }
-        
+
         .light-mode .referral-header {
-        background: rgba(30, 41, 59, 0.1);
+            background: rgba(30, 41, 59, 0.1);
         }
-        
+
         .referral-header h1 {
-        font-size: 2rem;
-        color: var(--accent-gold);
+            font-size: 2rem;
+            color: var(--accent-gold);
         }
-        
+
         .referral-content {
-        padding: 2rem;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
         }
-        
+
         .referral-stats {
-        background: var(--secondary);
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: var(--shadow);
+            background: var(--secondary);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
         }
-        
+
         .light-mode .referral-stats {
-        background: rgba(30, 41, 59, 0.1);
+            background: rgba(30, 41, 59, 0.1);
         }
-        
+
         .referral-stat {
-        display: flex;
-        justify-content: space-between;
-        padding: 1rem 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
+
         .light-mode .referral-stat {
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         }
-        
+
         .referral-stat:last-child {
-        border-bottom: none;
+            border-bottom: none;
         }
-        
+
         .referral-links {
-        background: var(--secondary);
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: var(--shadow);
+            background: var(--secondary);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
         }
-        
+
         .light-mode .referral-links {
-        background: rgba(30, 41, 59, 0.1);
+            background: rgba(30, 41, 59, 0.1);
         }
-        
+
         /* Support Page */
         .support-container {
-        max-width: 1000px;
-        flex-direction: column;
-        padding: 0;
+            max-width: 1000px;
+            flex-direction: column;
+            padding: 0;
         }
-        
+
         .support-header {
-        padding: 2rem;
-        background: var(--secondary);
-        text-align: center;
+            padding: 2rem;
+            background: var(--secondary);
+            text-align: center;
         }
-        
+
         .light-mode .support-header {
-        background: rgba(30, 41, 59, 0.1);
+            background: rgba(30, 41, 59, 0.1);
         }
-        
+
         .support-header h1 {
-        font-size: 2rem;
-        color: var(--accent-gold);
+            font-size: 2rem;
+            color: var(--accent-gold);
         }
-        
+
         .support-content {
-        padding: 2rem;
-        display: grid;
-        grid-template-columns: 1fr 2fr;
-        gap: 2rem;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
         }
-        
+
         .support-categories {
-        background: var(--secondary);
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: var(--shadow);
-        height: fit-content;
+            background: var(--secondary);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            height: fit-content;
         }
-        
+
         .light-mode .support-categories {
-        background: rgba(30, 41, 59, 0.1);
+            background: rgba(30, 41, 59, 0.1);
         }
-        
+
         .support-category {
-        padding: 1rem;
-        margin-bottom: 1rem;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: var(--transition);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
         }
-        
+
         .support-category:hover, .support-category.active {
-        background: rgba(251, 191, 36, 0.1);
-        color: var(--accent-gold);
+            background: rgba(251, 191, 36, 0.1);
+            color: var(--accent-gold);
         }
-        
+
         .support-category i {
-        margin-right: 0.5rem;
+            margin-right: 0.5rem;
         }
-        
+
         .support-main {
-        background: var(--secondary);
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: var(--shadow);
+            background: var(--secondary);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
         }
-        
+
         .light-mode .support-main {
-        background: rgba(30, 41, 59, 0.1);
+            background: rgba(30, 41, 59, 0.1);
         }
-        
+
         .faq-item {
-        margin-bottom: 1.5rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1.5rem;
         }
-        
+
         .light-mode .faq-item {
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         }
-        
+
         .faq-question {
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        cursor: pointer;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        
+
         .faq-answer {
-        color: var(--text-muted);
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.3s ease;
+            color: var(--text-muted);
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
         }
-        
+
         .faq-item.active .faq-answer {
-        max-height: 500px;
+            max-height: 500px;
         }
-        
+
         /* Admin Page */
         .admin-container {
-        max-width: 1400px;
-        flex-direction: column;
-        padding: 0;
+            max-width: 1400px;
+            flex-direction: column;
+            padding: 0;
         }
-        
+
         .admin-header {
-        padding: 2rem;
-        background: var(--secondary);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+            padding: 2rem;
+            background: var(--secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        
+
         .light-mode .admin-header {
-        background: rgba(30, 41, 59, 0.1);
+            background: rgba(30, 41, 59, 0.1);
         }
-        
+
         .admin-header h1 {
-        font-size: 2rem;
-        color: var(--accent-gold);
+            font-size: 2rem;
+            color: var(--accent-gold);
         }
-        
+
         .admin-content {
-        padding: 2rem;
-        display: grid;
-        grid-template-columns: 250px 1fr;
-        gap: 2rem;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
         }
-        
+
         .admin-sidebar {
-        background: var(--secondary);
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: var(--shadow);
-        height: fit-content;
+            background: var(--secondary);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            height: fit-content;
         }
-        
+
         .light-mode .admin-sidebar {
-        background: rgba(30, 41, 59, 0.1);
+            background: rgba(30, 41, 59, 0.1);
         }
-        
+
         .admin-nav {
-        list-style: none;
+            list-style: none;
         }
-        
+
         .admin-nav li {
-        margin-bottom: 1rem;
+            margin-bottom: 1rem;
         }
-        
+
         .admin-nav a {
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-        padding: 0.8rem 1rem;
-        color: var(--text-light);
-        text-decoration: none;
-        border-radius: 8px;
-        transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 1rem;
+            color: var(--text-light);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: var(--transition);
         }
-        
+
         .light-mode .admin-nav a {
-        color: var(--text-light);
+            color: var(--text-light);
         }
-        
+
         .admin-nav a:hover, .admin-nav a.active {
-        background: rgba(251, 191, 36, 0.1);
-        color: var(--accent-gold);
+            background: rgba(251, 191, 36, 0.1);
+            color: var(--accent-gold);
         }
-        
+
         .admin-main {
-        background: var(--secondary);
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: var(--shadow);
+            background: var(--secondary);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
         }
-        
+
         .light-mode .admin-main {
-        background: rgba(30, 41, 59, 0.1);
+            background: rgba(30, 41, 59, 0.1);
         }
-        
+
         .admin-stats {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1.5rem;
-        margin-bottom: 2rem;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
         }
-        
+
         .admin-stat {
-        background: var(--primary);
-        padding: 1.5rem;
-        border-radius: 10px;
-        text-align: center;
-        transition: var(--transition);
+            background: var(--primary);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            transition: var(--transition);
         }
-        
+
         .light-mode .admin-stat {
-        background: white;
+            background: white;
         }
-        
+
         .admin-stat:hover {
-        transform: translateY(-5px);
+            transform: translateY(-5px);
         }
-        
+
         .admin-stat .value {
-        font-size: 2rem;
-        font-weight: 700;
-        color: var(--accent-gold);
-        display: block;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            display: block;
         }
-        
+
         .admin-stat .label {
-        color: var(--text-muted);
-        font-size: 0.9rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
         }
-        
+
         .admin-table {
-        width: 100%;
-        border-collapse: collapse;
+            width: 100%;
+            border-collapse: collapse;
         }
-        
+
         .admin-table th, .admin-table td {
-        padding: 1rem;
-        text-align: left;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
+
         .light-mode .admin-table th, .light-mode .admin-table td {
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         }
-        
+
         .admin-table th {
-        color: var(--text-muted);
-        font-weight: 600;
+            color: var(--text-muted);
+            font-weight: 600;
         }
-        
+
         .status-badge {
-        padding: 0.3rem 0.8rem;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 600;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
         }
-        
+
         .status-badge.pending {
-        background: rgba(245, 158, 11, 0.2);
-        color: var(--warning);
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
         }
-        
+
         .status-badge.approved {
-        background: rgba(16, 185, 129, 0.2);
-        color: var(--success);
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
         }
-        
+
         .status-badge.rejected {
-        background: rgba(239, 68, 68, 0.2);
-        color: var(--error);
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--error);
         }
-        
+
         /* Modal */
         .modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        z-index: 2000;
-        align-items: center;
-        justify-content: center;
-        padding: 1rem;
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
         }
-        
+
         .modal-content {
-        background: var(--primary);
-        padding: 2rem;
-        border-radius: 15px;
-        max-width: 500px;
-        width: 100%;
-        box-shadow: var(--shadow);
-        max-height: 90vh;
-        overflow-y: auto;
-        animation: modalAppear 0.3s ease;
+            background: var(--primary);
+            padding: 2rem;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: var(--shadow);
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalAppear 0.3s ease;
         }
-        
+
         .light-mode .modal-content {
-        background: white;
+            background: white;
         }
-        
+
         @keyframes modalAppear {
-        from {
-        opacity: 0;
-        transform: scale(0.9);
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
-        to {
-        opacity: 1;
-        transform: scale(1);
-        }
-        }
-        
+
         .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
         }
-        
+
         .modal-header h2 {
-        font-size: 1.5rem;
-        color: var(--accent-gold);
+            font-size: 1.5rem;
+            color: var(--accent-gold);
         }
-        
+
         .close-modal {
-        background: none;
-        border: none;
-        color: var(--text-light);
-        font-size: 1.5rem;
-        cursor: pointer;
-        transition: var(--transition);
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
         }
-        
+
         .close-modal:hover {
-        color: var(--accent-gold);
+            color: var(--accent-gold);
         }
-        
+
         /* Password Reset Modal */
         .password-reset-steps {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 2rem;
-        position: relative;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
         }
-        
+
         .password-reset-steps::before {
-        content: '';
-        position: absolute;
-        top: 15px;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: var(--accent-emerald);
-        z-index: 0;
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent-emerald);
+            z-index: 0;
         }
-        
+
         .password-reset-step {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        position: relative;
-        z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            z-index: 1;
         }
-        
+
         .password-reset-step-number {
-        width: 30px;
-        height: 30px;
-        background: var(--secondary);
-        color: var(--text-light);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-        border: 2px solid var(--accent-emerald);
-        font-size: 0.8rem;
+            width: 30px;
+            height: 30px;
+            background: var(--secondary);
+            color: var(--text-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            border: 2px solid var(--accent-emerald);
+            font-size: 0.8rem;
         }
-        
+
         .password-reset-step.active .password-reset-step-number {
-        background: var(--accent-emerald);
-        color: var(--primary);
+            background: var(--accent-emerald);
+            color: var(--primary);
         }
-        
+
         .password-reset-step.completed .password-reset-step-number {
-        background: var(--accent-emerald);
-        color: var(--primary);
+            background: var(--accent-emerald);
+            color: var(--primary);
         }
-        
+
         .password-reset-step-label {
-        font-size: 0.7rem;
-        color: var(--text-muted);
+            font-size: 0.7rem;
+            color: var(--text-muted);
         }
-        
+
         .password-reset-step.active .password-reset-step-label {
-        color: var(--accent-emerald);
-        font-weight: 600;
+            color: var(--accent-emerald);
+            font-weight: 600;
         }
-        
+
         /* Back to Top Button */
         .back-to-top {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        width: 50px;
-        height: 50px;
-        background: var(--accent-gold);
-        color: var(--primary);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.2rem;
-        cursor: pointer;
-        transition: var(--transition);
-        opacity: 0;
-        visibility: hidden;
-        z-index: 999;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--accent-gold);
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            opacity: 0;
+            visibility: hidden;
+            z-index: 999;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
-        
+
         .back-to-top.visible {
-        opacity: 1;
-        visibility: visible;
+            opacity: 1;
+            visibility: visible;
         }
-        
+
         .back-to-top:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
         }
-        
+
         /* File Upload Styles */
         .file-upload-container {
-        border: 2px dashed rgba(255, 255, 255, 0.2);
-        border-radius: 10px;
-        padding: 2rem;
-        text-align: center;
-        transition: var(--transition);
-        cursor: pointer;
-        margin-bottom: 1rem;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            margin-bottom: 1rem;
         }
-        
+
         .light-mode .file-upload-container {
-        border: 2px dashed rgba(0, 0, 0, 0.2);
+            border: 2px dashed rgba(0, 0, 0, 0.2);
         }
-        
+
         .file-upload-container:hover {
-        border-color: var(--accent-emerald);
+            border-color: var(--accent-emerald);
         }
-        
+
         .file-upload-container i {
-        font-size: 3rem;
-        color: var(--accent-emerald);
-        margin-bottom: 1rem;
+            font-size: 3rem;
+            color: var(--accent-emerald);
+            margin-bottom: 1rem;
         }
-        
+
         .file-preview {
-        max-width: 100%;
-        max-height: 200px;
-        margin-top: 1rem;
-        border-radius: 5px;
-        display: none;
+            max-width: 100%;
+            max-height: 200px;
+            margin-top: 1rem;
+            border-radius: 5px;
+            display: none;
         }
-        
+
         /* Currency Toggle */
         .currency-toggle {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
         }
-        
+
         .currency-toggle label {
-        font-weight: 500;
+            font-weight: 500;
         }
-        
+
         .currency-toggle select {
-        background: var(--secondary);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 5px;
-        color: var(--text-light);
-        padding: 0.5rem;
+            background: var(--secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            color: var(--text-light);
+            padding: 0.5rem;
         }
-        
+
         /* Withdrawal Fee Notice */
         .withdrawal-fee-notice {
-        background: rgba(245, 158, 11, 0.1);
-        border: 1px solid rgba(245, 158, 11, 0.3);
-        border-radius: 8px;
-        padding: 1rem;
-        margin-bottom: 1.5rem;
-        color: var(--warning);
-        font-size: 0.9rem;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--warning);
+            font-size: 0.9rem;
         }
-        
+
         .withdrawal-fee-notice i {
-        margin-right: 0.5rem;
+            margin-right: 0.5rem;
         }
-        
+
         /* Responsive Design */
         @media (max-width: 1200px) {
-        .admin-content {
-        grid-template-columns: 1fr;
+            .admin-content {
+                grid-template-columns: 1fr;
+            }
+            .admin-sidebar {
+                order: 2;
+            }
+            .admin-main {
+                order: 1;
+            }
+            .admin-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
-        
-        .admin-sidebar {
-        order: 2;
-        }
-        
-        .admin-main {
-        order: 1;
-        }
-        
-        .admin-stats {
-        grid-template-columns: repeat(2, 1fr);
-        }
-        }
-        
+
         @media (max-width: 992px) {
-        .hero h1 {
-        font-size: 2.8rem;
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            .steps {
+                flex-direction: column;
+                gap: 3rem;
+            }
+            .steps::before {
+                display: none;
+            }
+            .registration-container, .login-container {
+                flex-direction: column;
+            }
+            .dashboard-content {
+                grid-template-columns: 1fr;
+            }
+            .profile-content {
+                grid-template-columns: 1fr;
+            }
+            .referral-content {
+                grid-template-columns: 1fr;
+            }
+            .support-content {
+                grid-template-columns: 1fr;
+            }
+            .about-content {
+                grid-template-columns: 1fr;
+            }
         }
-        
-        .steps {
-        flex-direction: column;
-        gap: 3rem;
-        }
-        
-        .steps::before {
-        display: none;
-        }
-        
-        .registration-container, .login-container {
-        flex-direction: column;
-        }
-        
-        .dashboard-content {
-        grid-template-columns: 1fr;
-        }
-        
-        .profile-content {
-        grid-template-columns: 1fr;
-        }
-        
-        .referral-content {
-        grid-template-columns: 1fr;
-        }
-        
-        .support-content {
-        grid-template-columns: 1fr;
-        }
-        
-        .about-content {
-        grid-template-columns: 1fr;
-        }
-        }
-        
+
         @media (max-width: 768px) {
-        .navbar {
-        padding: 1rem 5%;
+            .navbar {
+                padding: 1rem 5%;
+            }
+            .nav-links, .nav-buttons {
+                display: none;
+            }
+            .hamburger {
+                display: block;
+            }
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            .hero-buttons {
+                flex-direction: column;
+            }
+            .hero-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .about-features {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .admin-stats {
+                grid-template-columns: 1fr;
+            }
+            .kyc-steps {
+                flex-direction: column;
+                gap: 2rem;
+            }
+            .kyc-steps::before {
+                display: none;
+            }
+            .password-reset-steps {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            .password-reset-steps::before {
+                display: none;
+            }
         }
-        
-        .nav-links, .nav-buttons {
-        display: none;
-        }
-        
-        .hamburger {
-        display: block;
-        }
-        
-        .hero h1 {
-        font-size: 2.2rem;
-        }
-        
-        .hero-buttons {
-        flex-direction: column;
-        }
-        
-        .hero-stats {
-        flex-direction: column;
-        gap: 1rem;
-        }
-        
-        .about-features {
-        grid-template-columns: 1fr;
-        }
-        
-        .stats-grid {
-        grid-template-columns: 1fr;
-        }
-        
-        .admin-stats {
-        grid-template-columns: 1fr;
-        }
-        
-        .kyc-steps {
-        flex-direction: column;
-        gap: 2rem;
-        }
-        
-        .kyc-steps::before {
-        display: none;
-        }
-        
-        .password-reset-steps {
-        flex-direction: column;
-        gap: 1.5rem;
-        }
-        
-        .password-reset-steps::before {
-        display: none;
-        }
-        }
-        
+
         @media (max-width: 576px) {
-        .section {
-        padding: 3rem 5%;
+            .section {
+                padding: 3rem 5%;
+            }
+            .plans-container, .testimonials-container {
+                grid-template-columns: 1fr;
+            }
+            .registration-info, .registration-form, .login-info, .login-form {
+                padding: 2rem;
+            }
+            .dashboard-header, .investment-plans-header, .profile-header,
+            .kyc-header, .investment-history-header, .transaction-history-header,
+            .referral-header, .support-header, .admin-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            .filters {
+                flex-direction: column;
+            }
+            .filter-select {
+                min-width: 100%;
+            }
+            .two-factor-code {
+                justify-content: center;
+            }
         }
-        
-        .plans-container, .testimonials-container {
-        grid-template-columns: 1fr;
-        }
-        
-        .registration-info, .registration-form, .login-info, .login-form {
-        padding: 2rem;
-        }
-        
-        .dashboard-header, .investment-plans-header, .profile-header, .kyc-header, .investment-history-header, .transaction-history-header, .referral-header, .support-header, .admin-header {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
-        }
-        
-        .filters {
-        flex-direction: column;
-        }
-        
-        .filter-select {
-        min-width: 100%;
-        }
-        
-        .two-factor-code {
-        justify-content: center;
-        }
-        }
-        /* [REST OF YOUR 3000+ LINES OF CSS CODE REMAINS EXACTLY THE SAME] */
-        /* I'm preserving your entire CSS structure */
-        
     </style>
 </head>
 <body>
@@ -3344,7 +3310,6 @@
                                 <span class="label">Active Investments</span>
                             </div>
                         </div>
-
                         <div class="chart-container">
                             <h3>Platform Growth</h3>
                             <canvas id="platform-growth-chart"></canvas>
@@ -3586,14 +3551,13 @@
         <i class="fas fa-chevron-up"></i>
     </div>
 
-
     <script>
-        // ==================== RAW WEALTHY FRONTEND v35.0 - ADVANCED AUTO-CONNECTION ====================
+        // ==================== RAW WEALTHY FRONTEND v36.0 - AUTO BACKEND CONNECTION ====================
 
         const app = {
-            // ==================== ENHANCED CONFIGURATION ====================
+            // ==================== CONFIGURATION ====================
             config: {
-                // DYNAMIC BACKEND URL - Auto-detects based on environment with fallback system
+                // AUTO-DETECTING BACKEND URL - Optimized for Render + Vercel
                 API_BASE_URL: (() => {
                     const isLocal = window.location.hostname === 'localhost' || 
                                    window.location.hostname === '127.0.0.1';
@@ -3605,22 +3569,8 @@
                     return window.location.origin + '/api';
                 })(),
                 
-                // Multiple backend fallback URLs for reliability
-                BACKUP_API_URLS: [
-                    'https://real-wealthy-1.onrender.com/api',
-                    'https://real-wealthy-backup.onrender.com/api',
-                    'https://raw-wealthy-api.onrender.com/api'
-                ],
-                
-                VERSION: '35.0.0',
+                VERSION: '36.0.0',
                 ENVIRONMENT: window.location.hostname === 'localhost' ? 'development' : 'production',
-                
-                // Connection settings
-                CONNECTION_RETRIES: 3,
-                CONNECTION_TIMEOUT: 10000,
-                HEARTBEAT_INTERVAL: 30000,
-                
-                // Financial settings
                 MIN_INVESTMENT: 3500,
                 MIN_DEPOSIT: 500,
                 MIN_WITHDRAWAL: 1000,
@@ -3629,7 +3579,7 @@
                 WELCOME_BONUS: 10000
             },
 
-            // ==================== ENHANCED APPLICATION STATE ====================
+            // ==================== APPLICATION STATE ====================
             state: {
                 currentUser: null,
                 token: localStorage.getItem('raw_wealthy_token'),
@@ -3637,7 +3587,6 @@
                 notifications: [],
                 isAdmin: false,
                 isAuthenticated: false,
-                isOnline: navigator.onLine,
                 charts: {},
                 userStats: {
                     balance: 0,
@@ -3645,273 +3594,230 @@
                     totalEarnings: 0,
                     referralEarnings: 0
                 },
-                connectionStatus: 'disconnected',
-                activeApiUrl: null,
-                retryCount: 0,
-                heartbeatTimer: null
+                sessionExpiryTime: null
             },
 
-            // ==================== ADVANCED INITIALIZATION ====================
+            // ==================== INITIALIZATION ====================
             init() {
-                console.log('🚀 Raw Wealthy Frontend v35.0 Initializing...');
-                console.log(`🌐 Environment: ${this.config.ENVIRONMENT}`);
-                console.log(`🔄 Primary API URL: ${this.config.API_BASE_URL}`);
+                console.log('🚀 Raw Wealthy Frontend v36.0 Initializing...');
+                console.log(`🌐 Backend URL: ${this.config.API_BASE_URL}`);
+                console.log(`🏷️ Environment: ${this.config.ENVIRONMENT}`);
                 
-                // Initialize connection
-                this.initializeConnection();
-                
-                // Setup event listeners
                 this.setupEventListeners();
-                
-                // Check authentication
                 this.checkAuthentication();
-                
-                // Load investment plans
                 this.loadInvestmentPlans();
-                
-                // Initialize animations
                 this.initAnimations();
                 
                 // Check URL for referral code
                 this.checkReferralFromURL();
                 
                 // Check for saved theme
-                this.initializeTheme();
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme === 'light') {
+                    document.body.classList.add('light-mode');
+                    const themeIcon = document.querySelector('#theme-toggle i');
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                }
                 
-                // Start connection monitoring
-                this.startConnectionMonitoring();
+                // Start session timer
+                this.startSessionTimer();
             },
 
-            // ==================== ENHANCED CONNECTION MANAGEMENT ====================
-            initializeConnection() {
-                this.state.activeApiUrl = this.config.API_BASE_URL;
-                this.state.connectionStatus = 'connecting';
-                
-                // Test connection
-                this.testConnection()
-                    .then(success => {
-                        if (success) {
-                            this.state.connectionStatus = 'connected';
-                            this.showToast('Connected to server', 'success');
-                        } else {
-                            this.state.connectionStatus = 'disconnected';
-                            this.showToast('Server connection failed, using fallback mode', 'warning');
+            // ==================== SESSION MANAGEMENT ====================
+            startSessionTimer() {
+                if (this.state.token) {
+                    this.state.sessionExpiryTime = Date.now() + (60 * 60 * 1000); // 1 hour
+                    
+                    // Check session expiry every minute
+                    setInterval(() => {
+                        if (this.state.sessionExpiryTime && Date.now() > this.state.sessionExpiryTime) {
+                            this.handleTokenExpired();
                         }
-                    })
-                    .catch(error => {
-                        console.error('Connection test failed:', error);
-                        this.state.connectionStatus = 'error';
-                    });
+                    }, 60000);
+                }
             },
 
-            async testConnection() {
+            resetSessionTimer() {
+                if (this.state.token) {
+                    this.state.sessionExpiryTime = Date.now() + (60 * 60 * 1000);
+                }
+            },
+
+            // ==================== EVENT LISTENERS ====================
+            setupEventListeners() {
+                // Theme toggle
+                document.getElementById('theme-toggle').addEventListener('click', () => this.toggleTheme());
+                
+                // Mobile menu
+                document.getElementById('hamburger').addEventListener('click', () => this.openMobileMenu());
+                document.getElementById('close-mobile-menu').addEventListener('click', () => this.closeMobileMenu());
+                document.getElementById('mobile-menu-overlay').addEventListener('click', () => this.closeMobileMenu());
+                
+                // Back to top
+                document.getElementById('back-to-top').addEventListener('click', () => this.scrollToTop());
+                
+                // Form submissions
+                document.getElementById('registration-form').addEventListener('submit', (e) => this.handleRegistration(e));
+                document.getElementById('login-form').addEventListener('submit', (e) => this.handleLogin(e));
+                document.getElementById('invest-form').addEventListener('submit', (e) => this.handleInvestment(e));
+                document.getElementById('deposit-form').addEventListener('submit', (e) => this.handleDeposit(e));
+                document.getElementById('withdraw-form').addEventListener('submit', (e) => this.handleWithdrawal(e));
+                document.getElementById('personal-form').addEventListener('submit', (e) => this.handleProfileUpdate(e));
+                document.getElementById('bank-form').addEventListener('submit', (e) => this.handleBankUpdate(e));
+                document.getElementById('kyc-form').addEventListener('submit', (e) => this.handleKYCSubmission(e));
+                document.getElementById('support-form').addEventListener('submit', (e) => this.handleSupportRequest(e));
+                document.getElementById('password-reset-form').addEventListener('submit', (e) => this.handlePasswordReset(e));
+                
+                // Password toggles
+                this.initPasswordToggles();
+                
+                // File upload previews
+                this.initFileUploadPreviews();
+                
+                // Scroll event for navbar
+                window.addEventListener('scroll', () => this.handleScroll());
+                
+                // Withdrawal amount change listener
+                const withdrawAmount = document.getElementById('withdraw-amount');
+                if (withdrawAmount) {
+                    withdrawAmount.addEventListener('input', () => this.updateWithdrawalFee());
+                }
+                
+                // Investment amount validation
+                const investAmount = document.getElementById('investment-amount');
+                if (investAmount) {
+                    investAmount.addEventListener('input', () => this.validateInvestmentAmount());
+                }
+                
+                // Auto-scroll to top when page changes
+                window.addEventListener('hashchange', () => window.scrollTo(0, 0));
+                
+                // Initialize stats animation
+                this.animateStats();
+                
+                // Network status monitoring
+                window.addEventListener('online', () => this.handleNetworkStatus(true));
+                window.addEventListener('offline', () => this.handleNetworkStatus(false));
+            },
+
+            // ==================== NETWORK STATUS ====================
+            handleNetworkStatus(isOnline) {
+                if (isOnline) {
+                    this.showToast('Back online! Reconnecting...', 'success');
+                    // Re-sync data
+                    if (this.state.isAuthenticated) {
+                        this.updateDashboard();
+                    }
+                } else {
+                    this.showToast('Network connection lost', 'warning');
+                }
+            },
+
+            // ==================== API REQUEST HANDLER ====================
+            async apiRequest(endpoint, options = {}) {
+                const url = this.config.API_BASE_URL + endpoint;
+                
+                // Default headers
+                const headers = {
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                };
+                
+                // Add auth token if available
+                if (this.state.token) {
+                    headers['Authorization'] = `Bearer ${this.state.token}`;
+                }
+                
+                // Prepare config
+                const config = {
+                    method: options.method || 'GET',
+                    headers: headers,
+                    ...options
+                };
+                
+                // Handle FormData separately
+                if (options.body instanceof FormData) {
+                    delete config.headers['Content-Type']; // Let browser set content-type for FormData
+                    config.body = options.body;
+                } else if (options.body && typeof options.body === 'object') {
+                    config.body = JSON.stringify(options.body);
+                }
+                
+                // Add timeout
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+                config.signal = controller.signal;
+                
                 try {
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 5000);
-                    
-                    const response = await fetch(`${this.state.activeApiUrl}/health`, {
-                        method: 'GET',
-                        signal: controller.signal,
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    });
-                    
+                    this.showLoadingSpinner(true);
+                    const response = await fetch(url, config);
                     clearTimeout(timeoutId);
                     
-                    if (response.ok) {
-                        const data = await response.json();
-                        return data.status === 'ok';
+                    const contentType = response.headers.get("content-type");
+                    let data;
+                    
+                    if (contentType && contentType.includes("application/json")) {
+                        data = await response.json();
+                    } else {
+                        data = await response.text();
                     }
-                    return false;
+                    
+                    if (!response.ok) {
+                        throw new Error(data.message || `HTTP ${response.status}`);
+                    }
+                    
+                    if (data && typeof data === 'object' && !data.success) {
+                        throw new Error(data.message || 'Request failed');
+                    }
+                    
+                    // Reset session timer on successful API call
+                    this.resetSessionTimer();
+                    
+                    return data;
                 } catch (error) {
-                    console.warn('Primary connection failed, trying backup...');
-                    return this.tryBackupConnection();
-                }
-            },
-
-            async tryBackupConnection() {
-                for (let i = 0; i < this.config.BACKUP_API_URLS.length; i++) {
-                    const backupUrl = this.config.BACKUP_API_URLS[i];
-                    try {
-                        const response = await fetch(`${backupUrl}/health`, {
-                            method: 'GET',
-                            timeout: 5000
-                        });
-                        
-                        if (response.ok) {
-                            const data = await response.json();
-                            if (data.status === 'ok') {
-                                this.state.activeApiUrl = backupUrl;
-                                this.showToast(`Connected to backup server ${i + 1}`, 'info');
-                                return true;
-                            }
-                        }
-                    } catch (error) {
-                        console.warn(`Backup ${i + 1} failed:`, error);
+                    clearTimeout(timeoutId);
+                    console.error('API Request Error:', error);
+                    
+                    // Handle specific error cases
+                    if (error.name === 'AbortError') {
+                        this.showToast('Request timeout. Please try again.', 'error');
+                    } else if (error.message.includes('401') || error.message.includes('token')) {
+                        this.handleTokenExpired();
+                    } else if (!navigator.onLine) {
+                        this.showToast('No internet connection', 'error');
+                    } else {
+                        this.showToast(error.message || 'Network error. Please try again.', 'error');
                     }
-                }
-                return false;
-            },
-
-            startConnectionMonitoring() {
-                // Monitor online/offline status
-                window.addEventListener('online', () => {
-                    this.state.isOnline = true;
-                    this.showToast('Back online', 'success');
-                    this.initializeConnection();
-                });
-
-                window.addEventListener('offline', () => {
-                    this.state.isOnline = false;
-                    this.showToast('You are offline', 'error');
-                    this.state.connectionStatus = 'offline';
-                });
-
-                // Heartbeat to keep connection alive
-                this.state.heartbeatTimer = setInterval(() => {
-                    if (this.state.isOnline && this.state.connectionStatus === 'connected') {
-                        this.sendHeartbeat();
-                    }
-                }, this.config.HEARTBEAT_INTERVAL);
-            },
-
-            async sendHeartbeat() {
-                try {
-                    await fetch(`${this.state.activeApiUrl}/heartbeat`, {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': this.state.token ? `Bearer ${this.state.token}` : ''
-                        }
-                    });
-                } catch (error) {
-                    // Silent fail for heartbeat
+                    
+                    throw error;
+                } finally {
+                    this.showLoadingSpinner(false);
                 }
             },
 
-            // ==================== ENHANCED API REQUEST HANDLER ====================
-            async apiRequest(endpoint, options = {}) {
-                const maxRetries = this.config.CONNECTION_RETRIES;
-                let lastError = null;
-
-                for (let attempt = 1; attempt <= maxRetries; attempt++) {
-                    try {
-                        const url = this.state.activeApiUrl + endpoint;
-                        
-                        // Default headers
-                        const headers = {
-                            'Content-Type': 'application/json',
-                            ...options.headers
-                        };
-
-                        // Add auth token if available
-                        if (this.state.token) {
-                            headers['Authorization'] = `Bearer ${this.state.token}`;
-                        }
-
-                        // Prepare config with timeout
-                        const controller = new AbortController();
-                        const timeoutId = setTimeout(() => controller.abort(), this.config.CONNECTION_TIMEOUT);
-
-                        const config = {
-                            method: options.method || 'GET',
-                            headers: headers,
-                            signal: controller.signal,
-                            ...options
-                        };
-
-                        // Handle FormData
-                        if (options.body instanceof FormData) {
-                            delete config.headers['Content-Type'];
-                            config.body = options.body;
-                        } else if (options.body && typeof options.body === 'object') {
-                            config.body = JSON.stringify(options.body);
-                        }
-
-                        this.showLoadingSpinner(true);
-                        
-                        const response = await fetch(url, config);
-                        clearTimeout(timeoutId);
-
-                        const data = await response.json();
-
-                        if (!response.ok) {
-                            throw new Error(data.message || `HTTP ${response.status}`);
-                        }
-
-                        if (!data.success && data.success !== undefined) {
-                            throw new Error(data.message || 'Request failed');
-                        }
-
-                        this.showLoadingSpinner(false);
-                        return data;
-
-                    } catch (error) {
-                        lastError = error;
-                        clearTimeout(timeoutId);
-                        
-                        if (attempt < maxRetries) {
-                            console.warn(`Attempt ${attempt} failed, retrying...`, error);
-                            await this.delay(1000 * attempt); // Exponential backoff
-                        }
-                    } finally {
-                        this.showLoadingSpinner(false);
-                    }
-                }
-
-                // All retries failed
-                this.handleApiError(lastError);
-                throw lastError;
-            },
-
-            delay(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
-            },
-
-            handleApiError(error) {
-                console.error('API Request Error:', error);
-                
-                // Handle specific error cases
-                if (error.message.includes('401') || error.message.includes('token')) {
-                    this.handleTokenExpired();
-                } else if (error.name === 'AbortError') {
-                    this.showToast('Request timeout. Please check your connection.', 'error');
-                } else if (!this.state.isOnline) {
-                    this.showToast('You are offline. Please check your internet connection.', 'error');
-                } else {
-                    this.showToast(error.message || 'Network error. Please try again.', 'error');
-                }
-            },
-
-            // ==================== ENHANCED FILE UPLOAD HANDLER ====================
+            // ==================== FILE UPLOAD HANDLER ====================
             async uploadFile(file, folder = 'general') {
                 const formData = new FormData();
                 formData.append('file', file);
                 formData.append('folder', folder);
-
+                
                 try {
                     const response = await this.apiRequest('/upload', {
                         method: 'POST',
                         body: formData
                     });
-                    
                     return response.data.fileUrl;
                 } catch (error) {
                     console.error('File upload failed:', error);
-                    
-                    // For large files, provide better error message
-                    if (file.size > 10 * 1024 * 1024) { // 10MB
-                        throw new Error('File too large. Maximum size is 10MB');
-                    }
-                    
-                    throw new Error('Failed to upload file. Please try again');
+                    throw new Error('Failed to upload file');
                 }
             },
 
-            // ==================== ENHANCED AUTHENTICATION FUNCTIONS ====================
-            async checkAuthentication() {
+            // ==================== AUTHENTICATION FUNCTIONS ====================
+            checkAuthentication() {
                 if (this.state.token) {
-                    await this.verifyToken();
+                    this.verifyToken();
                 } else {
                     this.showPage('home');
                 }
@@ -3920,53 +3826,46 @@
             async verifyToken() {
                 try {
                     const response = await this.apiRequest('/profile');
+                    this.state.currentUser = response.data.user;
+                    this.state.isAdmin = this.state.currentUser.role === 'admin' || this.state.currentUser.role === 'super_admin';
+                    this.state.isAuthenticated = true;
                     
-                    if (response.success) {
-                        this.state.currentUser = response.data.user;
-                        this.state.isAdmin = this.state.currentUser.role === 'admin' || this.state.currentUser.role === 'super_admin';
-                        this.state.isAuthenticated = true;
-
-                        // Update user avatar
-                        const initials = this.state.currentUser.full_name
-                            .split(' ')
-                            .map(n => n[0])
-                            .join('')
-                            .toUpperCase();
-                        
-                        const avatarElement = document.getElementById('user-avatar');
-                        if (avatarElement) {
-                            avatarElement.textContent = initials;
-                        }
-
-                        // Redirect based on role
-                        if (this.state.isAdmin) {
-                            this.showPage('admin');
-                        } else {
-                            this.showPage('dashboard');
-                        }
+                    // Update user avatar
+                    const initials = this.state.currentUser.full_name
+                        .split(' ')
+                        .map(n => n[0])
+                        .join('')
+                        .toUpperCase();
+                    document.getElementById('user-avatar').textContent = initials;
+                    
+                    if (this.state.isAdmin) {
+                        this.showPage('admin');
+                    } else {
+                        this.showPage('dashboard');
                     }
+                    
+                    // Start session timer
+                    this.startSessionTimer();
+                    
                 } catch (error) {
-                    this.clearAuthData();
+                    localStorage.removeItem('raw_wealthy_token');
+                    this.state.token = null;
+                    this.state.isAuthenticated = false;
                     this.showPage('home');
                 }
             },
 
-            clearAuthData() {
+            handleTokenExpired() {
                 localStorage.removeItem('raw_wealthy_token');
-                localStorage.removeItem('raw_wealthy_user');
                 this.state.token = null;
                 this.state.currentUser = null;
                 this.state.isAuthenticated = false;
-                this.state.isAdmin = false;
-            },
-
-            handleTokenExpired() {
-                this.clearAuthData();
+                this.state.sessionExpiryTime = null;
                 this.showToast('Your session has expired. Please login again.', 'warning');
                 this.showPage('login');
             },
 
-            // ==================== ENHANCED PAGE NAVIGATION ====================
+            // ==================== PAGE NAVIGATION ====================
             showPage(page) {
                 // Hide all pages
                 const pages = [
@@ -3979,7 +3878,7 @@
                     const element = document.getElementById(pageId);
                     if (element) element.style.display = 'none';
                 });
-
+                
                 // Show selected page
                 let pageElement;
                 switch(page) {
@@ -3988,17 +3887,14 @@
                         if (pageElement) pageElement.style.display = 'block';
                         window.scrollTo(0, 0);
                         break;
-                        
                     case 'register':
                         pageElement = document.getElementById('registration-page');
                         if (pageElement) pageElement.style.display = 'flex';
                         break;
-                        
                     case 'login':
                         pageElement = document.getElementById('login-page');
                         if (pageElement) pageElement.style.display = 'flex';
                         break;
-                        
                     case 'dashboard':
                         pageElement = document.getElementById('dashboard-page');
                         if (pageElement) {
@@ -4006,7 +3902,6 @@
                             this.updateDashboard();
                         }
                         break;
-                        
                     case 'investment-plans':
                         pageElement = document.getElementById('investment-plans-page');
                         if (pageElement) {
@@ -4014,7 +3909,6 @@
                             this.loadInvestmentPlansPage();
                         }
                         break;
-                        
                     case 'profile':
                         pageElement = document.getElementById('profile-page');
                         if (pageElement) {
@@ -4022,7 +3916,6 @@
                             this.loadProfileData();
                         }
                         break;
-                        
                     case 'referral':
                         pageElement = document.getElementById('referral-page');
                         if (pageElement) {
@@ -4030,12 +3923,10 @@
                             this.loadReferralData();
                         }
                         break;
-                        
                     case 'support':
                         pageElement = document.getElementById('support-page');
                         if (pageElement) pageElement.style.display = 'flex';
                         break;
-                        
                     case 'admin':
                         pageElement = document.getElementById('admin-page');
                         if (pageElement) {
@@ -4044,38 +3935,21 @@
                         }
                         break;
                 }
-
+                
                 // Close mobile menu if open
                 this.closeMobileMenu();
-                
-                // Update active navigation
-                this.updateActiveNavigation(page);
             },
 
-            updateActiveNavigation(currentPage) {
-                // Update nav links active state
-                const navLinks = document.querySelectorAll('.nav-links a');
-                navLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('onclick')?.includes(`'${currentPage}'`)) {
-                        link.classList.add('active');
-                    }
-                });
-            },
-
-            // ==================== ENHANCED MODAL FUNCTIONS ====================
+            // ==================== MODAL FUNCTIONS ====================
             openModal(modalId) {
                 const modal = document.getElementById(modalId);
                 if (modal) {
                     modal.style.display = 'flex';
-                    document.body.style.overflow = 'hidden';
-
+                    
                     // Modal-specific setup
                     if (modalId === 'withdraw-modal' && this.state.currentUser) {
-                        const balanceElement = document.getElementById('available-balance');
-                        if (balanceElement) {
-                            balanceElement.textContent = `₦${this.state.currentUser.balance.toLocaleString()}`;
-                        }
+                        document.getElementById('available-balance').textContent = 
+                            `₦${this.state.currentUser.balance.toLocaleString()}`;
                         this.updateWithdrawalFee();
                     }
                     
@@ -4089,7 +3963,6 @@
                 const modal = document.getElementById(modalId);
                 if (modal) {
                     modal.style.display = 'none';
-                    document.body.style.overflow = 'auto';
                     
                     // Reset form
                     const form = modal.querySelector('form');
@@ -4108,28 +3981,17 @@
                 }
             },
 
-            // ==================== ENHANCED INVESTMENT PLANS ====================
+            // ==================== INVESTMENT PLANS ====================
             async loadInvestmentPlans() {
                 try {
                     const response = await this.apiRequest('/plans');
-                    
-                    if (response.success && response.data.plans) {
-                        this.state.investmentPlans = response.data.plans;
-                        this.renderInvestmentPlans();
-                    } else {
-                        throw new Error('Invalid response format');
-                    }
+                    this.state.investmentPlans = response.data.plans;
+                    this.renderInvestmentPlans();
                 } catch (error) {
                     console.error('Failed to load investment plans:', error);
-                    // Fallback to default plans with cache
-                    const cachedPlans = localStorage.getItem('cached_plans');
-                    if (cachedPlans) {
-                        this.state.investmentPlans = JSON.parse(cachedPlans);
-                    } else {
-                        this.state.investmentPlans = this.getDefaultPlans();
-                    }
+                    // Fallback to default plans
+                    this.state.investmentPlans = this.getDefaultPlans();
                     this.renderInvestmentPlans();
-                    this.showToast('Using cached investment plans', 'info');
                 }
             },
 
@@ -4173,10 +4035,7 @@
             renderInvestmentPlans() {
                 const container = document.getElementById('plans-container');
                 if (!container || this.state.investmentPlans.length === 0) return;
-
-                // Cache plans for offline use
-                localStorage.setItem('cached_plans', JSON.stringify(this.state.investmentPlans));
-
+                
                 container.innerHTML = this.state.investmentPlans.slice(0, 3).map(plan => `
                     <div class="plan-card card-hover">
                         <div class="plan-header">
@@ -4212,7 +4071,7 @@
             loadInvestmentPlansPage() {
                 const container = document.getElementById('investment-plans-list');
                 if (!container || this.state.investmentPlans.length === 0) return;
-
+                
                 container.innerHTML = this.state.investmentPlans.map(plan => `
                     <div class="plan-card card-hover">
                         ${plan.is_popular ? '<div class="plan-badge">Most Popular</div>' : ''}
@@ -4253,7 +4112,7 @@
             loadInvestmentPlansForModal() {
                 const select = document.getElementById('investment-plan');
                 if (!select || this.state.investmentPlans.length === 0) return;
-
+                
                 select.innerHTML = '<option value="">Choose a raw material</option>' +
                     this.state.investmentPlans.map(plan => `
                         <option value="${plan._id}">${plan.name} - ₦${plan.min_amount.toLocaleString()} Minimum</option>
@@ -4280,28 +4139,27 @@
             validateInvestmentAmount() {
                 const amountInput = document.getElementById('investment-amount');
                 const planSelect = document.getElementById('investment-plan');
-                
                 if (!amountInput || !planSelect) return;
-
+                
                 const planId = planSelect.value;
                 const amount = parseFloat(amountInput.value) || 0;
-
+                
                 if (!planId) {
                     this.showToast('Please select an investment plan first', 'warning');
                     amountInput.value = '';
                     return;
                 }
-
+                
                 const plan = this.state.investmentPlans.find(p => p._id === planId);
                 if (plan && amount < plan.min_amount) {
                     this.showToast(`Minimum investment for ${plan.name} is ₦${plan.min_amount.toLocaleString()}`, 'warning');
                 }
             },
 
-            // ==================== ENHANCED REGISTRATION ====================
+            // ==================== REGISTRATION ====================
             async handleRegistration(e) {
                 e.preventDefault();
-
+                
                 const formData = {
                     full_name: document.getElementById('fullname').value.trim(),
                     email: document.getElementById('email').value.trim().toLowerCase(),
@@ -4311,101 +4169,68 @@
                     risk_tolerance: document.getElementById('risk-tolerance').value,
                     investment_strategy: document.getElementById('investment-strategy').value
                 };
-
-                // Enhanced validation
+                
+                // Validation
                 if (document.getElementById('password').value !== document.getElementById('confirm-password').value) {
                     this.showToast('Passwords do not match!', 'error');
                     return;
                 }
-
-                if (document.getElementById('password').value.length < 8) {
-                    this.showToast('Password must be at least 8 characters', 'error');
+                
+                if (document.getElementById('password').value.length < 6) {
+                    this.showToast('Password must be at least 6 characters', 'error');
                     return;
                 }
-
-                if (!this.validateEmail(formData.email)) {
-                    this.showToast('Please enter a valid email address', 'error');
-                    return;
-                }
-
-                if (!this.validatePhone(formData.phone)) {
-                    this.showToast('Please enter a valid phone number', 'error');
-                    return;
-                }
-
+                
                 this.setLoadingState('register-btn', true);
-
+                
                 try {
                     const response = await this.apiRequest('/auth/register', {
                         method: 'POST',
                         body: formData
                     });
-
+                    
                     this.state.token = response.data.token;
                     this.state.currentUser = response.data.user;
-                    
-                    // Store in localStorage
                     localStorage.setItem('raw_wealthy_token', response.data.token);
-                    localStorage.setItem('raw_wealthy_user', JSON.stringify(response.data.user));
-
+                    
                     this.showToast('Registration successful! Welcome to Raw Wealthy.', 'success');
                     this.setLoadingState('register-btn', false);
-
+                    
                     // Redirect to dashboard
                     setTimeout(() => {
                         this.showPage('dashboard');
                     }, 1500);
-
+                    
                 } catch (error) {
                     this.setLoadingState('register-btn', false);
                 }
             },
 
-            validateEmail(email) {
-                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return re.test(email);
-            },
-
-            validatePhone(phone) {
-                // Basic phone validation - can be customized based on country
-                const re = /^[\d\s\-\+\(\)]{10,}$/;
-                return re.test(phone);
-            },
-
-            // ==================== ENHANCED LOGIN ====================
+            // ==================== LOGIN ====================
             async handleLogin(e) {
                 e.preventDefault();
-
+                
                 const formData = {
                     email: document.getElementById('login-email').value.trim().toLowerCase(),
                     password: document.getElementById('login-password').value
                 };
-
-                // Validate email
-                if (!this.validateEmail(formData.email)) {
-                    this.showToast('Please enter a valid email address', 'error');
-                    return;
-                }
-
+                
                 this.setLoadingState('login-btn', true);
-
+                
                 try {
                     const response = await this.apiRequest('/auth/login', {
                         method: 'POST',
                         body: formData
                     });
-
+                    
                     this.state.token = response.data.token;
                     this.state.currentUser = response.data.user;
                     this.state.isAdmin = this.state.currentUser.role === 'admin' || this.state.currentUser.role === 'super_admin';
-                    
-                    // Store in localStorage
                     localStorage.setItem('raw_wealthy_token', response.data.token);
-                    localStorage.setItem('raw_wealthy_user', JSON.stringify(response.data.user));
-
+                    
                     this.showToast('Login successful!', 'success');
                     this.setLoadingState('login-btn', false);
-
+                    
                     // Redirect based on role
                     setTimeout(() => {
                         if (this.state.isAdmin) {
@@ -4414,97 +4239,45 @@
                             this.showPage('dashboard');
                         }
                     }, 1000);
-
+                    
                 } catch (error) {
                     this.setLoadingState('login-btn', false);
                 }
             },
 
-            // ==================== ENHANCED DASHBOARD FUNCTIONS ====================
+            // ==================== DASHBOARD FUNCTIONS ====================
             async updateDashboard() {
                 if (!this.state.currentUser) return;
-
+                
                 try {
                     const response = await this.apiRequest('/profile');
                     const user = response.data.user;
                     const stats = response.data.dashboard_stats;
-
-                    // Update user info
-                    const userNameElement = document.getElementById('user-name');
-                    const userAvatarElement = document.getElementById('user-avatar');
-                    const userTierElement = document.getElementById('user-tier');
                     
-                    if (userNameElement) userNameElement.textContent = user.full_name;
-                    if (userAvatarElement) {
-                        userAvatarElement.textContent = user.full_name
-                            .split(' ')
-                            .map(n => n[0])
-                            .join('')
-                            .toUpperCase();
-                    }
-                    if (userTierElement) {
-                        userTierElement.textContent = user.kyc_verified ? 'Verified Investor' : 'Standard Investor';
-                    }
-
+                    // Update user info
+                    document.getElementById('user-name').textContent = user.full_name;
+                    document.getElementById('user-avatar').textContent = user.full_name
+                        .split(' ')
+                        .map(n => n[0])
+                        .join('')
+                        .toUpperCase();
+                    document.getElementById('user-tier').textContent = user.kyc_verified ? 'Verified Investor' : 'Standard Investor';
+                    
                     // Update stats
-                    this.updateStatElement('total-balance', user.balance);
-                    this.updateStatElement('active-investments', stats.active_investment_value);
-                    this.updateStatElement('total-earnings', user.total_earnings);
-                    this.updateStatElement('referral-bonus', user.referral_earnings);
-
+                    document.getElementById('total-balance').textContent = `₦${user.balance.toLocaleString()}`;
+                    document.getElementById('active-investments').textContent = `₦${stats.active_investment_value.toLocaleString()}`;
+                    document.getElementById('total-earnings').textContent = `₦${user.total_earnings.toLocaleString()}`;
+                    document.getElementById('referral-bonus').textContent = `₦${user.referral_earnings.toLocaleString()}`;
+                    
                     // Load investments and transactions
-                    await Promise.all([
-                        this.loadUserInvestments(),
-                        this.loadUserTransactions()
-                    ]);
-
+                    await this.loadUserInvestments();
+                    await this.loadUserTransactions();
+                    
                     // Update charts
                     this.createEarningsChart(stats);
-
-                    // Cache user data
-                    this.cacheUserData(user, stats);
-
+                    
                 } catch (error) {
                     console.error('Failed to update dashboard:', error);
-                    // Try to load cached data
-                    this.loadCachedDashboardData();
-                }
-            },
-
-            updateStatElement(elementId, value) {
-                const element = document.getElementById(elementId);
-                if (element) {
-                    element.textContent = `₦${value.toLocaleString()}`;
-                }
-            },
-
-            cacheUserData(user, stats) {
-                const cacheData = {
-                    user: user,
-                    stats: stats,
-                    timestamp: Date.now()
-                };
-                localStorage.setItem('dashboard_cache', JSON.stringify(cacheData));
-            },
-
-            loadCachedDashboardData() {
-                const cachedData = localStorage.getItem('dashboard_cache');
-                if (cachedData) {
-                    try {
-                        const data = JSON.parse(cachedData);
-                        const user = data.user;
-                        const stats = data.stats;
-
-                        // Update with cached data
-                        this.updateStatElement('total-balance', user.balance);
-                        this.updateStatElement('active-investments', stats.active_investment_value);
-                        this.updateStatElement('total-earnings', user.total_earnings);
-                        this.updateStatElement('referral-bonus', user.referral_earnings);
-
-                        this.showToast('Using cached data - please check your connection', 'info');
-                    } catch (error) {
-                        console.error('Failed to load cached data:', error);
-                    }
                 }
             },
 
@@ -4567,16 +4340,16 @@
             createEarningsChart(stats) {
                 const ctx = document.getElementById('earnings-chart');
                 if (!ctx) return;
-
+                
                 // Destroy existing chart
                 if (this.state.charts.earnings) {
                     this.state.charts.earnings.destroy();
                 }
-
+                
                 // Sample data - in real app, get from API
                 const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
                 const earningsData = [12000, 19000, 15000, 25000, 22000, 30000, 28000];
-
+                
                 this.state.charts.earnings = new Chart(ctx.getContext('2d'), {
                     type: 'line',
                     data: {
@@ -4624,51 +4397,45 @@
                 });
             },
 
-            // ==================== ENHANCED INVESTMENT CREATION ====================
+            // ==================== INVESTMENT CREATION ====================
             async handleInvestment(e) {
                 e.preventDefault();
-
+                
                 if (!this.state.currentUser) {
                     this.showToast('Please login to make an investment', 'error');
                     this.showPage('login');
                     return;
                 }
-
+                
                 const planId = document.getElementById('investment-plan').value;
                 const amount = parseFloat(document.getElementById('investment-amount').value);
                 const autoRenew = document.getElementById('auto-renew').checked;
                 const proofFile = document.getElementById('investment-proof').files[0];
-
-                // Enhanced validation
+                
+                // Validation
                 if (!planId) {
                     this.showToast('Please select an investment plan', 'error');
                     return;
                 }
-
+                
                 const plan = this.state.investmentPlans.find(p => p._id === planId);
                 if (!plan) {
                     this.showToast('Invalid investment plan selected', 'error');
                     return;
                 }
-
+                
                 if (amount < plan.min_amount) {
                     this.showToast(`Minimum investment for ${plan.name} is ₦${plan.min_amount.toLocaleString()}`, 'error');
                     return;
                 }
-
+                
                 if (!proofFile) {
                     this.showToast('Please upload payment proof', 'error');
                     return;
                 }
-
-                // Validate file size (max 5MB)
-                if (proofFile.size > 5 * 1024 * 1024) {
-                    this.showToast('Payment proof must be less than 5MB', 'error');
-                    return;
-                }
-
+                
                 this.setLoadingState('invest-btn', true);
-
+                
                 try {
                     // Create FormData for file upload
                     const formData = new FormData();
@@ -4676,118 +4443,109 @@
                     formData.append('amount', amount);
                     formData.append('auto_renew', autoRenew);
                     formData.append('payment_proof', proofFile);
-
+                    
                     const response = await this.apiRequest('/investments', {
                         method: 'POST',
                         body: formData
                     });
-
+                    
                     this.showToast('Investment request submitted successfully!', 'success');
                     this.setLoadingState('invest-btn', false);
                     this.closeModal('invest-modal');
-
+                    
                     // Update dashboard
                     setTimeout(() => {
                         this.updateDashboard();
                     }, 1000);
-
+                    
                 } catch (error) {
                     this.setLoadingState('invest-btn', false);
                 }
             },
 
-            // ==================== ENHANCED DEPOSIT HANDLING ====================
+            // ==================== DEPOSIT HANDLING ====================
             async handleDeposit(e) {
                 e.preventDefault();
-
+                
                 if (!this.state.currentUser) {
                     this.showToast('Please login to make a deposit', 'error');
                     this.showPage('login');
                     return;
                 }
-
+                
                 const amount = parseFloat(document.getElementById('deposit-amount').value);
                 const paymentMethod = document.getElementById('deposit-method').value;
                 const proofFile = document.getElementById('deposit-proof').files[0];
-
+                
                 // Validation
                 if (amount < this.config.MIN_DEPOSIT) {
                     this.showToast(`Minimum deposit is ₦${this.config.MIN_DEPOSIT.toLocaleString()}`, 'error');
                     return;
                 }
-
+                
                 if (!paymentMethod) {
                     this.showToast('Please select a payment method', 'error');
                     return;
                 }
-
+                
                 if (!proofFile) {
                     this.showToast('Please upload payment proof', 'error');
                     return;
                 }
-
-                // Validate file size
-                if (proofFile.size > 5 * 1024 * 1024) {
-                    this.showToast('Payment proof must be less than 5MB', 'error');
-                    return;
-                }
-
+                
                 this.setLoadingState('deposit-btn', true);
-
+                
                 try {
                     const formData = new FormData();
                     formData.append('amount', amount);
                     formData.append('payment_method', paymentMethod);
                     formData.append('payment_proof', proofFile);
-
+                    
                     const response = await this.apiRequest('/deposits', {
                         method: 'POST',
                         body: formData
                     });
-
+                    
                     this.showToast('Deposit request submitted successfully!', 'success');
                     this.setLoadingState('deposit-btn', false);
                     this.closeModal('deposit-modal');
-
-                    // Update user balance
-                    this.state.currentUser.balance += amount;
-
+                    
                 } catch (error) {
                     this.setLoadingState('deposit-btn', false);
                 }
             },
 
-            // ==================== ENHANCED WITHDRAWAL HANDLING ====================
+            // ==================== WITHDRAWAL HANDLING ====================
             async handleWithdrawal(e) {
                 e.preventDefault();
-
+                
                 if (!this.state.currentUser) {
                     this.showToast('Please login to make a withdrawal', 'error');
                     this.showPage('login');
                     return;
                 }
-
+                
                 const amount = parseFloat(document.getElementById('withdraw-amount').value);
                 const paymentMethod = document.getElementById('withdraw-method').value;
-
+                
                 // Validation
                 if (amount < this.config.MIN_WITHDRAWAL) {
                     this.showToast(`Minimum withdrawal is ₦${this.config.MIN_WITHDRAWAL.toLocaleString()}`, 'error');
                     return;
                 }
-
+                
                 if (amount > this.state.currentUser.balance) {
                     this.showToast('Insufficient balance for withdrawal', 'error');
                     return;
                 }
-
+                
                 if (!paymentMethod) {
                     this.showToast('Please select a withdrawal method', 'error');
                     return;
                 }
-
+                
                 this.setLoadingState('withdraw-btn', true);
-
+                
                 try {
                     const response = await this.apiRequest('/withdrawals', {
                         method: 'POST',
@@ -4796,15 +4554,15 @@
                             payment_method: paymentMethod
                         }
                     });
-
+                    
                     this.showToast('Withdrawal request submitted successfully!', 'success');
                     this.setLoadingState('withdraw-btn', false);
                     this.closeModal('withdraw-modal');
-
-                    // Update user balance
+                    
+                    // Update user balance display
                     this.state.currentUser.balance -= amount;
                     this.updateDashboard();
-
+                    
                 } catch (error) {
                     this.setLoadingState('withdraw-btn', false);
                 }
@@ -4813,70 +4571,62 @@
             updateWithdrawalFee() {
                 const amountInput = document.getElementById('withdraw-amount');
                 const feeNotice = document.getElementById('withdrawal-fee-notice');
-                
                 if (!amountInput || !feeNotice) return;
-
+                
                 const amount = parseFloat(amountInput.value) || 0;
                 const fee = amount * (this.config.PLATFORM_FEE_PERCENT / 100);
                 const netAmount = amount - fee;
-
+                
                 feeNotice.innerHTML = `
                     Platform fee: ₦${fee.toLocaleString()}
                     (Net amount: ₦${netAmount.toLocaleString()})
                 `;
             },
 
-            // ==================== ENHANCED PROFILE MANAGEMENT ====================
+            // ==================== PROFILE MANAGEMENT ====================
             async loadProfileData() {
                 if (!this.state.currentUser) return;
-
+                
                 try {
                     const response = await this.apiRequest('/profile');
                     const user = response.data.user;
-
+                    
                     // Update personal info
-                    this.setFormValue('profile-fullname', user.full_name);
-                    this.setFormValue('profile-email', user.email);
-                    this.setFormValue('profile-phone', user.phone || '');
-                    this.setFormValue('profile-country', user.country || 'ng');
-
+                    document.getElementById('profile-fullname').value = user.full_name;
+                    document.getElementById('profile-email').value = user.email;
+                    document.getElementById('profile-phone').value = user.phone || '';
+                    document.getElementById('profile-country').value = user.country || 'ng';
+                    
                     // Update KYC status
                     const kycStatusElement = document.getElementById('kyc-status-text');
                     if (kycStatusElement) {
                         kycStatusElement.textContent = user.kyc_verified ? 'Verified' : 'Pending';
                         kycStatusElement.className = user.kyc_verified ? 'status-badge approved' : 'status-badge pending';
                     }
-
+                    
                 } catch (error) {
                     console.error('Failed to load profile data:', error);
                 }
             },
 
-            setFormValue(elementId, value) {
-                const element = document.getElementById(elementId);
-                if (element) {
-                    element.value = value;
-                }
-            },
-
             async handleProfileUpdate(e) {
                 e.preventDefault();
-
+                
                 const formData = {
                     full_name: document.getElementById('profile-fullname').value.trim(),
                     phone: document.getElementById('profile-phone').value.trim(),
                     country: document.getElementById('profile-country').value
                 };
-
+                
                 try {
                     const response = await this.apiRequest('/profile', {
                         method: 'PUT',
                         body: formData
                     });
-
+                    
                     this.state.currentUser = response.data.user;
                     this.showToast('Profile updated successfully!', 'success');
-
+                    
                 } catch (error) {
                     console.error('Failed to update profile:', error);
                 }
@@ -4884,58 +4634,49 @@
 
             async handleBankUpdate(e) {
                 e.preventDefault();
-
+                
                 const formData = {
                     bank_name: document.getElementById('bank-name').value.trim(),
                     account_name: document.getElementById('account-name').value.trim(),
                     account_number: document.getElementById('account-number').value.trim()
                 };
-
+                
                 try {
                     const response = await this.apiRequest('/profile/bank', {
                         method: 'PUT',
                         body: formData
                     });
-
+                    
                     this.showToast('Bank details updated successfully!', 'success');
-
+                    
                 } catch (error) {
                     console.error('Failed to update bank details:', error);
                 }
             },
 
-            // ==================== ENHANCED KYC SUBMISSION ====================
+            // ==================== KYC SUBMISSION ====================
             async handleKYCSubmission(e) {
                 e.preventDefault();
-
+                
                 const idType = document.getElementById('id-type').value;
                 const idNumber = document.getElementById('id-number').value.trim();
                 const idFrontFile = document.getElementById('id-front').files[0];
                 const idBackFile = document.getElementById('id-back').files[0];
                 const selfieFile = document.getElementById('selfie-with-id').files[0];
-
+                
                 // Validation
                 if (!idType || !idNumber) {
                     this.showToast('Please fill all required fields', 'error');
                     return;
                 }
-
+                
                 if (!idFrontFile || !selfieFile) {
                     this.showToast('Please upload required documents', 'error');
                     return;
                 }
-
-                // Validate file sizes
-                const files = [idFrontFile, idBackFile, selfieFile].filter(Boolean);
-                for (const file of files) {
-                    if (file.size > 5 * 1024 * 1024) {
-                        this.showToast('Each file must be less than 5MB', 'error');
-                        return;
-                    }
-                }
-
+                
                 this.setLoadingState('kyc-submit-btn', true);
-
+                
                 try {
                     const formData = new FormData();
                     formData.append('id_type', idType);
@@ -4943,186 +4684,125 @@
                     formData.append('id_front', idFrontFile);
                     if (idBackFile) formData.append('id_back', idBackFile);
                     formData.append('selfie_with_id', selfieFile);
-
+                    
                     const response = await this.apiRequest('/kyc', {
                         method: 'POST',
                         body: formData
                     });
-
+                    
                     this.showToast('KYC application submitted successfully!', 'success');
                     this.setLoadingState('kyc-submit-btn', false);
-
+                    
                     // Update KYC status
-                    const kycStatusElement = document.getElementById('kyc-status-text');
-                    if (kycStatusElement) {
-                        kycStatusElement.textContent = 'Pending';
-                        kycStatusElement.className = 'status-badge pending';
-                    }
-
+                    document.getElementById('kyc-status-text').textContent = 'Pending';
+                    document.getElementById('kyc-status-text').className = 'status-badge pending';
+                    
                     // Reset form
                     e.target.reset();
-                    this.hideFilePreviews(['id-front-preview', 'id-back-preview', 'selfie-with-id-preview']);
-
+                    document.getElementById('id-front-preview').style.display = 'none';
+                    document.getElementById('id-back-preview').style.display = 'none';
+                    document.getElementById('selfie-with-id-preview').style.display = 'none';
+                    
                 } catch (error) {
                     this.setLoadingState('kyc-submit-btn', false);
                 }
             },
 
-            hideFilePreviews(previewIds) {
-                previewIds.forEach(id => {
-                    const preview = document.getElementById(id);
-                    if (preview) {
-                        preview.style.display = 'none';
-                        preview.src = '';
-                    }
-                });
-            },
-
-            // ==================== ENHANCED REFERRAL SYSTEM ====================
+            // ==================== REFERRAL SYSTEM ====================
             async loadReferralData() {
                 if (!this.state.currentUser) return;
-
+                
                 try {
                     const response = await this.apiRequest('/referrals/stats');
                     const stats = response.data.stats;
-
+                    
                     // Update referral link and code
                     const baseUrl = window.location.origin;
                     const referralLink = `${baseUrl}/register?ref=${this.state.currentUser.referral_code}`;
+                    document.getElementById('referral-link').value = referralLink;
+                    document.getElementById('referral-code').value = this.state.currentUser.referral_code;
                     
-                    this.setFormValue('referral-link', referralLink);
-                    this.setFormValue('referral-code', this.state.currentUser.referral_code);
-
                     // Update stats
-                    this.updateReferralStat('total-referrals', stats.total_referrals);
-                    this.updateReferralStat('active-referrals', stats.active_referrals);
-                    this.updateReferralStat('total-referral-earnings', stats.total_earnings, true);
-                    this.updateReferralStat('pending-referral-earnings', stats.pending_earnings, false, 'warning');
-
+                    document.getElementById('total-referrals').textContent = stats.total_referrals;
+                    document.getElementById('active-referrals').textContent = stats.active_referrals;
+                    document.getElementById('total-referral-earnings').textContent = `₦${stats.total_earnings.toLocaleString()}`;
+                    document.getElementById('pending-referral-earnings').textContent = `₦${stats.pending_earnings.toLocaleString()}`;
+                    
                 } catch (error) {
                     console.error('Failed to load referral data:', error);
                 }
             },
 
-            updateReferralStat(elementId, value, isCurrency = false, colorClass = '') {
-                const element = document.getElementById(elementId);
-                if (element) {
-                    if (isCurrency) {
-                        element.textContent = `₦${value.toLocaleString()}`;
-                        if (colorClass === 'warning') {
-                            element.style.color = 'var(--warning)';
-                        } else {
-                            element.style.color = 'var(--accent-gold)';
-                        }
-                    } else {
-                        element.textContent = value;
-                    }
-                }
-            },
-
             copyReferralLink() {
                 const linkInput = document.getElementById('referral-link');
-                if (linkInput) {
-                    linkInput.select();
-                    linkInput.setSelectionRange(0, 99999);
-                    navigator.clipboard.writeText(linkInput.value)
-                        .then(() => {
-                            this.showToast('Referral link copied to clipboard!', 'success');
-                        })
-                        .catch(err => {
-                            console.error('Failed to copy: ', err);
-                            this.showToast('Failed to copy link', 'error');
-                        });
-                }
+                linkInput.select();
+                document.execCommand('copy');
+                this.showToast('Referral link copied to clipboard!', 'success');
             },
 
             copyReferralCode() {
                 const codeInput = document.getElementById('referral-code');
-                if (codeInput) {
-                    codeInput.select();
-                    codeInput.setSelectionRange(0, 99999);
-                    navigator.clipboard.writeText(codeInput.value)
-                        .then(() => {
-                            this.showToast('Referral code copied to clipboard!', 'success');
-                        })
-                        .catch(err => {
-                            console.error('Failed to copy: ', err);
-                            this.showToast('Failed to copy code', 'error');
-                        });
-                }
+                codeInput.select();
+                document.execCommand('copy');
+                this.showToast('Referral code copied to clipboard!', 'success');
             },
 
             checkReferralFromURL() {
                 const urlParams = new URLSearchParams(window.location.search);
                 const referralCode = urlParams.get('ref');
-                const referralInput = document.getElementById('referral');
-                
-                if (referralCode && referralInput) {
-                    referralInput.value = referralCode;
+                if (referralCode && document.getElementById('referral')) {
+                    document.getElementById('referral').value = referralCode;
                 }
             },
 
-            // ==================== ENHANCED SUPPORT SYSTEM ====================
+            // ==================== SUPPORT SYSTEM ====================
             async handleSupportRequest(e) {
                 e.preventDefault();
-
+                
                 const formData = {
                     subject: document.getElementById('support-subject').value.trim(),
                     category: document.getElementById('support-category').value,
                     message: document.getElementById('support-message').value.trim()
                 };
-
+                
                 try {
                     const response = await this.apiRequest('/support', {
                         method: 'POST',
                         body: formData
                     });
-
+                    
                     this.showToast('Support ticket submitted successfully!', 'success');
                     e.target.reset();
-
+                    
                 } catch (error) {
                     console.error('Failed to submit support ticket:', error);
                 }
             },
 
-            // ==================== ENHANCED ADMIN FUNCTIONS ====================
+            // ==================== ADMIN FUNCTIONS ====================
             async updateAdminDashboard() {
                 if (!this.state.isAdmin) return;
-
+                
                 try {
                     const response = await this.apiRequest('/admin/dashboard');
                     const stats = response.data.stats;
-
+                    
                     // Update admin stats
-                    this.updateAdminStat('admin-total-users', stats.total_users);
-                    this.updateAdminStat('admin-total-invested', stats.total_investments, true);
-                    this.updateAdminStat('admin-total-withdrawn', stats.total_withdrawals, true);
-                    this.updateAdminStat('admin-pending-requests', stats.total_pending);
-                    this.updateAdminStat('admin-platform-earnings', stats.platform_earnings, true);
-                    this.updateAdminStat('admin-active-investments', stats.active_investments);
-
+                    document.getElementById('admin-total-users').textContent = stats.total_users;
+                    document.getElementById('admin-total-invested').textContent = `₦${stats.total_investments.toLocaleString()}`;
+                    document.getElementById('admin-total-withdrawn').textContent = `₦${stats.total_withdrawals.toLocaleString()}`;
+                    document.getElementById('admin-pending-requests').textContent = stats.total_pending;
+                    document.getElementById('admin-platform-earnings').textContent = `₦${stats.platform_earnings.toLocaleString()}`;
+                    document.getElementById('admin-active-investments').textContent = stats.active_investments;
+                    
                     // Load admin data
-                    await Promise.all([
-                        this.loadAdminUsers(),
-                        this.loadAdminInvestments(),
-                        this.loadAdminDeposits(),
-                        this.loadAdminWithdrawals()
-                    ]);
-
+                    this.loadAdminUsers();
+                    this.loadAdminInvestments();
+                    this.loadAdminDeposits();
+                    this.loadAdminWithdrawals();
+                    
                 } catch (error) {
                     console.error('Failed to update admin dashboard:', error);
-                }
-            },
-
-            updateAdminStat(elementId, value, isCurrency = false) {
-                const element = document.getElementById(elementId);
-                if (element) {
-                    if (isCurrency) {
-                        element.textContent = `₦${value.toLocaleString()}`;
-                    } else {
-                        element.textContent = value;
-                    }
                 }
             },
 
@@ -5256,15 +4936,14 @@
             // Admin approval functions
             async approveInvestment(investmentId) {
                 if (!confirm('Approve this investment?')) return;
-
+                
                 try {
                     await this.apiRequest(`/admin/investments/${investmentId}/approve`, {
                         method: 'POST'
                     });
-
+                    
                     this.showToast('Investment approved successfully!', 'success');
                     this.loadAdminInvestments();
-
                 } catch (error) {
                     console.error('Failed to approve investment:', error);
                 }
@@ -5273,16 +4952,15 @@
             async rejectInvestment(investmentId) {
                 const reason = prompt('Enter rejection reason:');
                 if (!reason) return;
-
+                
                 try {
                     await this.apiRequest(`/admin/investments/${investmentId}/reject`, {
                         method: 'POST',
                         body: { remarks: reason }
                     });
-
+                    
                     this.showToast('Investment rejected!', 'success');
                     this.loadAdminInvestments();
-
                 } catch (error) {
                     console.error('Failed to reject investment:', error);
                 }
@@ -5290,15 +4968,14 @@
 
             async approveDeposit(depositId) {
                 if (!confirm('Approve this deposit?')) return;
-
+                
                 try {
                     await this.apiRequest(`/admin/deposits/${depositId}/approve`, {
                         method: 'POST'
                     });
-
+                    
                     this.showToast('Deposit approved successfully!', 'success');
                     this.loadAdminDeposits();
-
                 } catch (error) {
                     console.error('Failed to approve deposit:', error);
                 }
@@ -5307,16 +4984,15 @@
             async rejectDeposit(depositId) {
                 const reason = prompt('Enter rejection reason:');
                 if (!reason) return;
-
+                
                 try {
                     await this.apiRequest(`/admin/deposits/${depositId}/reject`, {
                         method: 'POST',
                         body: { remarks: reason }
                     });
-
+                    
                     this.showToast('Deposit rejected!', 'success');
                     this.loadAdminDeposits();
-
                 } catch (error) {
                     console.error('Failed to reject deposit:', error);
                 }
@@ -5324,15 +5000,14 @@
 
             async approveWithdrawal(withdrawalId) {
                 if (!confirm('Approve this withdrawal?')) return;
-
+                
                 try {
                     await this.apiRequest(`/admin/withdrawals/${withdrawalId}/approve`, {
                         method: 'POST'
                     });
-
+                    
                     this.showToast('Withdrawal approved successfully!', 'success');
                     this.loadAdminWithdrawals();
-
                 } catch (error) {
                     console.error('Failed to approve withdrawal:', error);
                 }
@@ -5341,55 +5016,43 @@
             async rejectWithdrawal(withdrawalId) {
                 const reason = prompt('Enter rejection reason:');
                 if (!reason) return;
-
+                
                 try {
                     await this.apiRequest(`/admin/withdrawals/${withdrawalId}/reject`, {
                         method: 'POST',
                         body: { remarks: reason }
                     });
-
+                    
                     this.showToast('Withdrawal rejected!', 'success');
                     this.loadAdminWithdrawals();
-
                 } catch (error) {
                     console.error('Failed to reject withdrawal:', error);
                 }
             },
 
-            // ==================== ENHANCED PASSWORD RESET ====================
+            // ==================== PASSWORD RESET ====================
             async handlePasswordReset(e) {
                 e.preventDefault();
-
+                
                 const email = document.getElementById('reset-email').value.trim();
-
-                if (!this.validateEmail(email)) {
-                    this.showToast('Please enter a valid email address', 'error');
-                    return;
-                }
-
+                
                 try {
-                    const response = await this.apiRequest('/auth/password-reset', {
-                        method: 'POST',
-                        body: { email: email }
-                    });
-
-                    this.showToast('Password reset instructions sent to your email', 'success');
+                    // Note: Backend needs password reset endpoint
+                    this.showToast('Password reset functionality requires backend setup', 'info');
                     this.closeModal('password-reset-modal');
-
                 } catch (error) {
                     console.error('Password reset error:', error);
                 }
             },
 
-            // ==================== ENHANCED UTILITY FUNCTIONS ====================
+            // ==================== UTILITY FUNCTIONS ====================
             logout() {
-                // Clear all auth data
-                this.clearAuthData();
-                
-                // Clear all caches
-                localStorage.removeItem('dashboard_cache');
-                localStorage.removeItem('cached_plans');
-                
+                this.state.currentUser = null;
+                this.state.token = null;
+                this.state.isAdmin = false;
+                this.state.isAuthenticated = false;
+                this.state.sessionExpiryTime = null;
+                localStorage.removeItem('raw_wealthy_token');
                 this.showToast('You have been logged out.', 'info');
                 this.showPage('home');
             },
@@ -5397,10 +5060,10 @@
             setLoadingState(buttonId, isLoading) {
                 const button = document.getElementById(buttonId);
                 if (!button) return;
-
+                
                 const buttonText = button.querySelector('.btn-text');
                 const buttonLoading = button.querySelector('.btn-loading');
-
+                
                 if (isLoading) {
                     button.disabled = true;
                     if (buttonText) buttonText.style.display = 'none';
@@ -5422,22 +5085,21 @@
             showToast(message, type = 'info') {
                 const container = document.getElementById('toast-container');
                 if (!container) return;
-
+                
                 const toast = document.createElement('div');
                 toast.className = `toast ${type}`;
-                
                 let icon = 'info-circle';
                 if (type === 'success') icon = 'check-circle';
                 else if (type === 'error') icon = 'exclamation-circle';
                 else if (type === 'warning') icon = 'exclamation-triangle';
-
+                
                 toast.innerHTML = `
                     <i class="fas fa-${icon}"></i>
                     <span>${message}</span>
                 `;
-
+                
                 container.appendChild(toast);
-
+                
                 // Remove after 3 seconds
                 setTimeout(() => {
                     if (toast.parentNode === container) {
@@ -5446,37 +5108,20 @@
                 }, 3000);
             },
 
-            // ==================== ENHANCED UI HELPERS ====================
-            initializeTheme() {
-                const savedTheme = localStorage.getItem('theme');
-                const themeToggleIcon = document.querySelector('#theme-toggle i');
-                
-                if (savedTheme === 'light') {
-                    document.body.classList.add('light-mode');
-                    if (themeToggleIcon) {
-                        themeToggleIcon.classList.remove('fa-moon');
-                        themeToggleIcon.classList.add('fa-sun');
-                    }
-                }
-            },
-
+            // ==================== UI HELPERS ====================
             toggleTheme() {
                 const body = document.body;
                 const icon = document.querySelector('#theme-toggle i');
                 
                 if (body.classList.contains('light-mode')) {
                     body.classList.remove('light-mode');
-                    if (icon) {
-                        icon.classList.remove('fa-sun');
-                        icon.classList.add('fa-moon');
-                    }
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
                     localStorage.setItem('theme', 'dark');
                 } else {
                     body.classList.add('light-mode');
-                    if (icon) {
-                        icon.classList.remove('fa-moon');
-                        icon.classList.add('fa-sun');
-                    }
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
                     localStorage.setItem('theme', 'light');
                 }
             },
@@ -5496,13 +5141,13 @@
             handleScroll() {
                 const navbar = document.querySelector('.navbar');
                 const backToTop = document.getElementById('back-to-top');
-
+                
                 if (navbar && window.scrollY > 50) {
                     navbar.classList.add('scrolled');
                 } else if (navbar) {
                     navbar.classList.remove('scrolled');
                 }
-
+                
                 if (backToTop && window.scrollY > 300) {
                     backToTop.classList.add('visible');
                 } else if (backToTop) {
@@ -5544,7 +5189,7 @@
                     { input: 'id-back', preview: 'id-back-preview' },
                     { input: 'selfie-with-id', preview: 'selfie-with-id-preview' }
                 ];
-
+                
                 fileInputs.forEach(({ input, preview }) => {
                     const inputElement = document.getElementById(input);
                     const previewElement = document.getElementById(preview);
@@ -5565,84 +5210,6 @@
                 });
             },
 
-            setupEventListeners() {
-                // Theme toggle
-                const themeToggle = document.getElementById('theme-toggle');
-                if (themeToggle) {
-                    themeToggle.addEventListener('click', () => this.toggleTheme());
-                }
-
-                // Mobile menu
-                const hamburger = document.getElementById('hamburger');
-                if (hamburger) {
-                    hamburger.addEventListener('click', () => this.openMobileMenu());
-                }
-
-                const closeMobileMenuBtn = document.getElementById('close-mobile-menu');
-                if (closeMobileMenuBtn) {
-                    closeMobileMenuBtn.addEventListener('click', () => this.closeMobileMenu());
-                }
-
-                const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
-                if (mobileMenuOverlay) {
-                    mobileMenuOverlay.addEventListener('click', () => this.closeMobileMenu());
-                }
-
-                // Back to top
-                const backToTop = document.getElementById('back-to-top');
-                if (backToTop) {
-                    backToTop.addEventListener('click', () => this.scrollToTop());
-                }
-
-                // Form submissions
-                const forms = {
-                    'registration-form': (e) => this.handleRegistration(e),
-                    'login-form': (e) => this.handleLogin(e),
-                    'invest-form': (e) => this.handleInvestment(e),
-                    'deposit-form': (e) => this.handleDeposit(e),
-                    'withdraw-form': (e) => this.handleWithdrawal(e),
-                    'personal-form': (e) => this.handleProfileUpdate(e),
-                    'bank-form': (e) => this.handleBankUpdate(e),
-                    'kyc-form': (e) => this.handleKYCSubmission(e),
-                    'support-form': (e) => this.handleSupportRequest(e),
-                    'password-reset-form': (e) => this.handlePasswordReset(e)
-                };
-
-                Object.entries(forms).forEach(([formId, handler]) => {
-                    const form = document.getElementById(formId);
-                    if (form) {
-                        form.addEventListener('submit', handler);
-                    }
-                });
-
-                // Password toggles
-                this.initPasswordToggles();
-
-                // File upload previews
-                this.initFileUploadPreviews();
-
-                // Scroll event for navbar
-                window.addEventListener('scroll', () => this.handleScroll());
-
-                // Withdrawal amount change listener
-                const withdrawAmount = document.getElementById('withdraw-amount');
-                if (withdrawAmount) {
-                    withdrawAmount.addEventListener('input', () => this.updateWithdrawalFee());
-                }
-
-                // Investment amount validation
-                const investAmount = document.getElementById('investment-amount');
-                if (investAmount) {
-                    investAmount.addEventListener('input', () => this.validateInvestmentAmount());
-                }
-
-                // Auto-scroll to top when page changes
-                window.addEventListener('hashchange', () => window.scrollTo(0, 0));
-
-                // Initialize stats animation
-                this.animateStats();
-            },
-
             initAnimations() {
                 // Intersection Observer for scroll animations
                 const observer = new IntersectionObserver((entries) => {
@@ -5653,7 +5220,7 @@
                         }
                     });
                 }, { threshold: 0.1 });
-
+                
                 // Observe elements
                 document.querySelectorAll('.feature, .plan-card, .step, .testimonial-card').forEach(el => {
                     observer.observe(el);
@@ -5666,7 +5233,7 @@
                     { id: 'active-investors-stat', value: 15240, suffix: '+' },
                     { id: 'user-rating-stat', value: 4.9, suffix: '/5' }
                 ];
-
+                
                 stats.forEach(stat => {
                     const element = document.getElementById(stat.id);
                     if (element) {
@@ -5677,7 +5244,6 @@
 
             animateValue(element, start, end, duration, suffix = '') {
                 let startTimestamp = null;
-                
                 const step = (timestamp) => {
                     if (!startTimestamp) startTimestamp = timestamp;
                     const progress = Math.min((timestamp - startTimestamp) / duration, 1);
@@ -5688,12 +5254,11 @@
                     } else {
                         element.textContent = this.formatCurrency(value) + suffix;
                     }
-
+                    
                     if (progress < 1) {
                         window.requestAnimationFrame(step);
                     }
                 };
-                
                 window.requestAnimationFrame(step);
             },
 
@@ -5708,25 +5273,25 @@
                 return '₦' + value.toLocaleString();
             },
 
-            // ==================== TAB SWITCHING FUNCTIONS ====================
+            // ==================== TAB SWITCHING ====================
             switchProfileTab(tab) {
                 // Hide all tabs
                 ['personal', 'security', 'bank', 'preferences', 'kyc'].forEach(tabId => {
                     const element = document.getElementById(`${tabId}-tab`);
                     if (element) element.style.display = 'none';
                 });
-
+                
                 // Remove active class from all nav items
                 document.querySelectorAll('.profile-nav a').forEach(item => {
                     item.classList.remove('active');
                 });
-
-                // Show selected tab
+                
+                // Show selected tab and set active nav item
                 const tabElement = document.getElementById(`${tab}-tab`);
                 if (tabElement) {
                     tabElement.style.display = 'block';
                 }
-
+                
                 // Set active nav item
                 const navItems = document.querySelectorAll('.profile-nav a');
                 navItems.forEach(item => {
@@ -5742,18 +5307,18 @@
                     const element = document.getElementById(`${catId}-category`);
                     if (element) element.style.display = 'none';
                 });
-
+                
                 // Remove active class from all category items
                 document.querySelectorAll('.support-category').forEach(item => {
                     item.classList.remove('active');
                 });
-
+                
                 // Show selected category
                 const categoryElement = document.getElementById(`${category}-category`);
                 if (categoryElement) {
                     categoryElement.style.display = 'block';
                 }
-
+                
                 // Set active category item
                 const categoryItems = document.querySelectorAll('.support-category');
                 categoryItems.forEach(item => {
@@ -5769,18 +5334,18 @@
                     const element = document.getElementById(`${tabId}-tab`);
                     if (element) element.style.display = 'none';
                 });
-
+                
                 // Remove active class from all nav items
                 document.querySelectorAll('.admin-nav a').forEach(item => {
                     item.classList.remove('active');
                 });
-
+                
                 // Show selected tab
                 const tabElement = document.getElementById(`${tab}-tab`);
                 if (tabElement) {
                     tabElement.style.display = 'block';
                 }
-
+                
                 // Set active nav item
                 const navItems = document.querySelectorAll('.admin-nav a');
                 navItems.forEach(item => {
@@ -5788,7 +5353,7 @@
                         item.classList.add('active');
                     }
                 });
-
+                
                 // Load tab data
                 if (tab === 'users') this.loadAdminUsers();
                 if (tab === 'investments') this.loadAdminInvestments();
@@ -5820,7 +5385,6 @@
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
-                document.body.style.overflow = 'auto';
             }
         };
 
@@ -5839,11 +5403,6 @@
                     });
                 }
             });
-        });
-
-        // Handle browser back/forward buttons
-        window.addEventListener('popstate', function(event) {
-            // You can add custom handling for browser navigation if needed
         });
     </script>
 </body>
