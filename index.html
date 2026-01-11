@@ -3586,1689 +3586,2265 @@
         <i class="fas fa-chevron-up"></i>
     </div>
 
-    <script>// ==================== RAW WEALTHY FRONTEND v36.0 - ENHANCED AUTO-CONNECT ====================
 
-const app = {
-    // ==================== DYNAMIC CONFIGURATION ====================
-    config: {
-        // AUTO-DETECTING BACKEND URL WITH FALLBACKS
-        API_BASE_URL: (() => {
-            const isLocal = window.location.hostname === 'localhost' || 
-                           window.location.hostname === '127.0.0.1';
-            const isVercel = window.location.origin.includes('vercel.app');
-            
-            if (isLocal || isVercel) {
-                return 'https://real-wealthy-1.onrender.com/api';  // ✅ Your Render backend
-            }
-            return window.location.origin + '/api';  // ✅ For same-origin deployments
-        })(),
-        
-        VERSION: '36.0.0',
-        ENVIRONMENT: window.location.hostname === 'localhost' ? 'development' : 'production',
-        MIN_INVESTMENT: 3500,
-        MIN_DEPOSIT: 500,
-        MIN_WITHDRAWAL: 1000,
-        PLATFORM_FEE_PERCENT: 5,
-        REFERRAL_COMMISSION_PERCENT: 15,
-        WELCOME_BONUS: 10000,
-        
-        // Retry configuration for API calls
-        MAX_RETRIES: 3,
-        RETRY_DELAY: 1000,
-        
-        // Timeout configuration
-        API_TIMEOUT: 30000,
-        
-        // Cache configuration
-        CACHE_TTL: 60000, // 1 minute cache
-    },
+    <script>
+        // ==================== RAW WEALTHY FRONTEND v35.0 - ADVANCED AUTO-CONNECTION ====================
 
-    // ==================== ENHANCED APPLICATION STATE ====================
-    state: {
-        currentUser: null,
-        token: localStorage.getItem('raw_wealthy_token'),
-        investmentPlans: [],
-        notifications: [],
-        isAdmin: false,
-        isAuthenticated: false,
-        charts: {},
-        userStats: {
-            balance: 0,
-            activeInvestments: 0,
-            totalEarnings: 0,
-            referralEarnings: 0
-        },
-        
-        // Enhanced state for better UX
-        pendingRequests: new Set(),
-        cache: new Map(),
-        lastApiCheck: null,
-        connectionStatus: 'connected',
-        retryCount: 0,
-    },
-
-    // ==================== ENHANCED INITIALIZATION ====================
-    async init() {
-        console.log('🚀 Raw Wealthy Frontend v36.0 Initializing...');
-        console.log(`🌐 Backend URL: ${this.config.API_BASE_URL}`);
-        console.log(`🏷️ Environment: ${this.config.ENVIRONMENT}`);
-        
-        // Check backend connection first
-        await this.checkBackendConnection();
-        
-        this.setupEventListeners();
-        await this.initializeApplication();
-        this.initAnimations();
-        
-        // Check URL for referral code
-        this.checkReferralFromURL();
-        
-        // Check for saved theme
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'light') {
-            document.body.classList.add('light-mode');
-            const themeIcon = document.querySelector('#theme-toggle i');
-            themeIcon.classList.remove('fa-moon');
-            themeIcon.classList.add('fa-sun');
-        }
-        
-        // Start connection monitor
-        this.startConnectionMonitor();
-    },
-
-    // ==================== CONNECTION MANAGEMENT ====================
-    async checkBackendConnection() {
-        try {
-            this.showToast('🔗 Connecting to backend...', 'info');
-            
-            // Test endpoint
-            const response = await fetch(`${this.config.API_BASE_URL}/health`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                timeout: 5000,
-            });
-            
-            if (response.ok) {
-                const data = await response.json();
-                this.state.connectionStatus = 'connected';
-                console.log('✅ Backend connected successfully:', data);
-                this.showToast('✅ Backend connected successfully', 'success');
-            } else {
-                this.state.connectionStatus = 'degraded';
-                console.warn('⚠️ Backend responding with errors');
-                this.showToast('⚠️ Backend connection unstable', 'warning');
-            }
-        } catch (error) {
-            this.state.connectionStatus = 'disconnected';
-            console.error('❌ Backend connection failed:', error);
-            this.showToast('❌ Cannot connect to backend. Using offline mode.', 'error');
-            
-            // Load fallback data
-            this.loadFallbackData();
-        }
-    },
-
-    startConnectionMonitor() {
-        // Monitor connection every 30 seconds
-        setInterval(async () => {
-            try {
-                const response = await fetch(`${this.config.API_BASE_URL}/health`, {
-                    method: 'GET',
-                    timeout: 3000,
-                });
+        const app = {
+            // ==================== ENHANCED CONFIGURATION ====================
+            config: {
+                // DYNAMIC BACKEND URL - Auto-detects based on environment with fallback system
+                API_BASE_URL: (() => {
+                    const isLocal = window.location.hostname === 'localhost' || 
+                                   window.location.hostname === '127.0.0.1';
+                    const isVercel = window.location.origin.includes('vercel.app');
+                    
+                    if (isLocal || isVercel) {
+                        return 'https://real-wealthy-1.onrender.com/api';  // ✅ Lowercase https
+                    }
+                    return window.location.origin + '/api';
+                })(),
                 
-                if (response.ok) {
-                    if (this.state.connectionStatus !== 'connected') {
-                        this.state.connectionStatus = 'connected';
-                        this.showToast('✅ Backend reconnected', 'success');
+                // Multiple backend fallback URLs for reliability
+                BACKUP_API_URLS: [
+                    'https://real-wealthy-1.onrender.com/api',
+                    'https://real-wealthy-backup.onrender.com/api',
+                    'https://raw-wealthy-api.onrender.com/api'
+                ],
+                
+                VERSION: '35.0.0',
+                ENVIRONMENT: window.location.hostname === 'localhost' ? 'development' : 'production',
+                
+                // Connection settings
+                CONNECTION_RETRIES: 3,
+                CONNECTION_TIMEOUT: 10000,
+                HEARTBEAT_INTERVAL: 30000,
+                
+                // Financial settings
+                MIN_INVESTMENT: 3500,
+                MIN_DEPOSIT: 500,
+                MIN_WITHDRAWAL: 1000,
+                PLATFORM_FEE_PERCENT: 5,
+                REFERRAL_COMMISSION_PERCENT: 15,
+                WELCOME_BONUS: 10000
+            },
+
+            // ==================== ENHANCED APPLICATION STATE ====================
+            state: {
+                currentUser: null,
+                token: localStorage.getItem('raw_wealthy_token'),
+                investmentPlans: [],
+                notifications: [],
+                isAdmin: false,
+                isAuthenticated: false,
+                isOnline: navigator.onLine,
+                charts: {},
+                userStats: {
+                    balance: 0,
+                    activeInvestments: 0,
+                    totalEarnings: 0,
+                    referralEarnings: 0
+                },
+                connectionStatus: 'disconnected',
+                activeApiUrl: null,
+                retryCount: 0,
+                heartbeatTimer: null
+            },
+
+            // ==================== ADVANCED INITIALIZATION ====================
+            init() {
+                console.log('🚀 Raw Wealthy Frontend v35.0 Initializing...');
+                console.log(`🌐 Environment: ${this.config.ENVIRONMENT}`);
+                console.log(`🔄 Primary API URL: ${this.config.API_BASE_URL}`);
+                
+                // Initialize connection
+                this.initializeConnection();
+                
+                // Setup event listeners
+                this.setupEventListeners();
+                
+                // Check authentication
+                this.checkAuthentication();
+                
+                // Load investment plans
+                this.loadInvestmentPlans();
+                
+                // Initialize animations
+                this.initAnimations();
+                
+                // Check URL for referral code
+                this.checkReferralFromURL();
+                
+                // Check for saved theme
+                this.initializeTheme();
+                
+                // Start connection monitoring
+                this.startConnectionMonitoring();
+            },
+
+            // ==================== ENHANCED CONNECTION MANAGEMENT ====================
+            initializeConnection() {
+                this.state.activeApiUrl = this.config.API_BASE_URL;
+                this.state.connectionStatus = 'connecting';
+                
+                // Test connection
+                this.testConnection()
+                    .then(success => {
+                        if (success) {
+                            this.state.connectionStatus = 'connected';
+                            this.showToast('Connected to server', 'success');
+                        } else {
+                            this.state.connectionStatus = 'disconnected';
+                            this.showToast('Server connection failed, using fallback mode', 'warning');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Connection test failed:', error);
+                        this.state.connectionStatus = 'error';
+                    });
+            },
+
+            async testConnection() {
+                try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 5000);
+                    
+                    const response = await fetch(`${this.state.activeApiUrl}/health`, {
+                        method: 'GET',
+                        signal: controller.signal,
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    clearTimeout(timeoutId);
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        return data.status === 'ok';
+                    }
+                    return false;
+                } catch (error) {
+                    console.warn('Primary connection failed, trying backup...');
+                    return this.tryBackupConnection();
+                }
+            },
+
+            async tryBackupConnection() {
+                for (let i = 0; i < this.config.BACKUP_API_URLS.length; i++) {
+                    const backupUrl = this.config.BACKUP_API_URLS[i];
+                    try {
+                        const response = await fetch(`${backupUrl}/health`, {
+                            method: 'GET',
+                            timeout: 5000
+                        });
+                        
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data.status === 'ok') {
+                                this.state.activeApiUrl = backupUrl;
+                                this.showToast(`Connected to backup server ${i + 1}`, 'info');
+                                return true;
+                            }
+                        }
+                    } catch (error) {
+                        console.warn(`Backup ${i + 1} failed:`, error);
                     }
                 }
-            } catch (error) {
-                if (this.state.connectionStatus === 'connected') {
-                    this.state.connectionStatus = 'disconnected';
-                    this.showToast('⚠️ Lost connection to backend', 'warning');
-                }
-            }
-        }, 30000);
-    },
+                return false;
+            },
 
-    // ==================== ENHANCED API REQUEST HANDLER ====================
-    async apiRequest(endpoint, options = {}) {
-        const requestId = Math.random().toString(36).substr(2, 9);
-        this.state.pendingRequests.add(requestId);
-        
-        // Check cache first (only for GET requests)
-        const cacheKey = `${options.method || 'GET'}:${endpoint}:${JSON.stringify(options.body || {})}`;
-        const now = Date.now();
-        
-        if (options.method === 'GET' && this.state.cache.has(cacheKey)) {
-            const cached = this.state.cache.get(cacheKey);
-            if (now - cached.timestamp < this.config.CACHE_TTL) {
-                this.state.pendingRequests.delete(requestId);
-                return Promise.resolve(cached.data);
-            }
-        }
-        
-        const url = this.config.API_BASE_URL + endpoint;
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), this.config.API_TIMEOUT);
-        
-        // Default headers
-        const headers = {
-            'Content-Type': 'application/json',
-            'X-Request-ID': requestId,
-            'X-Client-Version': this.config.VERSION,
-            ...options.headers
-        };
-        
-        // Add auth token if available
-        if (this.state.token) {
-            headers['Authorization'] = `Bearer ${this.state.token}`;
-        }
-        
-        // Prepare config
-        const config = {
-            method: options.method || 'GET',
-            headers: headers,
-            signal: controller.signal,
-            ...options
-        };
-        
-        // Handle FormData separately
-        if (options.body instanceof FormData) {
-            delete config.headers['Content-Type']; // Let browser set content-type for FormData
-            config.body = options.body;
-        } else if (options.body && typeof options.body === 'object') {
-            config.body = JSON.stringify(options.body);
-        }
-        
-        // Retry logic
-        let lastError;
-        for (let attempt = 0; attempt < this.config.MAX_RETRIES; attempt++) {
-            try {
-                if (attempt > 0) {
-                    console.log(`🔄 Retry attempt ${attempt + 1} for ${endpoint}`);
-                    this.showToast(`Retrying request... (${attempt + 1}/${this.config.MAX_RETRIES})`, 'info');
-                    await new Promise(resolve => setTimeout(resolve, this.config.RETRY_DELAY * attempt));
-                }
-                
-                this.showLoadingSpinner(true);
-                const response = await fetch(url, config);
-                clearTimeout(timeoutId);
-                
-                let data;
-                const contentType = response.headers.get('content-type');
-                if (contentType && contentType.includes('application/json')) {
-                    data = await response.json();
-                } else {
-                    data = await response.text();
-                }
-                
-                if (!response.ok) {
-                    throw new Error(data.message || `HTTP ${response.status}: ${response.statusText}`);
-                }
-                
-                if (data && data.success === false) {
-                    throw new Error(data.message || 'Request failed');
-                }
-                
-                // Cache successful GET responses
-                if (options.method === 'GET' && data) {
-                    this.state.cache.set(cacheKey, {
-                        data: data,
-                        timestamp: now
+            startConnectionMonitoring() {
+                // Monitor online/offline status
+                window.addEventListener('online', () => {
+                    this.state.isOnline = true;
+                    this.showToast('Back online', 'success');
+                    this.initializeConnection();
+                });
+
+                window.addEventListener('offline', () => {
+                    this.state.isOnline = false;
+                    this.showToast('You are offline', 'error');
+                    this.state.connectionStatus = 'offline';
+                });
+
+                // Heartbeat to keep connection alive
+                this.state.heartbeatTimer = setInterval(() => {
+                    if (this.state.isOnline && this.state.connectionStatus === 'connected') {
+                        this.sendHeartbeat();
+                    }
+                }, this.config.HEARTBEAT_INTERVAL);
+            },
+
+            async sendHeartbeat() {
+                try {
+                    await fetch(`${this.state.activeApiUrl}/heartbeat`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': this.state.token ? `Bearer ${this.state.token}` : ''
+                        }
                     });
+                } catch (error) {
+                    // Silent fail for heartbeat
                 }
-                
-                this.showLoadingSpinner(false);
-                this.state.pendingRequests.delete(requestId);
-                this.state.retryCount = 0;
-                
-                return data;
-                
-            } catch (error) {
-                lastError = error;
-                
-                // Don't retry on certain errors
-                if (error.name === 'AbortError') {
-                    console.error('⏱️ Request timeout:', endpoint);
-                    this.showToast('Request timeout. Please try again.', 'error');
-                    break;
+            },
+
+            // ==================== ENHANCED API REQUEST HANDLER ====================
+            async apiRequest(endpoint, options = {}) {
+                const maxRetries = this.config.CONNECTION_RETRIES;
+                let lastError = null;
+
+                for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                    try {
+                        const url = this.state.activeApiUrl + endpoint;
+                        
+                        // Default headers
+                        const headers = {
+                            'Content-Type': 'application/json',
+                            ...options.headers
+                        };
+
+                        // Add auth token if available
+                        if (this.state.token) {
+                            headers['Authorization'] = `Bearer ${this.state.token}`;
+                        }
+
+                        // Prepare config with timeout
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), this.config.CONNECTION_TIMEOUT);
+
+                        const config = {
+                            method: options.method || 'GET',
+                            headers: headers,
+                            signal: controller.signal,
+                            ...options
+                        };
+
+                        // Handle FormData
+                        if (options.body instanceof FormData) {
+                            delete config.headers['Content-Type'];
+                            config.body = options.body;
+                        } else if (options.body && typeof options.body === 'object') {
+                            config.body = JSON.stringify(options.body);
+                        }
+
+                        this.showLoadingSpinner(true);
+                        
+                        const response = await fetch(url, config);
+                        clearTimeout(timeoutId);
+
+                        const data = await response.json();
+
+                        if (!response.ok) {
+                            throw new Error(data.message || `HTTP ${response.status}`);
+                        }
+
+                        if (!data.success && data.success !== undefined) {
+                            throw new Error(data.message || 'Request failed');
+                        }
+
+                        this.showLoadingSpinner(false);
+                        return data;
+
+                    } catch (error) {
+                        lastError = error;
+                        clearTimeout(timeoutId);
+                        
+                        if (attempt < maxRetries) {
+                            console.warn(`Attempt ${attempt} failed, retrying...`, error);
+                            await this.delay(1000 * attempt); // Exponential backoff
+                        }
+                    } finally {
+                        this.showLoadingSpinner(false);
+                    }
                 }
+
+                // All retries failed
+                this.handleApiError(lastError);
+                throw lastError;
+            },
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            },
+
+            handleApiError(error) {
+                console.error('API Request Error:', error);
                 
+                // Handle specific error cases
                 if (error.message.includes('401') || error.message.includes('token')) {
                     this.handleTokenExpired();
-                    break;
-                }
-                
-                if (error.message.includes('Network Error') || error.message.includes('Failed to fetch')) {
-                    this.state.connectionStatus = 'disconnected';
-                }
-                
-                if (attempt === this.config.MAX_RETRIES - 1) {
-                    console.error(`❌ API Request Failed after ${this.config.MAX_RETRIES} attempts:`, error);
-                    this.showToast(
-                        this.state.connectionStatus === 'disconnected' 
-                            ? 'Network error. Please check your connection.'
-                            : error.message || 'Request failed. Please try again.',
-                        'error'
-                    );
-                }
-            } finally {
-                clearTimeout(timeoutId);
-                this.showLoadingSpinner(false);
-            }
-        }
-        
-        this.state.pendingRequests.delete(requestId);
-        this.state.retryCount++;
-        
-        // If all retries failed and we're offline, use fallback
-        if (this.state.connectionStatus === 'disconnected') {
-            return this.handleOfflineRequest(endpoint, options);
-        }
-        
-        throw lastError;
-    },
-
-    // ==================== OFFLINE MODE SUPPORT ====================
-    async handleOfflineRequest(endpoint, options) {
-        console.log('📴 Offline mode:', endpoint);
-        
-        // Return cached data if available
-        const cacheKey = `${options.method || 'GET'}:${endpoint}:${JSON.stringify(options.body || {})}`;
-        if (this.state.cache.has(cacheKey)) {
-            const cached = this.state.cache.get(cacheKey);
-            this.showToast('Using cached data (offline mode)', 'warning');
-            return cached.data;
-        }
-        
-        // Return mock data for common endpoints
-        switch (endpoint) {
-            case '/plans':
-                return { success: true, data: { plans: this.getDefaultPlans() } };
-            case '/profile':
-                const cachedUser = localStorage.getItem('raw_wealthy_user');
-                return { 
-                    success: true, 
-                    data: { 
-                        user: cachedUser ? JSON.parse(cachedUser) : null,
-                        dashboard_stats: {
-                            active_investment_value: 0,
-                            total_earnings: 0
-                        }
-                    } 
-                };
-            default:
-                throw new Error('Offline mode not available for this request');
-        }
-    },
-
-    loadFallbackData() {
-        // Load essential fallback data
-        this.state.investmentPlans = this.getDefaultPlans();
-        this.renderInvestmentPlans();
-        
-        // Try to restore user from localStorage
-        const cachedUser = localStorage.getItem('raw_wealthy_user');
-        if (cachedUser) {
-            try {
-                this.state.currentUser = JSON.parse(cachedUser);
-                this.state.isAuthenticated = true;
-                this.state.isAdmin = this.state.currentUser.role === 'admin' || this.state.currentUser.role === 'super_admin';
-            } catch (e) {
-                console.error('Failed to parse cached user:', e);
-            }
-        }
-    },
-
-    // ==================== ENHANCED AUTHENTICATION ====================
-    async checkAuthentication() {
-        if (this.state.token) {
-            await this.verifyToken();
-        } else {
-            this.showPage('home');
-        }
-    },
-
-    async verifyToken() {
-        try {
-            const response = await this.apiRequest('/profile');
-            
-            if (response && response.data && response.data.user) {
-                this.state.currentUser = response.data.user;
-                this.state.isAdmin = this.state.currentUser.role === 'admin' || this.state.currentUser.role === 'super_admin';
-                this.state.isAuthenticated = true;
-                
-                // Cache user data for offline use
-                localStorage.setItem('raw_wealthy_user', JSON.stringify(this.state.currentUser));
-                
-                // Update user avatar
-                const initials = this.state.currentUser.full_name
-                    .split(' ')
-                    .map(n => n[0])
-                    .join('')
-                    .toUpperCase();
-                
-                document.getElementById('user-avatar').textContent = initials;
-                
-                if (this.state.isAdmin) {
-                    this.showPage('admin');
+                } else if (error.name === 'AbortError') {
+                    this.showToast('Request timeout. Please check your connection.', 'error');
+                } else if (!this.state.isOnline) {
+                    this.showToast('You are offline. Please check your internet connection.', 'error');
                 } else {
-                    this.showPage('dashboard');
+                    this.showToast(error.message || 'Network error. Please try again.', 'error');
                 }
-            }
-        } catch (error) {
-            console.error('Token verification failed:', error);
-            this.handleTokenExpired();
-        }
-    },
+            },
 
-    handleTokenExpired() {
-        localStorage.removeItem('raw_wealthy_token');
-        localStorage.removeItem('raw_wealthy_user');
-        this.state.token = null;
-        this.state.currentUser = null;
-        this.state.isAuthenticated = false;
-        this.state.isAdmin = false;
-        
-        this.showToast('Your session has expired. Please login again.', 'warning');
-        this.showPage('login');
-    },
+            // ==================== ENHANCED FILE UPLOAD HANDLER ====================
+            async uploadFile(file, folder = 'general') {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('folder', folder);
 
-    // ==================== ENHANCED INITIALIZE APPLICATION ====================
-    async initializeApplication() {
-        try {
-            await Promise.all([
-                this.checkAuthentication(),
-                this.loadInvestmentPlans(),
-            ]);
-        } catch (error) {
-            console.error('Initialization error:', error);
-        }
-    },
-
-    // ==================== ENHANCED PAGE NAVIGATION ====================
-    showPage(page) {
-        // Store current page
-        localStorage.setItem('last_page', page);
-        
-        // Hide all pages
-        const pages = [
-            'home-page', 'registration-page', 'login-page', 'dashboard-page',
-            'investment-plans-page', 'profile-page', 'referral-page',
-            'support-page', 'admin-page'
-        ];
-        
-        pages.forEach(pageId => {
-            const element = document.getElementById(pageId);
-            if (element) element.style.display = 'none';
-        });
-        
-        // Show selected page
-        let pageElement;
-        switch(page) {
-            case 'home':
-                pageElement = document.getElementById('home-page');
-                if (pageElement) pageElement.style.display = 'block';
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                break;
-                
-            case 'register':
-                pageElement = document.getElementById('registration-page');
-                if (pageElement) pageElement.style.display = 'flex';
-                break;
-                
-            case 'login':
-                pageElement = document.getElementById('login-page');
-                if (pageElement) pageElement.style.display = 'flex';
-                break;
-                
-            case 'dashboard':
-                pageElement = document.getElementById('dashboard-page');
-                if (pageElement) {
-                    pageElement.style.display = 'flex';
-                    setTimeout(() => this.updateDashboard(), 100);
-                }
-                break;
-                
-            case 'investment-plans':
-                pageElement = document.getElementById('investment-plans-page');
-                if (pageElement) {
-                    pageElement.style.display = 'flex';
-                    setTimeout(() => this.loadInvestmentPlansPage(), 100);
-                }
-                break;
-                
-            case 'profile':
-                pageElement = document.getElementById('profile-page');
-                if (pageElement) {
-                    pageElement.style.display = 'flex';
-                    setTimeout(() => this.loadProfileData(), 100);
-                }
-                break;
-                
-            case 'referral':
-                pageElement = document.getElementById('referral-page');
-                if (pageElement) {
-                    pageElement.style.display = 'flex';
-                    setTimeout(() => this.loadReferralData(), 100);
-                }
-                break;
-                
-            case 'support':
-                pageElement = document.getElementById('support-page');
-                if (pageElement) pageElement.style.display = 'flex';
-                break;
-                
-            case 'admin':
-                pageElement = document.getElementById('admin-page');
-                if (pageElement) {
-                    pageElement.style.display = 'flex';
-                    setTimeout(() => this.updateAdminDashboard(), 100);
-                }
-                break;
-        }
-        
-        // Update URL hash for bookmarking
-        window.history.pushState({ page }, '', `#${page}`);
-        
-        // Close mobile menu if open
-        this.closeMobileMenu();
-        
-        // Update navbar active state
-        this.updateNavbarActive(page);
-    },
-
-    updateNavbarActive(currentPage) {
-        // Remove active class from all nav links
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.classList.remove('active');
-        });
-        
-        // Add active class to current page
-        const activeLink = document.querySelector(`.nav-links a[onclick*="${currentPage}"]`);
-        if (activeLink) {
-            activeLink.classList.add('active');
-        }
-    },
-
-    // ==================== ENHANCED EVENT LISTENERS ====================
-    setupEventListeners() {
-        // Theme toggle
-        document.getElementById('theme-toggle').addEventListener('click', () => this.toggleTheme());
-        
-        // Mobile menu
-        document.getElementById('hamburger').addEventListener('click', () => this.openMobileMenu());
-        document.getElementById('close-mobile-menu').addEventListener('click', () => this.closeMobileMenu());
-        document.getElementById('mobile-menu-overlay').addEventListener('click', () => this.closeMobileMenu());
-        
-        // Back to top
-        document.getElementById('back-to-top').addEventListener('click', () => this.scrollToTop());
-        
-        // Form submissions with enhanced validation
-        document.getElementById('registration-form').addEventListener('submit', (e) => this.handleRegistration(e));
-        document.getElementById('login-form').addEventListener('submit', (e) => this.handleLogin(e));
-        document.getElementById('invest-form').addEventListener('submit', (e) => this.handleInvestment(e));
-        document.getElementById('deposit-form').addEventListener('submit', (e) => this.handleDeposit(e));
-        document.getElementById('withdraw-form').addEventListener('submit', (e) => this.handleWithdrawal(e));
-        document.getElementById('personal-form').addEventListener('submit', (e) => this.handleProfileUpdate(e));
-        document.getElementById('bank-form').addEventListener('submit', (e) => this.handleBankUpdate(e));
-        document.getElementById('kyc-form').addEventListener('submit', (e) => this.handleKYCSubmission(e));
-        document.getElementById('support-form').addEventListener('submit', (e) => this.handleSupportRequest(e));
-        document.getElementById('password-reset-form').addEventListener('submit', (e) => this.handlePasswordReset(e));
-        
-        // Enhanced password toggles
-        this.initPasswordToggles();
-        
-        // Enhanced file upload previews
-        this.initFileUploadPreviews();
-        
-        // Scroll event for navbar
-        window.addEventListener('scroll', () => this.handleScroll());
-        
-        // Withdrawal amount change listener
-        const withdrawAmount = document.getElementById('withdraw-amount');
-        if (withdrawAmount) {
-            withdrawAmount.addEventListener('input', () => this.updateWithdrawalFee());
-        }
-        
-        // Investment amount validation
-        const investAmount = document.getElementById('investment-amount');
-        if (investAmount) {
-            investAmount.addEventListener('input', () => this.validateInvestmentAmount());
-        }
-        
-        // Browser back/forward navigation
-        window.addEventListener('popstate', (event) => {
-            if (event.state && event.state.page) {
-                this.showPage(event.state.page);
-            }
-        });
-        
-        // Network status detection
-        window.addEventListener('online', () => this.handleOnlineStatus());
-        window.addEventListener('offline', () => this.handleOfflineStatus());
-        
-        // Form input validation
-        this.initFormValidation();
-        
-        // Auto-save forms
-        this.initAutoSave();
-    },
-
-    // ==================== NETWORK STATUS HANDLERS ====================
-    handleOnlineStatus() {
-        console.log('🌐 Online');
-        this.showToast('Network connection restored', 'success');
-        this.state.connectionStatus = 'connected';
-        
-        // Sync any pending data
-        this.syncPendingData();
-    },
-
-    handleOfflineStatus() {
-        console.log('📴 Offline');
-        this.showToast('You are offline. Some features may be limited.', 'warning');
-        this.state.connectionStatus = 'disconnected';
-    },
-
-    async syncPendingData() {
-        // This would sync any pending operations when back online
-        console.log('🔄 Syncing pending data...');
-    },
-
-    // ==================== ENHANCED FORM VALIDATION ====================
-    initFormValidation() {
-        // Real-time password strength
-        const passwordInput = document.getElementById('password');
-        if (passwordInput) {
-            passwordInput.addEventListener('input', (e) => {
-                this.checkPasswordStrength(e.target.value);
-            });
-        }
-        
-        // Email validation
-        const emailInputs = document.querySelectorAll('input[type="email"]');
-        emailInputs.forEach(input => {
-            input.addEventListener('blur', (e) => {
-                this.validateEmail(e.target);
-            });
-        });
-        
-        // Phone validation
-        const phoneInput = document.getElementById('phone');
-        if (phoneInput) {
-            phoneInput.addEventListener('blur', (e) => {
-                this.validatePhone(e.target);
-            });
-        }
-    },
-
-    checkPasswordStrength(password) {
-        const strengthBar = document.getElementById('password-strength');
-        if (!strengthBar) return;
-        
-        let strength = 0;
-        
-        // Length check
-        if (password.length >= 8) strength++;
-        if (password.length >= 12) strength++;
-        
-        // Complexity checks
-        if (/[A-Z]/.test(password)) strength++;
-        if (/[0-9]/.test(password)) strength++;
-        if (/[^A-Za-z0-9]/.test(password)) strength++;
-        
-        // Update UI
-        strengthBar.className = 'password-strength';
-        if (strength <= 2) {
-            strengthBar.classList.add('weak');
-            strengthBar.title = 'Weak password';
-        } else if (strength <= 4) {
-            strengthBar.classList.add('medium');
-            strengthBar.title = 'Medium password';
-        } else {
-            strengthBar.classList.add('strong');
-            strengthBar.title = 'Strong password';
-        }
-    },
-
-    validateEmail(input) {
-        const email = input.value.trim();
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        
-        if (email && !emailRegex.test(email)) {
-            input.classList.add('invalid');
-            this.showFieldError(input, 'Please enter a valid email address');
-            return false;
-        }
-        
-        input.classList.remove('invalid');
-        this.clearFieldError(input);
-        return true;
-    },
-
-    validatePhone(input) {
-        const phone = input.value.trim();
-        const phoneRegex = /^\+?[\d\s\-\(\)]+$/;
-        
-        if (phone && !phoneRegex.test(phone)) {
-            input.classList.add('invalid');
-            this.showFieldError(input, 'Please enter a valid phone number');
-            return false;
-        }
-        
-        input.classList.remove('invalid');
-        this.clearFieldError(input);
-        return true;
-    },
-
-    showFieldError(input, message) {
-        let errorDiv = input.parentNode.querySelector('.field-error');
-        if (!errorDiv) {
-            errorDiv = document.createElement('div');
-            errorDiv.className = 'field-error';
-            errorDiv.style.color = 'var(--error)';
-            errorDiv.style.fontSize = '0.8rem';
-            errorDiv.style.marginTop = '0.25rem';
-            input.parentNode.appendChild(errorDiv);
-        }
-        errorDiv.textContent = message;
-    },
-
-    clearFieldError(input) {
-        const errorDiv = input.parentNode.querySelector('.field-error');
-        if (errorDiv) {
-            errorDiv.remove();
-        }
-    },
-
-    // ==================== AUTO-SAVE FUNCTIONALITY ====================
-    initAutoSave() {
-        const forms = ['personal-form', 'bank-form', 'preferences-form'];
-        
-        forms.forEach(formId => {
-            const form = document.getElementById(formId);
-            if (form) {
-                const inputs = form.querySelectorAll('input, select, textarea');
-                inputs.forEach(input => {
-                    input.addEventListener('input', () => {
-                        this.autoSaveForm(formId);
+                try {
+                    const response = await this.apiRequest('/upload', {
+                        method: 'POST',
+                        body: formData
                     });
+                    
+                    return response.data.fileUrl;
+                } catch (error) {
+                    console.error('File upload failed:', error);
+                    
+                    // For large files, provide better error message
+                    if (file.size > 10 * 1024 * 1024) { // 10MB
+                        throw new Error('File too large. Maximum size is 10MB');
+                    }
+                    
+                    throw new Error('Failed to upload file. Please try again');
+                }
+            },
+
+            // ==================== ENHANCED AUTHENTICATION FUNCTIONS ====================
+            async checkAuthentication() {
+                if (this.state.token) {
+                    await this.verifyToken();
+                } else {
+                    this.showPage('home');
+                }
+            },
+
+            async verifyToken() {
+                try {
+                    const response = await this.apiRequest('/profile');
+                    
+                    if (response.success) {
+                        this.state.currentUser = response.data.user;
+                        this.state.isAdmin = this.state.currentUser.role === 'admin' || this.state.currentUser.role === 'super_admin';
+                        this.state.isAuthenticated = true;
+
+                        // Update user avatar
+                        const initials = this.state.currentUser.full_name
+                            .split(' ')
+                            .map(n => n[0])
+                            .join('')
+                            .toUpperCase();
+                        
+                        const avatarElement = document.getElementById('user-avatar');
+                        if (avatarElement) {
+                            avatarElement.textContent = initials;
+                        }
+
+                        // Redirect based on role
+                        if (this.state.isAdmin) {
+                            this.showPage('admin');
+                        } else {
+                            this.showPage('dashboard');
+                        }
+                    }
+                } catch (error) {
+                    this.clearAuthData();
+                    this.showPage('home');
+                }
+            },
+
+            clearAuthData() {
+                localStorage.removeItem('raw_wealthy_token');
+                localStorage.removeItem('raw_wealthy_user');
+                this.state.token = null;
+                this.state.currentUser = null;
+                this.state.isAuthenticated = false;
+                this.state.isAdmin = false;
+            },
+
+            handleTokenExpired() {
+                this.clearAuthData();
+                this.showToast('Your session has expired. Please login again.', 'warning');
+                this.showPage('login');
+            },
+
+            // ==================== ENHANCED PAGE NAVIGATION ====================
+            showPage(page) {
+                // Hide all pages
+                const pages = [
+                    'home-page', 'registration-page', 'login-page', 'dashboard-page',
+                    'investment-plans-page', 'profile-page', 'referral-page',
+                    'support-page', 'admin-page'
+                ];
+                
+                pages.forEach(pageId => {
+                    const element = document.getElementById(pageId);
+                    if (element) element.style.display = 'none';
                 });
-            }
-        });
-    },
 
-    autoSaveForm(formId) {
-        const form = document.getElementById(formId);
-        if (!form) return;
-        
-        const formData = new FormData(form);
-        const data = {};
-        formData.forEach((value, key) => {
-            data[key] = value;
-        });
-        
-        localStorage.setItem(`autosave_${formId}`, JSON.stringify(data));
-        
-        // Show auto-save indicator
-        this.showAutoSaveIndicator();
-    },
-
-    loadAutoSavedData(formId) {
-        const saved = localStorage.getItem(`autosave_${formId}`);
-        if (saved) {
-            try {
-                const data = JSON.parse(saved);
-                const form = document.getElementById(formId);
-                if (form) {
-                    Object.keys(data).forEach(key => {
-                        const input = form.querySelector(`[name="${key}"]`);
-                        if (input) {
-                            input.value = data[key];
+                // Show selected page
+                let pageElement;
+                switch(page) {
+                    case 'home':
+                        pageElement = document.getElementById('home-page');
+                        if (pageElement) pageElement.style.display = 'block';
+                        window.scrollTo(0, 0);
+                        break;
+                        
+                    case 'register':
+                        pageElement = document.getElementById('registration-page');
+                        if (pageElement) pageElement.style.display = 'flex';
+                        break;
+                        
+                    case 'login':
+                        pageElement = document.getElementById('login-page');
+                        if (pageElement) pageElement.style.display = 'flex';
+                        break;
+                        
+                    case 'dashboard':
+                        pageElement = document.getElementById('dashboard-page');
+                        if (pageElement) {
+                            pageElement.style.display = 'flex';
+                            this.updateDashboard();
                         }
-                    });
+                        break;
+                        
+                    case 'investment-plans':
+                        pageElement = document.getElementById('investment-plans-page');
+                        if (pageElement) {
+                            pageElement.style.display = 'flex';
+                            this.loadInvestmentPlansPage();
+                        }
+                        break;
+                        
+                    case 'profile':
+                        pageElement = document.getElementById('profile-page');
+                        if (pageElement) {
+                            pageElement.style.display = 'flex';
+                            this.loadProfileData();
+                        }
+                        break;
+                        
+                    case 'referral':
+                        pageElement = document.getElementById('referral-page');
+                        if (pageElement) {
+                            pageElement.style.display = 'flex';
+                            this.loadReferralData();
+                        }
+                        break;
+                        
+                    case 'support':
+                        pageElement = document.getElementById('support-page');
+                        if (pageElement) pageElement.style.display = 'flex';
+                        break;
+                        
+                    case 'admin':
+                        pageElement = document.getElementById('admin-page');
+                        if (pageElement) {
+                            pageElement.style.display = 'flex';
+                            this.updateAdminDashboard();
+                        }
+                        break;
                 }
-            } catch (e) {
-                console.error('Failed to load auto-saved data:', e);
-            }
-        }
-    },
 
-    showAutoSaveIndicator() {
-        // Create or show auto-save indicator
-        let indicator = document.getElementById('auto-save-indicator');
-        if (!indicator) {
-            indicator = document.createElement('div');
-            indicator.id = 'auto-save-indicator';
-            indicator.style.position = 'fixed';
-            indicator.style.bottom = '20px';
-            indicator.style.right = '20px';
-            indicator.style.background = 'var(--accent-emerald)';
-            indicator.style.color = 'white';
-            indicator.style.padding = '10px 20px';
-            indicator.style.borderRadius = '5px';
-            indicator.style.zIndex = '9999';
-            document.body.appendChild(indicator);
-        }
-        
-        indicator.textContent = 'Auto-saved';
-        indicator.style.display = 'block';
-        
-        setTimeout(() => {
-            indicator.style.display = 'none';
-        }, 2000);
-    },
-
-    // ==================== ENHANCED INVESTMENT PLANS ====================
-    async loadInvestmentPlans() {
-        try {
-            const response = await this.apiRequest('/plans');
-            
-            if (response && response.data && response.data.plans) {
-                this.state.investmentPlans = response.data.plans;
-                this.renderInvestmentPlans();
+                // Close mobile menu if open
+                this.closeMobileMenu();
                 
-                // Pre-cache plan images
-                this.preloadPlanImages();
-            } else {
-                throw new Error('Invalid response format');
-            }
-        } catch (error) {
-            console.error('Failed to load investment plans:', error);
-            // Fallback to default plans
-            this.state.investmentPlans = this.getDefaultPlans();
-            this.renderInvestmentPlans();
-        }
-    },
-
-    preloadPlanImages() {
-        // Preload images for better UX
-        const imageUrls = [
-            'https://images.unsplash.com/photo-1553877522-43269d4ea984',
-            'https://images.unsplash.com/photo-1610530537915-7a10f69c6c6b',
-            'https://images.unsplash.com/photo-1567427017947-545c5f8d16ad'
-        ];
-        
-        imageUrls.forEach(url => {
-            const img = new Image();
-            img.src = `${url}?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80`;
-        });
-    },
-
-    getDefaultPlans() {
-        return [
-            {
-                _id: '1',
-                name: 'Cocoa Beans',
-                description: 'Invest in premium cocoa beans with stable returns',
-                min_amount: 3500,
-                daily_interest: 2.5,
-                total_interest: 75,
-                duration: 30,
-                risk_level: 'low',
-                is_popular: true,
-                image_url: 'https://images.unsplash.com/photo-1553877522-43269d4ea984?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'
+                // Update active navigation
+                this.updateActiveNavigation(page);
             },
-            {
-                _id: '2',
-                name: 'Gold',
-                description: 'Precious metal investment with high liquidity',
-                min_amount: 50000,
-                daily_interest: 3.2,
-                total_interest: 96,
-                duration: 30,
-                risk_level: 'medium',
-                is_popular: true,
-                image_url: 'https://images.unsplash.com/photo-1610530537915-7a10f69c6c6b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'
+
+            updateActiveNavigation(currentPage) {
+                // Update nav links active state
+                const navLinks = document.querySelectorAll('.nav-links a');
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('onclick')?.includes(`'${currentPage}'`)) {
+                        link.classList.add('active');
+                    }
+                });
             },
-            {
-                _id: '3',
-                name: 'Crude Oil',
-                description: 'Energy sector investment with premium returns',
-                min_amount: 100000,
-                daily_interest: 4.1,
-                total_interest: 123,
-                duration: 30,
-                risk_level: 'high',
-                image_url: 'https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'
-            }
-        ];
-    },
 
-    renderInvestmentPlans() {
-        const container = document.getElementById('plans-container');
-        if (!container || this.state.investmentPlans.length === 0) return;
-        
-        container.innerHTML = this.state.investmentPlans.slice(0, 3).map(plan => `
-            <div class="plan-card card-hover" data-plan-id="${plan._id}">
-                <div class="plan-header">
-                    <h3 class="plan-name">${plan.name}</h3>
-                    <div class="plan-price">₦${plan.min_amount.toLocaleString()}</div>
-                    <div class="plan-period">Minimum Investment</div>
-                </div>
-                <div class="plan-features">
-                    <div class="plan-feature">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Daily Returns: ${plan.daily_interest}%</span>
-                    </div>
-                    <div class="plan-feature">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Total Returns: ${plan.total_interest}%</span>
-                    </div>
-                    <div class="plan-feature">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Duration: ${plan.duration} Days</span>
-                    </div>
-                    <div class="plan-feature">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Risk Level: ${plan.risk_level}</span>
-                    </div>
-                </div>
-                <button class="btn btn-primary plan-button" onclick="app.showPage('investment-plans')">
-                    View Details
-                </button>
-            </div>
-        `).join('');
-    },
+            // ==================== ENHANCED MODAL FUNCTIONS ====================
+            openModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
 
-    loadInvestmentPlansPage() {
-        const container = document.getElementById('investment-plans-list');
-        if (!container || this.state.investmentPlans.length === 0) return;
-        
-        container.innerHTML = this.state.investmentPlans.map(plan => `
-            <div class="plan-card card-hover" data-plan-id="${plan._id}">
-                ${plan.is_popular ? '<div class="plan-badge">Most Popular</div>' : ''}
-                <div class="plan-header">
-                    <h3 class="plan-name">${plan.name}</h3>
-                    <div class="plan-price">₦${plan.min_amount.toLocaleString()}</div>
-                    <div class="plan-period">Minimum Investment</div>
-                </div>
-                <div class="plan-features">
-                    <div class="plan-feature">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Daily Returns: ${plan.daily_interest}%</span>
-                    </div>
-                    <div class="plan-feature">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Total Returns: ${plan.total_interest}%</span>
-                    </div>
-                    <div class="plan-feature">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Duration: ${plan.duration} Days</span>
-                    </div>
-                    <div class="plan-feature">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Risk Level: ${plan.risk_level}</span>
-                    </div>
-                    <div class="plan-feature">
-                        <i class="fas fa-check-circle"></i>
-                        <span>${plan.description}</span>
-                    </div>
-                </div>
-                <button class="btn btn-primary plan-button" onclick="app.openInvestmentModal('${plan._id}')">
-                    Invest Now
-                </button>
-            </div>
-        `).join('');
-    },
-
-    // ==================== ENHANCED REGISTRATION ====================
-    async handleRegistration(e) {
-        e.preventDefault();
-        
-        // Validate all fields
-        if (!this.validateRegistrationForm()) {
-            return;
-        }
-        
-        const formData = {
-            full_name: document.getElementById('fullname').value.trim(),
-            email: document.getElementById('email').value.trim().toLowerCase(),
-            phone: document.getElementById('phone').value.trim(),
-            password: document.getElementById('password').value,
-            referral_code: document.getElementById('referral').value.trim().toUpperCase() || undefined,
-            risk_tolerance: document.getElementById('risk-tolerance').value,
-            investment_strategy: document.getElementById('investment-strategy').value
-        };
-        
-        // Password confirmation
-        if (document.getElementById('password').value !== document.getElementById('confirm-password').value) {
-            this.showToast('Passwords do not match!', 'error');
-            return;
-        }
-        
-        // Password strength check
-        if (document.getElementById('password').value.length < 6) {
-            this.showToast('Password must be at least 6 characters', 'error');
-            return;
-        }
-        
-        this.setLoadingState('register-btn', true);
-        
-        try {
-            const response = await this.apiRequest('/auth/register', {
-                method: 'POST',
-                body: formData
-            });
-            
-            this.state.token = response.data.token;
-            this.state.currentUser = response.data.user;
-            localStorage.setItem('raw_wealthy_token', response.data.token);
-            localStorage.setItem('raw_wealthy_user', JSON.stringify(response.data.user));
-            
-            this.showToast('Registration successful! Welcome to Raw Wealthy.', 'success');
-            this.setLoadingState('register-btn', false);
-            
-            // Show welcome modal
-            this.showWelcomeModal();
-            
-            // Redirect to dashboard
-            setTimeout(() => {
-                this.showPage('dashboard');
-            }, 2000);
-            
-        } catch (error) {
-            this.setLoadingState('register-btn', false);
-            // Error is already shown by apiRequest
-        }
-    },
-
-    validateRegistrationForm() {
-        let isValid = true;
-        
-        // Check required fields
-        const requiredFields = ['fullname', 'email', 'phone', 'password', 'confirm-password'];
-        requiredFields.forEach(fieldId => {
-            const field = document.getElementById(fieldId);
-            if (!field.value.trim()) {
-                this.showFieldError(field, 'This field is required');
-                isValid = false;
-            }
-        });
-        
-        // Email validation
-        if (!this.validateEmail(document.getElementById('email'))) {
-            isValid = false;
-        }
-        
-        // Phone validation
-        if (!this.validatePhone(document.getElementById('phone'))) {
-            isValid = false;
-        }
-        
-        return isValid;
-    },
-
-    showWelcomeModal() {
-        // Create welcome modal
-        const modalHTML = `
-            <div class="modal" id="welcome-modal" style="display: flex;">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h2>🎉 Welcome to Raw Wealthy!</h2>
-                        <button class="close-modal" onclick="app.closeModal('welcome-modal')">&times;</button>
-                    </div>
-                    <div style="text-align: center; padding: 2rem;">
-                        <i class="fas fa-gem" style="font-size: 4rem; color: var(--accent-gold); margin-bottom: 1rem;"></i>
-                        <h3>Your Investment Journey Begins!</h3>
-                        <p>Congratulations on joining our community of successful investors.</p>
-                        <div style="margin-top: 2rem;">
-                            <button class="btn btn-primary" onclick="app.closeModal('welcome-modal'); app.showPage('dashboard');">
-                                Go to Dashboard
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        // Add modal to body
-        document.body.insertAdjacentHTML('beforeend', modalHTML);
-    },
-
-    // ==================== ENHANCED LOGIN ====================
-    async handleLogin(e) {
-        e.preventDefault();
-        
-        const formData = {
-            email: document.getElementById('login-email').value.trim().toLowerCase(),
-            password: document.getElementById('login-password').value
-        };
-        
-        // Validation
-        if (!formData.email || !formData.password) {
-            this.showToast('Please fill in all fields', 'error');
-            return;
-        }
-        
-        this.setLoadingState('login-btn', true);
-        
-        try {
-            const response = await this.apiRequest('/auth/login', {
-                method: 'POST',
-                body: formData
-            });
-            
-            this.state.token = response.data.token;
-            this.state.currentUser = response.data.user;
-            this.state.isAdmin = this.state.currentUser.role === 'admin' || this.state.currentUser.role === 'super_admin';
-            
-            localStorage.setItem('raw_wealthy_token', response.data.token);
-            localStorage.setItem('raw_wealthy_user', JSON.stringify(response.data.user));
-            
-            this.showToast('Login successful!', 'success');
-            this.setLoadingState('login-btn', false);
-            
-            // Redirect based on role
-            setTimeout(() => {
-                if (this.state.isAdmin) {
-                    this.showPage('admin');
-                } else {
-                    this.showPage('dashboard');
-                }
-            }, 1000);
-            
-        } catch (error) {
-            this.setLoadingState('login-btn', false);
-        }
-    },
-
-    // ==================== ENHANCED DASHBOARD FUNCTIONS ====================
-    async updateDashboard() {
-        if (!this.state.currentUser) {
-            this.showPage('login');
-            return;
-        }
-        
-        try {
-            // Clear cache for fresh data
-            this.state.cache.clear();
-            
-            const [profileResponse, investmentsResponse, transactionsResponse] = await Promise.all([
-                this.apiRequest('/profile'),
-                this.apiRequest('/investments?status=active&limit=5'),
-                this.apiRequest('/transactions?limit=5')
-            ]);
-            
-            const user = profileResponse.data.user;
-            const stats = profileResponse.data.dashboard_stats;
-            const investments = investmentsResponse.data.investments || [];
-            const transactions = transactionsResponse.data.transactions || [];
-            
-            // Update user info
-            document.getElementById('user-name').textContent = user.full_name;
-            document.getElementById('user-avatar').textContent = user.full_name
-                .split(' ')
-                .map(n => n[0])
-                .join('')
-                .toUpperCase();
-            document.getElementById('user-tier').textContent = user.kyc_verified ? 'Verified Investor' : 'Standard Investor';
-            
-            // Update stats
-            document.getElementById('total-balance').textContent = `₦${user.balance.toLocaleString()}`;
-            document.getElementById('active-investments').textContent = `₦${stats.active_investment_value.toLocaleString()}`;
-            document.getElementById('total-earnings').textContent = `₦${user.total_earnings.toLocaleString()}`;
-            document.getElementById('referral-bonus').textContent = `₦${user.referral_earnings.toLocaleString()}`;
-            
-            // Update investments list
-            this.updateInvestmentsList(investments);
-            
-            // Update transactions list
-            this.updateTransactionsList(transactions);
-            
-            // Update chart
-            this.createEarningsChart(stats);
-            
-        } catch (error) {
-            console.error('Failed to update dashboard:', error);
-            this.showToast('Failed to load dashboard data', 'error');
-        }
-    },
-
-    updateInvestmentsList(investments) {
-        const container = document.getElementById('active-investments-list');
-        if (!container) return;
-        
-        if (investments.length === 0) {
-            container.innerHTML = `
-                <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
-                    <i class="fas fa-chart-line" style="font-size: 2rem; margin-bottom: 1rem;"></i>
-                    <p>No active investments</p>
-                    <button class="btn btn-outline" onclick="app.openModal('invest-modal')" style="margin-top: 1rem;">
-                        Start Investing
-                    </button>
-                </div>
-            `;
-        } else {
-            container.innerHTML = investments.map(inv => `
-                <div class="investment-item" onclick="app.viewInvestmentDetail('${inv._id}')">
-                    <div>
-                        <div class="investment-name">${inv.plan?.name || 'Unknown'} Plan</div>
-                        <div class="investment-status">
-                            <span class="status-badge ${inv.status}">${inv.status}</span>
-                            • ${inv.remaining_days || 0} days remaining
-                        </div>
-                    </div>
-                    <div class="investment-amount">₦${inv.amount.toLocaleString()}</div>
-                </div>
-            `).join('');
-        }
-    },
-
-    updateTransactionsList(transactions) {
-        const container = document.getElementById('recent-transactions-list');
-        if (!container) return;
-        
-        if (transactions.length === 0) {
-            container.innerHTML = `
-                <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
-                    <i class="fas fa-exchange-alt" style="font-size: 2rem; margin-bottom: 1rem;"></i>
-                    <p>No transactions yet</p>
-                </div>
-            `;
-        } else {
-            container.innerHTML = transactions.slice(0, 5).map(txn => {
-                const amountClass = txn.amount > 0 ? 'transaction-amount positive' : 'transaction-amount negative';
-                const amountSign = txn.amount > 0 ? '+' : '';
-                const icon = txn.amount > 0 ? 'arrow-down' : 'arrow-up';
-                
-                return `
-                    <div class="transaction-item">
-                        <div>
-                            <div class="transaction-type">
-                                <i class="fas fa-${icon}"></i>
-                                ${txn.description}
-                            </div>
-                            <div class="transaction-date">${new Date(txn.createdAt).toLocaleDateString()}</div>
-                        </div>
-                        <div class="${amountClass}">
-                            ${amountSign}₦${Math.abs(txn.amount).toLocaleString()}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-    },
-
-    viewInvestmentDetail(investmentId) {
-        // Open investment detail modal
-        console.log('View investment:', investmentId);
-        // Implement investment detail view
-    },
-
-    // ==================== ENHANCED MODAL FUNCTIONS ====================
-    openModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            modal.style.display = 'flex';
-            
-            // Prevent body scroll
-            document.body.style.overflow = 'hidden';
-            
-            // Modal-specific setup
-            switch(modalId) {
-                case 'withdraw-modal':
-                    if (this.state.currentUser) {
-                        document.getElementById('available-balance').textContent = 
-                            `₦${this.state.currentUser.balance.toLocaleString()}`;
+                    // Modal-specific setup
+                    if (modalId === 'withdraw-modal' && this.state.currentUser) {
+                        const balanceElement = document.getElementById('available-balance');
+                        if (balanceElement) {
+                            balanceElement.textContent = `₦${this.state.currentUser.balance.toLocaleString()}`;
+                        }
                         this.updateWithdrawalFee();
                     }
-                    break;
                     
-                case 'invest-modal':
-                    this.loadInvestmentPlansForModal();
-                    break;
-                    
-                case 'deposit-modal':
-                    // Load saved payment methods
-                    this.loadPaymentMethods();
-                    break;
-            }
-            
-            // Focus first input
-            setTimeout(() => {
-                const firstInput = modal.querySelector('input, select, textarea');
-                if (firstInput) firstInput.focus();
-            }, 100);
-        }
-    },
-
-    closeModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            modal.style.display = 'none';
-            
-            // Restore body scroll
-            document.body.style.overflow = 'auto';
-            
-            // Reset form
-            const form = modal.querySelector('form');
-            if (form) {
-                form.reset();
-                
-                // Clear validation errors
-                const errors = form.querySelectorAll('.field-error');
-                errors.forEach(error => error.remove());
-                
-                const invalidInputs = form.querySelectorAll('.invalid');
-                invalidInputs.forEach(input => input.classList.remove('invalid'));
-            }
-            
-            // Clear file previews
-            const previews = modal.querySelectorAll('.file-preview');
-            previews.forEach(preview => {
-                preview.style.display = 'none';
-                preview.src = '';
-            });
-            
-            // Clear file inputs
-            const fileInputs = modal.querySelectorAll('input[type="file"]');
-            fileInputs.forEach(input => input.value = '');
-        }
-    },
-
-    // ==================== ENHANCED UTILITY FUNCTIONS ====================
-    logout() {
-        // Clear all data
-        this.state.currentUser = null;
-        this.state.token = null;
-        this.state.isAdmin = false;
-        this.state.isAuthenticated = false;
-        
-        // Clear storage
-        localStorage.removeItem('raw_wealthy_token');
-        localStorage.removeItem('raw_wealthy_user');
-        localStorage.removeItem('last_page');
-        
-        // Clear cache
-        this.state.cache.clear();
-        
-        // Clear forms
-        this.clearAllForms();
-        
-        this.showToast('You have been logged out.', 'info');
-        this.showPage('home');
-    },
-
-    clearAllForms() {
-        const forms = document.querySelectorAll('form');
-        forms.forEach(form => {
-            form.reset();
-            // Clear any stored form data
-            localStorage.removeItem(`autosave_${form.id}`);
-        });
-    },
-
-    setLoadingState(buttonId, isLoading) {
-        const button = document.getElementById(buttonId);
-        if (!button) return;
-        
-        const buttonText = button.querySelector('.btn-text');
-        const buttonLoading = button.querySelector('.btn-loading');
-        
-        if (isLoading) {
-            button.disabled = true;
-            if (buttonText) buttonText.style.display = 'none';
-            if (buttonLoading) buttonLoading.style.display = 'block';
-        } else {
-            button.disabled = false;
-            if (buttonText) buttonText.style.display = 'block';
-            if (buttonLoading) buttonLoading.style.display = 'none';
-        }
-    },
-
-    showLoadingSpinner(show) {
-        const spinner = document.getElementById('loading-spinner');
-        if (spinner) {
-            spinner.style.display = show ? 'flex' : 'none';
-        }
-    },
-
-    showToast(message, type = 'info') {
-        // Remove existing toasts if too many
-        const container = document.getElementById('toast-container');
-        if (!container) return;
-        
-        if (container.children.length > 3) {
-            container.removeChild(container.firstChild);
-        }
-        
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        
-        let icon = 'info-circle';
-        if (type === 'success') icon = 'check-circle';
-        else if (type === 'error') icon = 'exclamation-circle';
-        else if (type === 'warning') icon = 'exclamation-triangle';
-        
-        toast.innerHTML = `
-            <i class="fas fa-${icon}"></i>
-            <span>${message}</span>
-            <button class="toast-close" onclick="this.parentElement.remove()">
-                <i class="fas fa-times"></i>
-            </button>
-        `;
-        
-        container.appendChild(toast);
-        
-        // Add close button styling
-        const style = document.createElement('style');
-        style.textContent = `
-            .toast-close {
-                background: none;
-                border: none;
-                color: white;
-                cursor: pointer;
-                margin-left: auto;
-                padding: 0 0 0 10px;
-            }
-        `;
-        toast.appendChild(style);
-        
-        // Auto-remove after delay
-        setTimeout(() => {
-            if (toast.parentNode === container) {
-                container.removeChild(toast);
-            }
-        }, 5000);
-    },
-
-    // ==================== ENHANCED UI FUNCTIONS ====================
-    initPasswordToggles() {
-        document.querySelectorAll('.password-toggle').forEach(toggle => {
-            toggle.addEventListener('click', function() {
-                const input = this.previousElementSibling;
-                const icon = this.querySelector('i');
-                
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    icon.classList.remove('fa-eye');
-                    icon.classList.add('fa-eye-slash');
-                } else {
-                    input.type = 'password';
-                    icon.classList.remove('fa-eye-slash');
-                    icon.classList.add('fa-eye');
+                    if (modalId === 'invest-modal') {
+                        this.loadInvestmentPlansForModal();
+                    }
                 }
-                
-                // Focus the input after toggle
-                input.focus();
-            });
-        });
-    },
+            },
 
-    initFileUploadPreviews() {
-        const fileInputs = [
-            { input: 'investment-proof', preview: 'investment-preview' },
-            { input: 'deposit-proof', preview: 'deposit-preview' },
-            { input: 'id-front', preview: 'id-front-preview' },
-            { input: 'id-back', preview: 'id-back-preview' },
-            { input: 'selfie-with-id', preview: 'selfie-with-id-preview' }
-        ];
-        
-        fileInputs.forEach(({ input, preview }) => {
-            const inputElement = document.getElementById(input);
-            const previewElement = document.getElementById(preview);
-            
-            if (inputElement && previewElement) {
-                inputElement.addEventListener('change', (e) => {
-                    const file = e.target.files[0];
-                    if (file) {
-                        // Validate file type and size
-                        if (!this.validateFile(file)) {
-                            inputElement.value = '';
-                            return;
+            closeModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                    
+                    // Reset form
+                    const form = modal.querySelector('form');
+                    if (form) form.reset();
+                    
+                    // Clear file previews
+                    const previews = modal.querySelectorAll('.file-preview');
+                    previews.forEach(preview => {
+                        preview.style.display = 'none';
+                        preview.src = '';
+                    });
+                    
+                    // Clear file inputs
+                    const fileInputs = modal.querySelectorAll('input[type="file"]');
+                    fileInputs.forEach(input => input.value = '');
+                }
+            },
+
+            // ==================== ENHANCED INVESTMENT PLANS ====================
+            async loadInvestmentPlans() {
+                try {
+                    const response = await this.apiRequest('/plans');
+                    
+                    if (response.success && response.data.plans) {
+                        this.state.investmentPlans = response.data.plans;
+                        this.renderInvestmentPlans();
+                    } else {
+                        throw new Error('Invalid response format');
+                    }
+                } catch (error) {
+                    console.error('Failed to load investment plans:', error);
+                    // Fallback to default plans with cache
+                    const cachedPlans = localStorage.getItem('cached_plans');
+                    if (cachedPlans) {
+                        this.state.investmentPlans = JSON.parse(cachedPlans);
+                    } else {
+                        this.state.investmentPlans = this.getDefaultPlans();
+                    }
+                    this.renderInvestmentPlans();
+                    this.showToast('Using cached investment plans', 'info');
+                }
+            },
+
+            getDefaultPlans() {
+                return [
+                    {
+                        _id: '1',
+                        name: 'Cocoa Beans',
+                        description: 'Invest in premium cocoa beans with stable returns',
+                        min_amount: 3500,
+                        daily_interest: 2.5,
+                        total_interest: 75,
+                        duration: 30,
+                        risk_level: 'low',
+                        is_popular: true
+                    },
+                    {
+                        _id: '2',
+                        name: 'Gold',
+                        description: 'Precious metal investment with high liquidity',
+                        min_amount: 50000,
+                        daily_interest: 3.2,
+                        total_interest: 96,
+                        duration: 30,
+                        risk_level: 'medium',
+                        is_popular: true
+                    },
+                    {
+                        _id: '3',
+                        name: 'Crude Oil',
+                        description: 'Energy sector investment with premium returns',
+                        min_amount: 100000,
+                        daily_interest: 4.1,
+                        total_interest: 123,
+                        duration: 30,
+                        risk_level: 'high'
+                    }
+                ];
+            },
+
+            renderInvestmentPlans() {
+                const container = document.getElementById('plans-container');
+                if (!container || this.state.investmentPlans.length === 0) return;
+
+                // Cache plans for offline use
+                localStorage.setItem('cached_plans', JSON.stringify(this.state.investmentPlans));
+
+                container.innerHTML = this.state.investmentPlans.slice(0, 3).map(plan => `
+                    <div class="plan-card card-hover">
+                        <div class="plan-header">
+                            <h3 class="plan-name">${plan.name}</h3>
+                            <div class="plan-price">₦${plan.min_amount.toLocaleString()}</div>
+                            <div class="plan-period">Minimum Investment</div>
+                        </div>
+                        <div class="plan-features">
+                            <div class="plan-feature">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Daily Returns: ${plan.daily_interest}%</span>
+                            </div>
+                            <div class="plan-feature">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Total Returns: ${plan.total_interest}%</span>
+                            </div>
+                            <div class="plan-feature">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Duration: ${plan.duration} Days</span>
+                            </div>
+                            <div class="plan-feature">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Risk Level: ${plan.risk_level}</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary plan-button" onclick="app.showPage('investment-plans')">
+                            View Details
+                        </button>
+                    </div>
+                `).join('');
+            },
+
+            loadInvestmentPlansPage() {
+                const container = document.getElementById('investment-plans-list');
+                if (!container || this.state.investmentPlans.length === 0) return;
+
+                container.innerHTML = this.state.investmentPlans.map(plan => `
+                    <div class="plan-card card-hover">
+                        ${plan.is_popular ? '<div class="plan-badge">Most Popular</div>' : ''}
+                        <div class="plan-header">
+                            <h3 class="plan-name">${plan.name}</h3>
+                            <div class="plan-price">₦${plan.min_amount.toLocaleString()}</div>
+                            <div class="plan-period">Minimum Investment</div>
+                        </div>
+                        <div class="plan-features">
+                            <div class="plan-feature">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Daily Returns: ${plan.daily_interest}%</span>
+                            </div>
+                            <div class="plan-feature">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Total Returns: ${plan.total_interest}%</span>
+                            </div>
+                            <div class="plan-feature">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Duration: ${plan.duration} Days</span>
+                            </div>
+                            <div class="plan-feature">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Risk Level: ${plan.risk_level}</span>
+                            </div>
+                            <div class="plan-feature">
+                                <i class="fas fa-check-circle"></i>
+                                <span>${plan.description}</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary plan-button" onclick="app.openInvestmentModal('${plan._id}')">
+                            Invest Now
+                        </button>
+                    </div>
+                `).join('');
+            },
+
+            loadInvestmentPlansForModal() {
+                const select = document.getElementById('investment-plan');
+                if (!select || this.state.investmentPlans.length === 0) return;
+
+                select.innerHTML = '<option value="">Choose a raw material</option>' +
+                    this.state.investmentPlans.map(plan => `
+                        <option value="${plan._id}">${plan.name} - ₦${plan.min_amount.toLocaleString()} Minimum</option>
+                    `).join('');
+            },
+
+            openInvestmentModal(planId) {
+                const plan = this.state.investmentPlans.find(p => p._id === planId);
+                if (plan) {
+                    const planSelect = document.getElementById('investment-plan');
+                    if (planSelect) {
+                        planSelect.value = plan._id;
+                        const amountInput = document.getElementById('investment-amount');
+                        if (amountInput) {
+                            amountInput.min = plan.min_amount;
+                            amountInput.value = plan.min_amount;
+                            amountInput.placeholder = `Minimum: ₦${plan.min_amount.toLocaleString()}`;
                         }
-                        
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            previewElement.src = e.target.result;
-                            previewElement.style.display = 'block';
-                        };
-                        reader.readAsDataURL(file);
+                    }
+                    this.openModal('invest-modal');
+                }
+            },
+
+            validateInvestmentAmount() {
+                const amountInput = document.getElementById('investment-amount');
+                const planSelect = document.getElementById('investment-plan');
+                
+                if (!amountInput || !planSelect) return;
+
+                const planId = planSelect.value;
+                const amount = parseFloat(amountInput.value) || 0;
+
+                if (!planId) {
+                    this.showToast('Please select an investment plan first', 'warning');
+                    amountInput.value = '';
+                    return;
+                }
+
+                const plan = this.state.investmentPlans.find(p => p._id === planId);
+                if (plan && amount < plan.min_amount) {
+                    this.showToast(`Minimum investment for ${plan.name} is ₦${plan.min_amount.toLocaleString()}`, 'warning');
+                }
+            },
+
+            // ==================== ENHANCED REGISTRATION ====================
+            async handleRegistration(e) {
+                e.preventDefault();
+
+                const formData = {
+                    full_name: document.getElementById('fullname').value.trim(),
+                    email: document.getElementById('email').value.trim().toLowerCase(),
+                    phone: document.getElementById('phone').value.trim(),
+                    password: document.getElementById('password').value,
+                    referral_code: document.getElementById('referral').value.trim().toUpperCase() || undefined,
+                    risk_tolerance: document.getElementById('risk-tolerance').value,
+                    investment_strategy: document.getElementById('investment-strategy').value
+                };
+
+                // Enhanced validation
+                if (document.getElementById('password').value !== document.getElementById('confirm-password').value) {
+                    this.showToast('Passwords do not match!', 'error');
+                    return;
+                }
+
+                if (document.getElementById('password').value.length < 8) {
+                    this.showToast('Password must be at least 8 characters', 'error');
+                    return;
+                }
+
+                if (!this.validateEmail(formData.email)) {
+                    this.showToast('Please enter a valid email address', 'error');
+                    return;
+                }
+
+                if (!this.validatePhone(formData.phone)) {
+                    this.showToast('Please enter a valid phone number', 'error');
+                    return;
+                }
+
+                this.setLoadingState('register-btn', true);
+
+                try {
+                    const response = await this.apiRequest('/auth/register', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    this.state.token = response.data.token;
+                    this.state.currentUser = response.data.user;
+                    
+                    // Store in localStorage
+                    localStorage.setItem('raw_wealthy_token', response.data.token);
+                    localStorage.setItem('raw_wealthy_user', JSON.stringify(response.data.user));
+
+                    this.showToast('Registration successful! Welcome to Raw Wealthy.', 'success');
+                    this.setLoadingState('register-btn', false);
+
+                    // Redirect to dashboard
+                    setTimeout(() => {
+                        this.showPage('dashboard');
+                    }, 1500);
+
+                } catch (error) {
+                    this.setLoadingState('register-btn', false);
+                }
+            },
+
+            validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            },
+
+            validatePhone(phone) {
+                // Basic phone validation - can be customized based on country
+                const re = /^[\d\s\-\+\(\)]{10,}$/;
+                return re.test(phone);
+            },
+
+            // ==================== ENHANCED LOGIN ====================
+            async handleLogin(e) {
+                e.preventDefault();
+
+                const formData = {
+                    email: document.getElementById('login-email').value.trim().toLowerCase(),
+                    password: document.getElementById('login-password').value
+                };
+
+                // Validate email
+                if (!this.validateEmail(formData.email)) {
+                    this.showToast('Please enter a valid email address', 'error');
+                    return;
+                }
+
+                this.setLoadingState('login-btn', true);
+
+                try {
+                    const response = await this.apiRequest('/auth/login', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    this.state.token = response.data.token;
+                    this.state.currentUser = response.data.user;
+                    this.state.isAdmin = this.state.currentUser.role === 'admin' || this.state.currentUser.role === 'super_admin';
+                    
+                    // Store in localStorage
+                    localStorage.setItem('raw_wealthy_token', response.data.token);
+                    localStorage.setItem('raw_wealthy_user', JSON.stringify(response.data.user));
+
+                    this.showToast('Login successful!', 'success');
+                    this.setLoadingState('login-btn', false);
+
+                    // Redirect based on role
+                    setTimeout(() => {
+                        if (this.state.isAdmin) {
+                            this.showPage('admin');
+                        } else {
+                            this.showPage('dashboard');
+                        }
+                    }, 1000);
+
+                } catch (error) {
+                    this.setLoadingState('login-btn', false);
+                }
+            },
+
+            // ==================== ENHANCED DASHBOARD FUNCTIONS ====================
+            async updateDashboard() {
+                if (!this.state.currentUser) return;
+
+                try {
+                    const response = await this.apiRequest('/profile');
+                    const user = response.data.user;
+                    const stats = response.data.dashboard_stats;
+
+                    // Update user info
+                    const userNameElement = document.getElementById('user-name');
+                    const userAvatarElement = document.getElementById('user-avatar');
+                    const userTierElement = document.getElementById('user-tier');
+                    
+                    if (userNameElement) userNameElement.textContent = user.full_name;
+                    if (userAvatarElement) {
+                        userAvatarElement.textContent = user.full_name
+                            .split(' ')
+                            .map(n => n[0])
+                            .join('')
+                            .toUpperCase();
+                    }
+                    if (userTierElement) {
+                        userTierElement.textContent = user.kyc_verified ? 'Verified Investor' : 'Standard Investor';
+                    }
+
+                    // Update stats
+                    this.updateStatElement('total-balance', user.balance);
+                    this.updateStatElement('active-investments', stats.active_investment_value);
+                    this.updateStatElement('total-earnings', user.total_earnings);
+                    this.updateStatElement('referral-bonus', user.referral_earnings);
+
+                    // Load investments and transactions
+                    await Promise.all([
+                        this.loadUserInvestments(),
+                        this.loadUserTransactions()
+                    ]);
+
+                    // Update charts
+                    this.createEarningsChart(stats);
+
+                    // Cache user data
+                    this.cacheUserData(user, stats);
+
+                } catch (error) {
+                    console.error('Failed to update dashboard:', error);
+                    // Try to load cached data
+                    this.loadCachedDashboardData();
+                }
+            },
+
+            updateStatElement(elementId, value) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = `₦${value.toLocaleString()}`;
+                }
+            },
+
+            cacheUserData(user, stats) {
+                const cacheData = {
+                    user: user,
+                    stats: stats,
+                    timestamp: Date.now()
+                };
+                localStorage.setItem('dashboard_cache', JSON.stringify(cacheData));
+            },
+
+            loadCachedDashboardData() {
+                const cachedData = localStorage.getItem('dashboard_cache');
+                if (cachedData) {
+                    try {
+                        const data = JSON.parse(cachedData);
+                        const user = data.user;
+                        const stats = data.stats;
+
+                        // Update with cached data
+                        this.updateStatElement('total-balance', user.balance);
+                        this.updateStatElement('active-investments', stats.active_investment_value);
+                        this.updateStatElement('total-earnings', user.total_earnings);
+                        this.updateStatElement('referral-bonus', user.referral_earnings);
+
+                        this.showToast('Using cached data - please check your connection', 'info');
+                    } catch (error) {
+                        console.error('Failed to load cached data:', error);
+                    }
+                }
+            },
+
+            async loadUserInvestments() {
+                try {
+                    const response = await this.apiRequest('/investments?status=active&limit=5');
+                    const investments = response.data.investments || [];
+                    const container = document.getElementById('active-investments-list');
+                    
+                    if (container) {
+                        if (investments.length === 0) {
+                            container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 2rem;">No active investments</p>';
+                        } else {
+                            container.innerHTML = investments.map(inv => `
+                                <div class="investment-item">
+                                    <div>
+                                        <div class="investment-name">${inv.plan?.name || 'Unknown'} Plan</div>
+                                        <div class="investment-status">Active - ${inv.remaining_days || 0} days remaining</div>
+                                    </div>
+                                    <div class="investment-amount">₦${inv.amount.toLocaleString()}</div>
+                                </div>
+                            `).join('');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Failed to load investments:', error);
+                }
+            },
+
+            async loadUserTransactions() {
+                try {
+                    const response = await this.apiRequest('/transactions?limit=5');
+                    const transactions = response.data.transactions || [];
+                    const container = document.getElementById('recent-transactions-list');
+                    
+                    if (container) {
+                        if (transactions.length === 0) {
+                            container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 2rem;">No transactions yet</p>';
+                        } else {
+                            container.innerHTML = transactions.slice(0, 5).map(txn => {
+                                const amountClass = txn.amount > 0 ? 'transaction-amount' : 'transaction-amount negative';
+                                const amountSign = txn.amount > 0 ? '+' : '';
+                                return `
+                                    <div class="transaction-item">
+                                        <div>
+                                            <div class="transaction-type">${txn.description}</div>
+                                            <div class="transaction-date">${new Date(txn.createdAt).toLocaleDateString()}</div>
+                                        </div>
+                                        <div class="${amountClass}">${amountSign}₦${Math.abs(txn.amount).toLocaleString()}</div>
+                                    </div>
+                                `;
+                            }).join('');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Failed to load transactions:', error);
+                }
+            },
+
+            createEarningsChart(stats) {
+                const ctx = document.getElementById('earnings-chart');
+                if (!ctx) return;
+
+                // Destroy existing chart
+                if (this.state.charts.earnings) {
+                    this.state.charts.earnings.destroy();
+                }
+
+                // Sample data - in real app, get from API
+                const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                const earningsData = [12000, 19000, 15000, 25000, 22000, 30000, 28000];
+
+                this.state.charts.earnings = new Chart(ctx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Daily Earnings',
+                            data: earningsData,
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#94a3b8',
+                                    callback: function(value) {
+                                        return '₦' + value.toLocaleString();
+                                    }
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#94a3b8'
+                                }
+                            }
+                        }
                     }
                 });
-            }
-        });
-    },
+            },
 
-    validateFile(file) {
-        const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-        const maxSize = 5 * 1024 * 1024; // 5MB
-        
-        if (!validTypes.includes(file.type)) {
-            this.showToast('Please upload only JPEG or PNG images', 'error');
-            return false;
-        }
-        
-        if (file.size > maxSize) {
-            this.showToast('File size must be less than 5MB', 'error');
-            return false;
-        }
-        
-        return true;
-    },
+            // ==================== ENHANCED INVESTMENT CREATION ====================
+            async handleInvestment(e) {
+                e.preventDefault();
 
-    initAnimations() {
-        // Enhanced intersection observer with staggered animations
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry, index) => {
-                if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        entry.target.classList.add('animate__animated', 'animate__fadeInUp');
-                        observer.unobserve(entry.target);
-                    }, index * 100); // Stagger animations
+                if (!this.state.currentUser) {
+                    this.showToast('Please login to make an investment', 'error');
+                    this.showPage('login');
+                    return;
                 }
-            });
-        }, { 
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        });
-        
-        // Observe elements
-        document.querySelectorAll('.feature, .plan-card, .step, .testimonial-card').forEach(el => {
-            observer.observe(el);
-        });
-        
-        // Initialize counters
-        this.animateStats();
-    },
 
-    animateStats() {
-        const stats = [
-            { id: 'total-invested-stat', value: 2500000000, suffix: '+' },
-            { id: 'active-investors-stat', value: 15240, suffix: '+' },
-            { id: 'user-rating-stat', value: 4.9, suffix: '/5' }
-        ];
-        
-        stats.forEach(stat => {
-            const element = document.getElementById(stat.id);
-            if (element) {
-                this.animateValue(element, 0, stat.value, 2000, stat.suffix);
-            }
-        });
-    },
+                const planId = document.getElementById('investment-plan').value;
+                const amount = parseFloat(document.getElementById('investment-amount').value);
+                const autoRenew = document.getElementById('auto-renew').checked;
+                const proofFile = document.getElementById('investment-proof').files[0];
 
-    animateValue(element, start, end, duration, suffix = '') {
-        let startTimestamp = null;
-        
-        const step = (timestamp) => {
-            if (!startTimestamp) startTimestamp = timestamp;
-            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-            const value = Math.floor(progress * (end - start) + start);
-            
-            if (element.id === 'user-rating-stat') {
-                element.textContent = value.toFixed(1) + suffix;
-            } else {
-                element.textContent = this.formatCurrency(value) + suffix;
-            }
-            
-            if (progress < 1) {
+                // Enhanced validation
+                if (!planId) {
+                    this.showToast('Please select an investment plan', 'error');
+                    return;
+                }
+
+                const plan = this.state.investmentPlans.find(p => p._id === planId);
+                if (!plan) {
+                    this.showToast('Invalid investment plan selected', 'error');
+                    return;
+                }
+
+                if (amount < plan.min_amount) {
+                    this.showToast(`Minimum investment for ${plan.name} is ₦${plan.min_amount.toLocaleString()}`, 'error');
+                    return;
+                }
+
+                if (!proofFile) {
+                    this.showToast('Please upload payment proof', 'error');
+                    return;
+                }
+
+                // Validate file size (max 5MB)
+                if (proofFile.size > 5 * 1024 * 1024) {
+                    this.showToast('Payment proof must be less than 5MB', 'error');
+                    return;
+                }
+
+                this.setLoadingState('invest-btn', true);
+
+                try {
+                    // Create FormData for file upload
+                    const formData = new FormData();
+                    formData.append('plan_id', planId);
+                    formData.append('amount', amount);
+                    formData.append('auto_renew', autoRenew);
+                    formData.append('payment_proof', proofFile);
+
+                    const response = await this.apiRequest('/investments', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    this.showToast('Investment request submitted successfully!', 'success');
+                    this.setLoadingState('invest-btn', false);
+                    this.closeModal('invest-modal');
+
+                    // Update dashboard
+                    setTimeout(() => {
+                        this.updateDashboard();
+                    }, 1000);
+
+                } catch (error) {
+                    this.setLoadingState('invest-btn', false);
+                }
+            },
+
+            // ==================== ENHANCED DEPOSIT HANDLING ====================
+            async handleDeposit(e) {
+                e.preventDefault();
+
+                if (!this.state.currentUser) {
+                    this.showToast('Please login to make a deposit', 'error');
+                    this.showPage('login');
+                    return;
+                }
+
+                const amount = parseFloat(document.getElementById('deposit-amount').value);
+                const paymentMethod = document.getElementById('deposit-method').value;
+                const proofFile = document.getElementById('deposit-proof').files[0];
+
+                // Validation
+                if (amount < this.config.MIN_DEPOSIT) {
+                    this.showToast(`Minimum deposit is ₦${this.config.MIN_DEPOSIT.toLocaleString()}`, 'error');
+                    return;
+                }
+
+                if (!paymentMethod) {
+                    this.showToast('Please select a payment method', 'error');
+                    return;
+                }
+
+                if (!proofFile) {
+                    this.showToast('Please upload payment proof', 'error');
+                    return;
+                }
+
+                // Validate file size
+                if (proofFile.size > 5 * 1024 * 1024) {
+                    this.showToast('Payment proof must be less than 5MB', 'error');
+                    return;
+                }
+
+                this.setLoadingState('deposit-btn', true);
+
+                try {
+                    const formData = new FormData();
+                    formData.append('amount', amount);
+                    formData.append('payment_method', paymentMethod);
+                    formData.append('payment_proof', proofFile);
+
+                    const response = await this.apiRequest('/deposits', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    this.showToast('Deposit request submitted successfully!', 'success');
+                    this.setLoadingState('deposit-btn', false);
+                    this.closeModal('deposit-modal');
+
+                    // Update user balance
+                    this.state.currentUser.balance += amount;
+
+                } catch (error) {
+                    this.setLoadingState('deposit-btn', false);
+                }
+            },
+
+            // ==================== ENHANCED WITHDRAWAL HANDLING ====================
+            async handleWithdrawal(e) {
+                e.preventDefault();
+
+                if (!this.state.currentUser) {
+                    this.showToast('Please login to make a withdrawal', 'error');
+                    this.showPage('login');
+                    return;
+                }
+
+                const amount = parseFloat(document.getElementById('withdraw-amount').value);
+                const paymentMethod = document.getElementById('withdraw-method').value;
+
+                // Validation
+                if (amount < this.config.MIN_WITHDRAWAL) {
+                    this.showToast(`Minimum withdrawal is ₦${this.config.MIN_WITHDRAWAL.toLocaleString()}`, 'error');
+                    return;
+                }
+
+                if (amount > this.state.currentUser.balance) {
+                    this.showToast('Insufficient balance for withdrawal', 'error');
+                    return;
+                }
+
+                if (!paymentMethod) {
+                    this.showToast('Please select a withdrawal method', 'error');
+                    return;
+                }
+
+                this.setLoadingState('withdraw-btn', true);
+
+                try {
+                    const response = await this.apiRequest('/withdrawals', {
+                        method: 'POST',
+                        body: {
+                            amount: amount,
+                            payment_method: paymentMethod
+                        }
+                    });
+
+                    this.showToast('Withdrawal request submitted successfully!', 'success');
+                    this.setLoadingState('withdraw-btn', false);
+                    this.closeModal('withdraw-modal');
+
+                    // Update user balance
+                    this.state.currentUser.balance -= amount;
+                    this.updateDashboard();
+
+                } catch (error) {
+                    this.setLoadingState('withdraw-btn', false);
+                }
+            },
+
+            updateWithdrawalFee() {
+                const amountInput = document.getElementById('withdraw-amount');
+                const feeNotice = document.getElementById('withdrawal-fee-notice');
+                
+                if (!amountInput || !feeNotice) return;
+
+                const amount = parseFloat(amountInput.value) || 0;
+                const fee = amount * (this.config.PLATFORM_FEE_PERCENT / 100);
+                const netAmount = amount - fee;
+
+                feeNotice.innerHTML = `
+                    Platform fee: ₦${fee.toLocaleString()}
+                    (Net amount: ₦${netAmount.toLocaleString()})
+                `;
+            },
+
+            // ==================== ENHANCED PROFILE MANAGEMENT ====================
+            async loadProfileData() {
+                if (!this.state.currentUser) return;
+
+                try {
+                    const response = await this.apiRequest('/profile');
+                    const user = response.data.user;
+
+                    // Update personal info
+                    this.setFormValue('profile-fullname', user.full_name);
+                    this.setFormValue('profile-email', user.email);
+                    this.setFormValue('profile-phone', user.phone || '');
+                    this.setFormValue('profile-country', user.country || 'ng');
+
+                    // Update KYC status
+                    const kycStatusElement = document.getElementById('kyc-status-text');
+                    if (kycStatusElement) {
+                        kycStatusElement.textContent = user.kyc_verified ? 'Verified' : 'Pending';
+                        kycStatusElement.className = user.kyc_verified ? 'status-badge approved' : 'status-badge pending';
+                    }
+
+                } catch (error) {
+                    console.error('Failed to load profile data:', error);
+                }
+            },
+
+            setFormValue(elementId, value) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.value = value;
+                }
+            },
+
+            async handleProfileUpdate(e) {
+                e.preventDefault();
+
+                const formData = {
+                    full_name: document.getElementById('profile-fullname').value.trim(),
+                    phone: document.getElementById('profile-phone').value.trim(),
+                    country: document.getElementById('profile-country').value
+                };
+
+                try {
+                    const response = await this.apiRequest('/profile', {
+                        method: 'PUT',
+                        body: formData
+                    });
+
+                    this.state.currentUser = response.data.user;
+                    this.showToast('Profile updated successfully!', 'success');
+
+                } catch (error) {
+                    console.error('Failed to update profile:', error);
+                }
+            },
+
+            async handleBankUpdate(e) {
+                e.preventDefault();
+
+                const formData = {
+                    bank_name: document.getElementById('bank-name').value.trim(),
+                    account_name: document.getElementById('account-name').value.trim(),
+                    account_number: document.getElementById('account-number').value.trim()
+                };
+
+                try {
+                    const response = await this.apiRequest('/profile/bank', {
+                        method: 'PUT',
+                        body: formData
+                    });
+
+                    this.showToast('Bank details updated successfully!', 'success');
+
+                } catch (error) {
+                    console.error('Failed to update bank details:', error);
+                }
+            },
+
+            // ==================== ENHANCED KYC SUBMISSION ====================
+            async handleKYCSubmission(e) {
+                e.preventDefault();
+
+                const idType = document.getElementById('id-type').value;
+                const idNumber = document.getElementById('id-number').value.trim();
+                const idFrontFile = document.getElementById('id-front').files[0];
+                const idBackFile = document.getElementById('id-back').files[0];
+                const selfieFile = document.getElementById('selfie-with-id').files[0];
+
+                // Validation
+                if (!idType || !idNumber) {
+                    this.showToast('Please fill all required fields', 'error');
+                    return;
+                }
+
+                if (!idFrontFile || !selfieFile) {
+                    this.showToast('Please upload required documents', 'error');
+                    return;
+                }
+
+                // Validate file sizes
+                const files = [idFrontFile, idBackFile, selfieFile].filter(Boolean);
+                for (const file of files) {
+                    if (file.size > 5 * 1024 * 1024) {
+                        this.showToast('Each file must be less than 5MB', 'error');
+                        return;
+                    }
+                }
+
+                this.setLoadingState('kyc-submit-btn', true);
+
+                try {
+                    const formData = new FormData();
+                    formData.append('id_type', idType);
+                    formData.append('id_number', idNumber);
+                    formData.append('id_front', idFrontFile);
+                    if (idBackFile) formData.append('id_back', idBackFile);
+                    formData.append('selfie_with_id', selfieFile);
+
+                    const response = await this.apiRequest('/kyc', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    this.showToast('KYC application submitted successfully!', 'success');
+                    this.setLoadingState('kyc-submit-btn', false);
+
+                    // Update KYC status
+                    const kycStatusElement = document.getElementById('kyc-status-text');
+                    if (kycStatusElement) {
+                        kycStatusElement.textContent = 'Pending';
+                        kycStatusElement.className = 'status-badge pending';
+                    }
+
+                    // Reset form
+                    e.target.reset();
+                    this.hideFilePreviews(['id-front-preview', 'id-back-preview', 'selfie-with-id-preview']);
+
+                } catch (error) {
+                    this.setLoadingState('kyc-submit-btn', false);
+                }
+            },
+
+            hideFilePreviews(previewIds) {
+                previewIds.forEach(id => {
+                    const preview = document.getElementById(id);
+                    if (preview) {
+                        preview.style.display = 'none';
+                        preview.src = '';
+                    }
+                });
+            },
+
+            // ==================== ENHANCED REFERRAL SYSTEM ====================
+            async loadReferralData() {
+                if (!this.state.currentUser) return;
+
+                try {
+                    const response = await this.apiRequest('/referrals/stats');
+                    const stats = response.data.stats;
+
+                    // Update referral link and code
+                    const baseUrl = window.location.origin;
+                    const referralLink = `${baseUrl}/register?ref=${this.state.currentUser.referral_code}`;
+                    
+                    this.setFormValue('referral-link', referralLink);
+                    this.setFormValue('referral-code', this.state.currentUser.referral_code);
+
+                    // Update stats
+                    this.updateReferralStat('total-referrals', stats.total_referrals);
+                    this.updateReferralStat('active-referrals', stats.active_referrals);
+                    this.updateReferralStat('total-referral-earnings', stats.total_earnings, true);
+                    this.updateReferralStat('pending-referral-earnings', stats.pending_earnings, false, 'warning');
+
+                } catch (error) {
+                    console.error('Failed to load referral data:', error);
+                }
+            },
+
+            updateReferralStat(elementId, value, isCurrency = false, colorClass = '') {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    if (isCurrency) {
+                        element.textContent = `₦${value.toLocaleString()}`;
+                        if (colorClass === 'warning') {
+                            element.style.color = 'var(--warning)';
+                        } else {
+                            element.style.color = 'var(--accent-gold)';
+                        }
+                    } else {
+                        element.textContent = value;
+                    }
+                }
+            },
+
+            copyReferralLink() {
+                const linkInput = document.getElementById('referral-link');
+                if (linkInput) {
+                    linkInput.select();
+                    linkInput.setSelectionRange(0, 99999);
+                    navigator.clipboard.writeText(linkInput.value)
+                        .then(() => {
+                            this.showToast('Referral link copied to clipboard!', 'success');
+                        })
+                        .catch(err => {
+                            console.error('Failed to copy: ', err);
+                            this.showToast('Failed to copy link', 'error');
+                        });
+                }
+            },
+
+            copyReferralCode() {
+                const codeInput = document.getElementById('referral-code');
+                if (codeInput) {
+                    codeInput.select();
+                    codeInput.setSelectionRange(0, 99999);
+                    navigator.clipboard.writeText(codeInput.value)
+                        .then(() => {
+                            this.showToast('Referral code copied to clipboard!', 'success');
+                        })
+                        .catch(err => {
+                            console.error('Failed to copy: ', err);
+                            this.showToast('Failed to copy code', 'error');
+                        });
+                }
+            },
+
+            checkReferralFromURL() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const referralCode = urlParams.get('ref');
+                const referralInput = document.getElementById('referral');
+                
+                if (referralCode && referralInput) {
+                    referralInput.value = referralCode;
+                }
+            },
+
+            // ==================== ENHANCED SUPPORT SYSTEM ====================
+            async handleSupportRequest(e) {
+                e.preventDefault();
+
+                const formData = {
+                    subject: document.getElementById('support-subject').value.trim(),
+                    category: document.getElementById('support-category').value,
+                    message: document.getElementById('support-message').value.trim()
+                };
+
+                try {
+                    const response = await this.apiRequest('/support', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    this.showToast('Support ticket submitted successfully!', 'success');
+                    e.target.reset();
+
+                } catch (error) {
+                    console.error('Failed to submit support ticket:', error);
+                }
+            },
+
+            // ==================== ENHANCED ADMIN FUNCTIONS ====================
+            async updateAdminDashboard() {
+                if (!this.state.isAdmin) return;
+
+                try {
+                    const response = await this.apiRequest('/admin/dashboard');
+                    const stats = response.data.stats;
+
+                    // Update admin stats
+                    this.updateAdminStat('admin-total-users', stats.total_users);
+                    this.updateAdminStat('admin-total-invested', stats.total_investments, true);
+                    this.updateAdminStat('admin-total-withdrawn', stats.total_withdrawals, true);
+                    this.updateAdminStat('admin-pending-requests', stats.total_pending);
+                    this.updateAdminStat('admin-platform-earnings', stats.platform_earnings, true);
+                    this.updateAdminStat('admin-active-investments', stats.active_investments);
+
+                    // Load admin data
+                    await Promise.all([
+                        this.loadAdminUsers(),
+                        this.loadAdminInvestments(),
+                        this.loadAdminDeposits(),
+                        this.loadAdminWithdrawals()
+                    ]);
+
+                } catch (error) {
+                    console.error('Failed to update admin dashboard:', error);
+                }
+            },
+
+            updateAdminStat(elementId, value, isCurrency = false) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    if (isCurrency) {
+                        element.textContent = `₦${value.toLocaleString()}`;
+                    } else {
+                        element.textContent = value;
+                    }
+                }
+            },
+
+            async loadAdminUsers() {
+                try {
+                    const response = await this.apiRequest('/admin/users?limit=10');
+                    const users = response.data.users || [];
+                    const table = document.getElementById('admin-users-table');
+                    
+                    if (table) {
+                        table.innerHTML = users.map(user => `
+                            <tr>
+                                <td>${user.full_name}</td>
+                                <td>${user.email}</td>
+                                <td>${new Date(user.createdAt).toLocaleDateString()}</td>
+                                <td>
+                                    <span class="status-badge ${user.kyc_verified ? 'approved' : 'pending'}">
+                                        ${user.kyc_verified ? 'Verified' : 'Pending'}
+                                    </span>
+                                </td>
+                                <td>₦${user.balance.toLocaleString()}</td>
+                                <td>
+                                    <button class="btn btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.8rem;">
+                                        View
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('');
+                    }
+                } catch (error) {
+                    console.error('Failed to load admin users:', error);
+                }
+            },
+
+            async loadAdminInvestments() {
+                try {
+                    const response = await this.apiRequest('/admin/pending-investments');
+                    const investments = response.data.investments || [];
+                    const table = document.getElementById('admin-investments-table');
+                    
+                    if (table) {
+                        table.innerHTML = investments.map(inv => `
+                            <tr>
+                                <td>${inv.user?.full_name || 'Unknown'}</td>
+                                <td>${inv.plan?.name || 'Unknown'}</td>
+                                <td>₦${inv.amount.toLocaleString()}</td>
+                                <td>${new Date(inv.createdAt).toLocaleDateString()}</td>
+                                <td><span class="status-badge pending">Pending</span></td>
+                                <td>
+                                    <button class="btn btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.8rem; margin-right: 0.5rem;"
+                                        onclick="app.approveInvestment('${inv._id}')">
+                                        Approve
+                                    </button>
+                                    <button class="btn btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.8rem; background: var(--error); color: white;"
+                                        onclick="app.rejectInvestment('${inv._id}')">
+                                        Reject
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('');
+                    }
+                } catch (error) {
+                    console.error('Failed to load admin investments:', error);
+                }
+            },
+
+            async loadAdminDeposits() {
+                try {
+                    const response = await this.apiRequest('/admin/pending-deposits');
+                    const deposits = response.data.deposits || [];
+                    const table = document.getElementById('admin-deposits-table');
+                    
+                    if (table) {
+                        table.innerHTML = deposits.map(deposit => `
+                            <tr>
+                                <td>${deposit.user?.full_name || 'Unknown'}</td>
+                                <td>₦${deposit.amount.toLocaleString()}</td>
+                                <td>${new Date(deposit.createdAt).toLocaleDateString()}</td>
+                                <td><span class="status-badge pending">Pending</span></td>
+                                <td>
+                                    <button class="btn btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.8rem; margin-right: 0.5rem;"
+                                        onclick="app.approveDeposit('${deposit._id}')">
+                                        Approve
+                                    </button>
+                                    <button class="btn btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.8rem; background: var(--error); color: white;"
+                                        onclick="app.rejectDeposit('${deposit._id}')">
+                                        Reject
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('');
+                    }
+                } catch (error) {
+                    console.error('Failed to load admin deposits:', error);
+                }
+            },
+
+            async loadAdminWithdrawals() {
+                try {
+                    const response = await this.apiRequest('/admin/pending-withdrawals');
+                    const withdrawals = response.data.withdrawals || [];
+                    const table = document.getElementById('admin-withdrawals-table');
+                    
+                    if (table) {
+                        table.innerHTML = withdrawals.map(withdrawal => `
+                            <tr>
+                                <td>${withdrawal.user?.full_name || 'Unknown'}</td>
+                                <td>₦${withdrawal.amount.toLocaleString()}</td>
+                                <td>₦${withdrawal.platform_fee.toLocaleString()}</td>
+                                <td>₦${withdrawal.net_amount.toLocaleString()}</td>
+                                <td>${new Date(withdrawal.createdAt).toLocaleDateString()}</td>
+                                <td><span class="status-badge pending">Pending</span></td>
+                                <td>
+                                    <button class="btn btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.8rem; margin-right: 0.5rem;"
+                                        onclick="app.approveWithdrawal('${withdrawal._id}')">
+                                        Approve
+                                    </button>
+                                    <button class="btn btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.8rem; background: var(--error); color: white;"
+                                        onclick="app.rejectWithdrawal('${withdrawal._id}')">
+                                        Reject
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('');
+                    }
+                } catch (error) {
+                    console.error('Failed to load admin withdrawals:', error);
+                }
+            },
+
+            // Admin approval functions
+            async approveInvestment(investmentId) {
+                if (!confirm('Approve this investment?')) return;
+
+                try {
+                    await this.apiRequest(`/admin/investments/${investmentId}/approve`, {
+                        method: 'POST'
+                    });
+
+                    this.showToast('Investment approved successfully!', 'success');
+                    this.loadAdminInvestments();
+
+                } catch (error) {
+                    console.error('Failed to approve investment:', error);
+                }
+            },
+
+            async rejectInvestment(investmentId) {
+                const reason = prompt('Enter rejection reason:');
+                if (!reason) return;
+
+                try {
+                    await this.apiRequest(`/admin/investments/${investmentId}/reject`, {
+                        method: 'POST',
+                        body: { remarks: reason }
+                    });
+
+                    this.showToast('Investment rejected!', 'success');
+                    this.loadAdminInvestments();
+
+                } catch (error) {
+                    console.error('Failed to reject investment:', error);
+                }
+            },
+
+            async approveDeposit(depositId) {
+                if (!confirm('Approve this deposit?')) return;
+
+                try {
+                    await this.apiRequest(`/admin/deposits/${depositId}/approve`, {
+                        method: 'POST'
+                    });
+
+                    this.showToast('Deposit approved successfully!', 'success');
+                    this.loadAdminDeposits();
+
+                } catch (error) {
+                    console.error('Failed to approve deposit:', error);
+                }
+            },
+
+            async rejectDeposit(depositId) {
+                const reason = prompt('Enter rejection reason:');
+                if (!reason) return;
+
+                try {
+                    await this.apiRequest(`/admin/deposits/${depositId}/reject`, {
+                        method: 'POST',
+                        body: { remarks: reason }
+                    });
+
+                    this.showToast('Deposit rejected!', 'success');
+                    this.loadAdminDeposits();
+
+                } catch (error) {
+                    console.error('Failed to reject deposit:', error);
+                }
+            },
+
+            async approveWithdrawal(withdrawalId) {
+                if (!confirm('Approve this withdrawal?')) return;
+
+                try {
+                    await this.apiRequest(`/admin/withdrawals/${withdrawalId}/approve`, {
+                        method: 'POST'
+                    });
+
+                    this.showToast('Withdrawal approved successfully!', 'success');
+                    this.loadAdminWithdrawals();
+
+                } catch (error) {
+                    console.error('Failed to approve withdrawal:', error);
+                }
+            },
+
+            async rejectWithdrawal(withdrawalId) {
+                const reason = prompt('Enter rejection reason:');
+                if (!reason) return;
+
+                try {
+                    await this.apiRequest(`/admin/withdrawals/${withdrawalId}/reject`, {
+                        method: 'POST',
+                        body: { remarks: reason }
+                    });
+
+                    this.showToast('Withdrawal rejected!', 'success');
+                    this.loadAdminWithdrawals();
+
+                } catch (error) {
+                    console.error('Failed to reject withdrawal:', error);
+                }
+            },
+
+            // ==================== ENHANCED PASSWORD RESET ====================
+            async handlePasswordReset(e) {
+                e.preventDefault();
+
+                const email = document.getElementById('reset-email').value.trim();
+
+                if (!this.validateEmail(email)) {
+                    this.showToast('Please enter a valid email address', 'error');
+                    return;
+                }
+
+                try {
+                    const response = await this.apiRequest('/auth/password-reset', {
+                        method: 'POST',
+                        body: { email: email }
+                    });
+
+                    this.showToast('Password reset instructions sent to your email', 'success');
+                    this.closeModal('password-reset-modal');
+
+                } catch (error) {
+                    console.error('Password reset error:', error);
+                }
+            },
+
+            // ==================== ENHANCED UTILITY FUNCTIONS ====================
+            logout() {
+                // Clear all auth data
+                this.clearAuthData();
+                
+                // Clear all caches
+                localStorage.removeItem('dashboard_cache');
+                localStorage.removeItem('cached_plans');
+                
+                this.showToast('You have been logged out.', 'info');
+                this.showPage('home');
+            },
+
+            setLoadingState(buttonId, isLoading) {
+                const button = document.getElementById(buttonId);
+                if (!button) return;
+
+                const buttonText = button.querySelector('.btn-text');
+                const buttonLoading = button.querySelector('.btn-loading');
+
+                if (isLoading) {
+                    button.disabled = true;
+                    if (buttonText) buttonText.style.display = 'none';
+                    if (buttonLoading) buttonLoading.style.display = 'block';
+                } else {
+                    button.disabled = false;
+                    if (buttonText) buttonText.style.display = 'block';
+                    if (buttonLoading) buttonLoading.style.display = 'none';
+                }
+            },
+
+            showLoadingSpinner(show) {
+                const spinner = document.getElementById('loading-spinner');
+                if (spinner) {
+                    spinner.style.display = show ? 'flex' : 'none';
+                }
+            },
+
+            showToast(message, type = 'info') {
+                const container = document.getElementById('toast-container');
+                if (!container) return;
+
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                
+                let icon = 'info-circle';
+                if (type === 'success') icon = 'check-circle';
+                else if (type === 'error') icon = 'exclamation-circle';
+                else if (type === 'warning') icon = 'exclamation-triangle';
+
+                toast.innerHTML = `
+                    <i class="fas fa-${icon}"></i>
+                    <span>${message}</span>
+                `;
+
+                container.appendChild(toast);
+
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    if (toast.parentNode === container) {
+                        container.removeChild(toast);
+                    }
+                }, 3000);
+            },
+
+            // ==================== ENHANCED UI HELPERS ====================
+            initializeTheme() {
+                const savedTheme = localStorage.getItem('theme');
+                const themeToggleIcon = document.querySelector('#theme-toggle i');
+                
+                if (savedTheme === 'light') {
+                    document.body.classList.add('light-mode');
+                    if (themeToggleIcon) {
+                        themeToggleIcon.classList.remove('fa-moon');
+                        themeToggleIcon.classList.add('fa-sun');
+                    }
+                }
+            },
+
+            toggleTheme() {
+                const body = document.body;
+                const icon = document.querySelector('#theme-toggle i');
+                
+                if (body.classList.contains('light-mode')) {
+                    body.classList.remove('light-mode');
+                    if (icon) {
+                        icon.classList.remove('fa-sun');
+                        icon.classList.add('fa-moon');
+                    }
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    body.classList.add('light-mode');
+                    if (icon) {
+                        icon.classList.remove('fa-moon');
+                        icon.classList.add('fa-sun');
+                    }
+                    localStorage.setItem('theme', 'light');
+                }
+            },
+
+            openMobileMenu() {
+                document.getElementById('mobile-menu').classList.add('active');
+                document.getElementById('mobile-menu-overlay').classList.add('active');
+                document.body.style.overflow = 'hidden';
+            },
+
+            closeMobileMenu() {
+                document.getElementById('mobile-menu').classList.remove('active');
+                document.getElementById('mobile-menu-overlay').classList.remove('active');
+                document.body.style.overflow = 'auto';
+            },
+
+            handleScroll() {
+                const navbar = document.querySelector('.navbar');
+                const backToTop = document.getElementById('back-to-top');
+
+                if (navbar && window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else if (navbar) {
+                    navbar.classList.remove('scrolled');
+                }
+
+                if (backToTop && window.scrollY > 300) {
+                    backToTop.classList.add('visible');
+                } else if (backToTop) {
+                    backToTop.classList.remove('visible');
+                }
+            },
+
+            scrollToTop() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            },
+
+            initPasswordToggles() {
+                document.querySelectorAll('.password-toggle').forEach(toggle => {
+                    toggle.addEventListener('click', function() {
+                        const input = this.previousElementSibling;
+                        const icon = this.querySelector('i');
+                        
+                        if (input.type === 'password') {
+                            input.type = 'text';
+                            icon.classList.remove('fa-eye');
+                            icon.classList.add('fa-eye-slash');
+                        } else {
+                            input.type = 'password';
+                            icon.classList.remove('fa-eye-slash');
+                            icon.classList.add('fa-eye');
+                        }
+                    });
+                });
+            },
+
+            initFileUploadPreviews() {
+                const fileInputs = [
+                    { input: 'investment-proof', preview: 'investment-preview' },
+                    { input: 'deposit-proof', preview: 'deposit-preview' },
+                    { input: 'id-front', preview: 'id-front-preview' },
+                    { input: 'id-back', preview: 'id-back-preview' },
+                    { input: 'selfie-with-id', preview: 'selfie-with-id-preview' }
+                ];
+
+                fileInputs.forEach(({ input, preview }) => {
+                    const inputElement = document.getElementById(input);
+                    const previewElement = document.getElementById(preview);
+                    
+                    if (inputElement && previewElement) {
+                        inputElement.addEventListener('change', (e) => {
+                            const file = e.target.files[0];
+                            if (file) {
+                                const reader = new FileReader();
+                                reader.onload = (e) => {
+                                    previewElement.src = e.target.result;
+                                    previewElement.style.display = 'block';
+                                };
+                                reader.readAsDataURL(file);
+                            }
+                        });
+                    }
+                });
+            },
+
+            setupEventListeners() {
+                // Theme toggle
+                const themeToggle = document.getElementById('theme-toggle');
+                if (themeToggle) {
+                    themeToggle.addEventListener('click', () => this.toggleTheme());
+                }
+
+                // Mobile menu
+                const hamburger = document.getElementById('hamburger');
+                if (hamburger) {
+                    hamburger.addEventListener('click', () => this.openMobileMenu());
+                }
+
+                const closeMobileMenuBtn = document.getElementById('close-mobile-menu');
+                if (closeMobileMenuBtn) {
+                    closeMobileMenuBtn.addEventListener('click', () => this.closeMobileMenu());
+                }
+
+                const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+                if (mobileMenuOverlay) {
+                    mobileMenuOverlay.addEventListener('click', () => this.closeMobileMenu());
+                }
+
+                // Back to top
+                const backToTop = document.getElementById('back-to-top');
+                if (backToTop) {
+                    backToTop.addEventListener('click', () => this.scrollToTop());
+                }
+
+                // Form submissions
+                const forms = {
+                    'registration-form': (e) => this.handleRegistration(e),
+                    'login-form': (e) => this.handleLogin(e),
+                    'invest-form': (e) => this.handleInvestment(e),
+                    'deposit-form': (e) => this.handleDeposit(e),
+                    'withdraw-form': (e) => this.handleWithdrawal(e),
+                    'personal-form': (e) => this.handleProfileUpdate(e),
+                    'bank-form': (e) => this.handleBankUpdate(e),
+                    'kyc-form': (e) => this.handleKYCSubmission(e),
+                    'support-form': (e) => this.handleSupportRequest(e),
+                    'password-reset-form': (e) => this.handlePasswordReset(e)
+                };
+
+                Object.entries(forms).forEach(([formId, handler]) => {
+                    const form = document.getElementById(formId);
+                    if (form) {
+                        form.addEventListener('submit', handler);
+                    }
+                });
+
+                // Password toggles
+                this.initPasswordToggles();
+
+                // File upload previews
+                this.initFileUploadPreviews();
+
+                // Scroll event for navbar
+                window.addEventListener('scroll', () => this.handleScroll());
+
+                // Withdrawal amount change listener
+                const withdrawAmount = document.getElementById('withdraw-amount');
+                if (withdrawAmount) {
+                    withdrawAmount.addEventListener('input', () => this.updateWithdrawalFee());
+                }
+
+                // Investment amount validation
+                const investAmount = document.getElementById('investment-amount');
+                if (investAmount) {
+                    investAmount.addEventListener('input', () => this.validateInvestmentAmount());
+                }
+
+                // Auto-scroll to top when page changes
+                window.addEventListener('hashchange', () => window.scrollTo(0, 0));
+
+                // Initialize stats animation
+                this.animateStats();
+            },
+
+            initAnimations() {
+                // Intersection Observer for scroll animations
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('animate__animated', 'animate__fadeInUp');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.1 });
+
+                // Observe elements
+                document.querySelectorAll('.feature, .plan-card, .step, .testimonial-card').forEach(el => {
+                    observer.observe(el);
+                });
+            },
+
+            animateStats() {
+                const stats = [
+                    { id: 'total-invested-stat', value: 2500000000, suffix: '+' },
+                    { id: 'active-investors-stat', value: 15240, suffix: '+' },
+                    { id: 'user-rating-stat', value: 4.9, suffix: '/5' }
+                ];
+
+                stats.forEach(stat => {
+                    const element = document.getElementById(stat.id);
+                    if (element) {
+                        this.animateValue(element, 0, stat.value, 2000, stat.suffix);
+                    }
+                });
+            },
+
+            animateValue(element, start, end, duration, suffix = '') {
+                let startTimestamp = null;
+                
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    const value = Math.floor(progress * (end - start) + start);
+                    
+                    if (element.id === 'user-rating-stat') {
+                        element.textContent = value.toFixed(1) + suffix;
+                    } else {
+                        element.textContent = this.formatCurrency(value) + suffix;
+                    }
+
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    }
+                };
+                
                 window.requestAnimationFrame(step);
+            },
+
+            formatCurrency(value) {
+                if (value >= 1000000000) {
+                    return '₦' + (value / 1000000000).toFixed(1) + 'B';
+                } else if (value >= 1000000) {
+                    return '₦' + (value / 1000000).toFixed(1) + 'M';
+                } else if (value >= 1000) {
+                    return '₦' + (value / 1000).toFixed(1) + 'K';
+                }
+                return '₦' + value.toLocaleString();
+            },
+
+            // ==================== TAB SWITCHING FUNCTIONS ====================
+            switchProfileTab(tab) {
+                // Hide all tabs
+                ['personal', 'security', 'bank', 'preferences', 'kyc'].forEach(tabId => {
+                    const element = document.getElementById(`${tabId}-tab`);
+                    if (element) element.style.display = 'none';
+                });
+
+                // Remove active class from all nav items
+                document.querySelectorAll('.profile-nav a').forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                // Show selected tab
+                const tabElement = document.getElementById(`${tab}-tab`);
+                if (tabElement) {
+                    tabElement.style.display = 'block';
+                }
+
+                // Set active nav item
+                const navItems = document.querySelectorAll('.profile-nav a');
+                navItems.forEach(item => {
+                    if (item.textContent.includes(tab.charAt(0).toUpperCase() + tab.slice(1))) {
+                        item.classList.add('active');
+                    }
+                });
+            },
+
+            switchSupportCategory(category) {
+                // Hide all categories
+                ['faq', 'contact'].forEach(catId => {
+                    const element = document.getElementById(`${catId}-category`);
+                    if (element) element.style.display = 'none';
+                });
+
+                // Remove active class from all category items
+                document.querySelectorAll('.support-category').forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                // Show selected category
+                const categoryElement = document.getElementById(`${category}-category`);
+                if (categoryElement) {
+                    categoryElement.style.display = 'block';
+                }
+
+                // Set active category item
+                const categoryItems = document.querySelectorAll('.support-category');
+                categoryItems.forEach(item => {
+                    if (item.textContent.includes(category.charAt(0).toUpperCase() + category.slice(1))) {
+                        item.classList.add('active');
+                    }
+                });
+            },
+
+            switchAdminTab(tab) {
+                // Hide all tabs
+                ['overview', 'users', 'investments', 'deposits', 'withdrawals', 'analytics'].forEach(tabId => {
+                    const element = document.getElementById(`${tabId}-tab`);
+                    if (element) element.style.display = 'none';
+                });
+
+                // Remove active class from all nav items
+                document.querySelectorAll('.admin-nav a').forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                // Show selected tab
+                const tabElement = document.getElementById(`${tab}-tab`);
+                if (tabElement) {
+                    tabElement.style.display = 'block';
+                }
+
+                // Set active nav item
+                const navItems = document.querySelectorAll('.admin-nav a');
+                navItems.forEach(item => {
+                    if (item.textContent.includes(tab.charAt(0).toUpperCase() + tab.slice(1))) {
+                        item.classList.add('active');
+                    }
+                });
+
+                // Load tab data
+                if (tab === 'users') this.loadAdminUsers();
+                if (tab === 'investments') this.loadAdminInvestments();
+                if (tab === 'deposits') this.loadAdminDeposits();
+                if (tab === 'withdrawals') this.loadAdminWithdrawals();
+            },
+
+            toggleFaq(element) {
+                const faqItem = element.parentElement;
+                faqItem.classList.toggle('active');
+            },
+
+            // ==================== TWO-FACTOR AUTHENTICATION ====================
+            enable2FA() {
+                this.showToast('Two-factor authentication requires backend setup', 'info');
+            },
+
+            disable2FA() {
+                this.showToast('Two-factor authentication requires backend setup', 'info');
             }
         };
-        
-        window.requestAnimationFrame(step);
-    },
 
-    formatCurrency(value) {
-        if (value >= 1000000000) {
-            return '₦' + (value / 1000000000).toFixed(1) + 'B';
-        } else if (value >= 1000000) {
-            return '₦' + (value / 1000000).toFixed(1) + 'M';
-        } else if (value >= 1000) {
-            return '₦' + (value / 1000).toFixed(1) + 'K';
-        }
-        return '₦' + value.toLocaleString();
-    },
+        // Initialize the application
+        window.addEventListener('DOMContentLoaded', function() {
+            app.init();
+        });
 
-    // ==================== TAB SWITCHING ====================
-    switchProfileTab(tab) {
-        // Hide all tabs
-        ['personal', 'security', 'bank', 'preferences', 'kyc'].forEach(tabId => {
-            const element = document.getElementById(`${tabId}-tab`);
-            if (element) element.style.display = 'none';
-        });
-        
-        // Remove active class from all nav items
-        document.querySelectorAll('.profile-nav a').forEach(item => {
-            item.classList.remove('active');
-        });
-        
-        // Show selected tab
-        const tabElement = document.getElementById(`${tab}-tab`);
-        if (tabElement) {
-            tabElement.style.display = 'block';
-            // Load any auto-saved data
-            this.loadAutoSavedData(`${tab}-form`);
-        }
-        
-        // Set active nav item
-        document.querySelectorAll('.profile-nav a').forEach(item => {
-            if (item.textContent.toLowerCase().includes(tab.toLowerCase())) {
-                item.classList.add('active');
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+                document.body.style.overflow = 'auto';
             }
-        });
-    },
+        };
 
-    // ==================== ENHANCED ERROR HANDLING ====================
-    handleApiError(error, context) {
-        console.error(`API Error in ${context}:`, error);
-        
-        let userMessage = 'An error occurred. Please try again.';
-        
-        if (error.message.includes('Network Error')) {
-            userMessage = 'Network error. Please check your internet connection.';
-        } else if (error.message.includes('401')) {
-            userMessage = 'Session expired. Please login again.';
-            this.handleTokenExpired();
-        } else if (error.message.includes('403')) {
-            userMessage = 'You do not have permission to perform this action.';
-        } else if (error.message.includes('404')) {
-            userMessage = 'Requested resource not found.';
-        } else if (error.message.includes('500')) {
-            userMessage = 'Server error. Please try again later.';
-        }
-        
-        this.showToast(userMessage, 'error');
-        
-        // Log to analytics (in real app)
-        this.logErrorToAnalytics(error, context);
-    },
-
-    logErrorToAnalytics(error, context) {
-        // In a real app, send to error tracking service
-        console.log('Error logged:', {
-            context,
-            message: error.message,
-            stack: error.stack,
-            timestamp: new Date().toISOString(),
-            url: window.location.href,
-            userAgent: navigator.userAgent
-        });
-    }
-};
-
-// ==================== GLOBAL INITIALIZATION ====================
-window.addEventListener('DOMContentLoaded', async function() {
-    try {
-        await app.init();
-        
-        // Check for deep links
-        const hash = window.location.hash.replace('#', '');
-        if (hash && hash !== 'home') {
-            app.showPage(hash);
-        }
-        
-        // Restore last page if no hash
-        const lastPage = localStorage.getItem('last_page');
-        if (!hash && lastPage && lastPage !== 'home') {
-            app.showPage(lastPage);
-        }
-        
-    } catch (error) {
-        console.error('Failed to initialize app:', error);
-        app.showToast('Failed to initialize application', 'error');
-    }
-});
-
-// Global modal close handler
-window.onclick = function(event) {
-    if (event.target.classList.contains('modal')) {
-        event.target.style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }
-};
-
-// Enhanced smooth scrolling
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const targetId = this.getAttribute('href');
-        if (targetId === '#') return;
-        
-        const targetElement = document.querySelector(targetId);
-        if (targetElement) {
-            window.scrollTo({
-                top: targetElement.offsetTop - 80,
-                behavior: 'smooth'
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
             });
-        }
-    });
-});
+        });
 
-// Handle page refresh
-window.addEventListener('beforeunload', function() {
-    // Save current scroll position
-    localStorage.setItem('scroll_position', window.pageYOffset);
-});
-
-// Restore scroll position on load
-window.addEventListener('load', function() {
-    const savedPosition = localStorage.getItem('scroll_position');
-    if (savedPosition) {
-        setTimeout(() => {
-            window.scrollTo(0, parseInt(savedPosition));
-            localStorage.removeItem('scroll_position');
-        }, 100);
-    }
-});
-
-// Service Worker registration (for PWA capabilities)
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
-            .then(registration => {
-                console.log('ServiceWorker registered:', registration);
-            })
-            .catch(error => {
-                console.log('ServiceWorker registration failed:', error);
-            });
-    });
-}</script>
+        // Handle browser back/forward buttons
+        window.addEventListener('popstate', function(event) {
+            // You can add custom handling for browser navigation if needed
+        });
+    </script>
 </body>
 </html>
