@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Raw Wealthy Investment Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f8fafc;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 3rem 0;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #f59e0b;
+        }
+        
+        .content {
+            background: rgba(30, 41, 59, 0.7);
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .section {
+            margin-bottom: 2.5rem;
+        }
+        
+        .section h2 {
+            color: #f59e0b;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .section p {
+            margin-bottom: 1rem;
+            color: #e2e8f0;
+        }
+        
+        .section ul {
+            padding-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .section li {
+            margin-bottom: 0.5rem;
+            color: #cbd5e1;
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .team-member {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .team-member:hover {
+            transform: translateY(-5px);
+        }
+        
+        .team-member img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            border: 3px solid #f59e0b;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            color: #0f172a;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .back-home {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 0.8rem 1.5rem;
+            background: #f59e0b;
+            color: #0f172a;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .back-home:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .content {
+                padding: 2rem 1.5rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>About Raw Wealthy</h1>
+            <p>Empowering Financial Growth Through Raw Materials Investment</p>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2>Our Story</h2>
+                <p>Founded in 2020, Raw Wealthy began with a simple vision: to democratize access to raw materials investment opportunities. We recognized that while commodities trading has historically been reserved for institutional investors, individual investors also deserved access to these lucrative markets.</p>
+                <p>Our founders, with combined experience of over 25 years in finance, commodities trading, and technology, set out to create a platform that makes raw materials investment simple, secure, and accessible to everyone.</p>
+            </div>
+            
+            <div class="section">
+                <h2>Our Mission</h2>
+                <p>To empower individuals to build wealth through secure, transparent, and profitable raw materials investments while maintaining the highest standards of integrity and customer service.</p>
+            </div>
+            
+            <div class="section">
+                <h2>Our Vision</h2>
+                <p>To become Africa's leading platform for raw materials investment, connecting investors with carefully curated opportunities while contributing to economic development through responsible investment practices.</p>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">₦2.5B+</span>
+                    <span>Total Investments</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">15,000+</span>
+                    <span>Active Investors</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">4.9/5</span>
+                    <span>Customer Rating</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">7+</span>
+                    <span>Years Experience</span>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>Our Values</h2>
+                <ul>
+                    <li><strong>Transparency:</strong> We believe in open communication and clear reporting</li>
+                    <li><strong>Integrity:</strong> We operate with honesty and ethical standards</li>
+                    <li><strong>Security:</strong> We prioritize the safety of your investments</li>
+                    <li><strong>Innovation:</strong> We continuously improve our platform</li>
+                    <li><strong>Customer Focus:</strong> We put our investors first</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2>Why Choose Raw Wealthy?</h2>
+                <ul>
+                    <li><strong>Expert Management:</strong> Our team has extensive experience in commodities trading</li>
+                    <li><strong>Secure Platform:</strong> Bank-level security with 256-bit encryption</li>
+                    <li><strong>Diverse Portfolios:</strong> Multiple raw material options to suit different risk profiles</li>
+                    <li><strong>Daily Returns:</strong> Earn daily returns on your investments</li>
+                    <li><strong>24/7 Support:</strong> Round-the-clock customer service</li>
+                    <li><strong>Regulatory Compliance:</strong> Fully licensed and compliant with financial regulations</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2>Our Team</h2>
+                <div class="team-grid">
+                    <div class="team-member">
+                        <img src="https://randomuser.me/api/portraits/men/65.jpg" alt="CEO">
+                        <h3>Michael Adebayo</h3>
+                        <p>CEO & Founder</p>
+                        <p>15+ years in commodities trading</p>
+                    </div>
+                    <div class="team-member">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="CFO">
+                        <h3>Chinwe Okonkwo</h3>
+                        <p>Chief Financial Officer</p>
+                        <p>Former Investment Banker</p>
+                    </div>
+                    <div class="team-member">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="CTO">
+                        <h3>David Okafor</h3>
+                        <p>Chief Technology Officer</p>
+                        <p>FinTech Security Expert</p>
+                    </div>
+                    <div class="team-member">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="COO">
+                        <h3>Amara Nwosu</h3>
+                        <p>Chief Operations Officer</p>
+                        <p>Operations Management Specialist</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>Regulatory Compliance</h2>
+                <p>Raw Wealthy is fully licensed and regulated by the appropriate financial authorities in Nigeria. We adhere to strict Anti-Money Laundering (AML) and Know Your Customer (KYC) regulations to ensure a secure and compliant platform for all investors.</p>
+            </div>
+            
+            <div class="section">
+                <h2>Contact Information</h2>
+                <p><strong>Head Office:</strong> 123 Investment Street, Victoria Island, Lagos, Nigeria</p>
+                <p><strong>Email:</strong> info@rawwealthy.com</p>
+                <p><strong>Phone:</strong> +234 (0) 902 802 2559</p>
+                <p><strong>Hours:</strong> Monday - Friday, 8:00 AM - 6:00 PM WAT</p>
+            </div>
+            
+            <a href="index.html" class="back-home">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+        </div>
+    </div>
+</body>
+</html>
