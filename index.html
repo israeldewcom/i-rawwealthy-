@@ -3806,7 +3806,7 @@ footer {
         <i class="fas fa-chevron-up"></i>
     </div>
 
-    <script>// ==================== RAW WEALTHY FRONTEND v47.0 - COMPLETE PRODUCTION READY ====================
+    <script>// ==================== RAW WEALTHY FRONTEND v46.0 - COMPLETE BACKEND INTEGRATION ====================
 const app = {
     // ==================== ENHANCED CONFIGURATION ====================
     config: {
@@ -3814,17 +3814,19 @@ const app = {
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
                 return 'http://localhost:10000';
             }
-            if (window.location.hostname.includes('vercel.app') || window.location.hostname.includes('netlify.app')) {
+            if (window.location.hostname.includes('vercel.app')) {
                 return 'https://real-wealthy-1.onrender.com';
+            }
+            if (window.location.hostname.includes('github.io') || window.location.hostname.includes('netlify.app')) {
+                return 'https://raw-wealthy-backend.herokuapp.com';
             }
             return window.location.origin;
         })(),
-        VERSION: '47.0.0',
+        VERSION: '46.0.0',
         ENVIRONMENT: window.location.hostname === 'localhost' ? 'development' : 'production',
         MIN_INVESTMENT: 3500,
-        MIN_DEPOSIT: 3500,
-        MIN_WITHDRAWAL: 3500,
-        MAX_WITHDRAWAL: 500000,
+        MIN_DEPOSIT: 500,
+        MIN_WITHDRAWAL: 1000,
         PLATFORM_FEE_PERCENT: 10,
         REFERRAL_COMMISSION_PERCENT: 10,
         WELCOME_BONUS: 100,
@@ -3836,12 +3838,7 @@ const app = {
         },
         // ==================== WHATSAPP NOTIFICATION ====================
         WHATSAPP_ADMIN_NUMBER: '2349028022559',
-        WHATSAPP_ENABLED: true,
-        // ==================== AUTO REFRESH ====================
-        DASHBOARD_REFRESH_INTERVAL: 180000, // 3 minutes
-        ADMIN_REFRESH_INTERVAL: 60000, // 1 minute
-        // ==================== WITHDRAWAL VALIDATION ====================
-        WITHDRAWABLE_SOURCES: ['daily_interest', 'referral_earnings']
+        WHATSAPP_ENABLED: true
     },
 
     // ==================== APPLICATION STATE ====================
@@ -3859,9 +3856,7 @@ const app = {
             dailyEarnings: 0,
             totalEarnings: 0,
             referralEarnings: 0,
-            portfolioValue: 0,
-            totalDeposits: 0,
-            totalWithdrawals: 0
+            portfolioValue: 0
         },
         adminData: {
             users: [],
@@ -3869,20 +3864,14 @@ const app = {
             deposits: [],
             withdrawals: [],
             kycSubmissions: []
-        },
-        refreshIntervals: {
-            dashboard: null,
-            admin: null
-        },
-        debugMode: window.location.hostname === 'localhost'
+        }
     },
 
-    // ==================== ENHANCED INITIALIZATION ====================
+    // ==================== INITIALIZATION ====================
     init() {
-        console.log('🚀 Raw Wealthy Frontend v47.0 Initializing...');
+        console.log('🚀 Raw Wealthy Frontend v46.0 Initializing...');
         console.log(`🌐 Backend URL: ${this.config.API_BASE_URL}`);
         console.log(`🏷️ Environment: ${this.config.ENVIRONMENT}`);
-        console.log(`🔧 Debug Mode: ${this.state.debugMode}`);
         
         this.setupEventListeners();
         this.checkAuthentication();
@@ -3890,61 +3879,45 @@ const app = {
         this.initAnimations();
         this.checkReferralFromURL();
         this.initTheme();
+
+        // Debug mode
         this.testAPIConnection();
-        this.setupAutoRefresh();
-
-        // Enhanced logging
-        this.logSystemInfo();
+        
+        // Initialize any missing dashboard values
+        this.initializeDashboardDefaults();
     },
 
-    logSystemInfo() {
-        console.log('📊 System Information:');
-        console.log(`- User Agent: ${navigator.userAgent}`);
-        console.log(`- Screen: ${window.screen.width}x${window.screen.height}`);
-        console.log(`- Local Storage: ${localStorage.length} items`);
-        console.log(`- Connection: ${navigator.connection ? navigator.connection.effectiveType : 'unknown'}`);
-        console.log(`- Memory: ${performance.memory ? Math.round(performance.memory.usedJSHeapSize / 1024 / 1024) + 'MB' : 'N/A'}`);
-    },
-
-    setupAutoRefresh() {
-        // Clear existing intervals
-        if (this.state.refreshIntervals.dashboard) {
-            clearInterval(this.state.refreshIntervals.dashboard);
-        }
-        if (this.state.refreshIntervals.admin) {
-            clearInterval(this.state.refreshIntervals.admin);
-        }
-
-        // Setup new intervals
-        this.state.refreshIntervals.dashboard = setInterval(() => {
-            if (this.state.isAuthenticated && !this.state.isAdmin && 
-                document.getElementById('dashboard-page').style.display !== 'none') {
-                console.log('🔄 Auto-refreshing dashboard...');
-                this.updateDashboard();
+    // ==================== FIX: INITIALIZE DASHBOARD DEFAULTS ====================
+    initializeDashboardDefaults() {
+        // Fix hardcoded "NO" values in dashboard
+        const fixElements = ['active-investments', 'total-earnings', 'referral-bonus'];
+        fixElements.forEach(id => {
+            const element = document.getElementById(id);
+            if (element && element.textContent.includes('NO')) {
+                element.textContent = '₦0.00';
             }
-        }, this.config.DASHBOARD_REFRESH_INTERVAL);
-
-        this.state.refreshIntervals.admin = setInterval(() => {
-            if (this.state.isAdmin && document.getElementById('admin-page').style.display !== 'none') {
-                console.log('🔄 Auto-refreshing admin dashboard...');
-                this.loadAdminData();
-            }
-        }, this.config.ADMIN_REFRESH_INTERVAL);
+        });
     },
 
-    // ==================== ENHANCED AUTHENTICATION ====================
+    // ==================== AUTHENTICATION FUNCTIONS ====================
+    checkAuthentication() {
+        if (this.state.token) {
+            this.verifyToken();
+        } else {
+            this.showPage('home');
+        }
+    },
+
     async verifyToken() {
         try {
             const response = await this.apiRequest('/api/profile');
+            console.log('Token verification response:', response);
             
             if (response.success && response.data && response.data.user) {
                 this.state.currentUser = response.data.user;
                 this.state.isAdmin = this.state.currentUser.role === 'admin' || this.state.currentUser.role === 'super_admin';
                 this.state.isAuthenticated = true;
 
-                // Update UI
-                this.updateNavbar();
-                
                 // Update user avatar
                 const initials = this.state.currentUser.full_name
                     .split(' ')
@@ -3963,15 +3936,17 @@ const app = {
                     this.showPage('dashboard');
                     this.updateDashboard();
                 }
-
-                return true;
+                
+                // Update navbar
+                this.updateNavbar();
             } else {
-                throw new Error('Invalid user data');
+                this.logout();
+                this.showPage('home');
             }
         } catch (error) {
             console.error('Token verification failed:', error);
             this.logout();
-            return false;
+            this.showPage('home');
         }
     },
 
@@ -3984,7 +3959,7 @@ const app = {
         this.showPage('login');
     },
 
-    // ==================== ENHANCED REGISTRATION ====================
+    // ==================== ENHANCED REGISTRATION WITH DEBUGGING ====================
     async handleRegistration(e) {
         e.preventDefault();
 
@@ -4038,38 +4013,36 @@ const app = {
     },
 
     validateRegistration(data) {
-        const errors = [];
-
         if (data.full_name.length < 2) {
-            errors.push('Full name must be at least 2 characters');
+            this.showToast('Full name must be at least 2 characters', 'error');
+            return false;
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(data.email)) {
-            errors.push('Please enter a valid email address');
+            this.showToast('Please enter a valid email address', 'error');
+            return false;
         }
 
         if (data.phone.length < 10) {
-            errors.push('Please enter a valid phone number');
+            this.showToast('Please enter a valid phone number', 'error');
+            return false;
         }
 
         if (data.password.length < 6) {
-            errors.push('Password must be at least 6 characters');
+            this.showToast('Password must be at least 6 characters', 'error');
+            return false;
         }
 
         if (data.password !== document.getElementById('confirm-password').value) {
-            errors.push('Passwords do not match!');
-        }
-
-        if (errors.length > 0) {
-            this.showToast(errors.join(', '), 'error');
+            this.showToast('Passwords do not match!', 'error');
             return false;
         }
 
         return true;
     },
 
-    // ==================== ENHANCED LOGIN ====================
+    // ==================== ENHANCED LOGIN WITH DEBUGGING ====================
     async handleLogin(e) {
         e.preventDefault();
 
@@ -4122,7 +4095,7 @@ const app = {
         }
     },
 
-    // ==================== ENHANCED DASHBOARD WITH PROPER DATA INTEGRATION ====================
+    // ==================== ENHANCED DASHBOARD FUNCTIONS ====================
     async updateDashboard() {
         if (!this.state.currentUser) {
             console.error('No current user for dashboard');
@@ -4130,46 +4103,32 @@ const app = {
         }
 
         try {
-            console.log('🔄 Updating dashboard...');
-            
-            // Fetch profile and referral data in parallel
-            const [profileResponse, referralResponse] = await Promise.all([
-                this.apiRequest('/api/profile'),
-                this.apiRequest('/api/referrals/stats')
-            ]);
+            console.log('Updating dashboard...');
+            const response = await this.apiRequest('/api/profile');
+            console.log('Dashboard response:', response);
 
-            console.log('Dashboard response:', profileResponse);
-            console.log('Referral response:', referralResponse);
-
-            if (profileResponse.success && profileResponse.data) {
-                const user = profileResponse.data.user;
-                const stats = profileResponse.data.stats || {};
-                const referralStats = referralResponse.data?.stats || {};
+            if (response.success && response.data) {
+                const user = response.data.user;
+                const stats = response.data.stats || {};
 
                 // Debug logging
-                if (this.state.debugMode) {
-                    console.log('User data:', {
-                        balance: user.balance,
-                        total_earnings: user.total_earnings,
-                        referral_earnings: user.referral_earnings,
-                        portfolio_value: user.portfolio_value
-                    });
-                    console.log('Stats data:', stats);
-                    console.log('Referral stats:', referralStats);
-                }
+                console.log('User data:', {
+                    balance: user.balance,
+                    total_earnings: user.total_earnings,
+                    referral_earnings: user.referral_earnings,
+                    portfolio_value: user.portfolio_value
+                });
+
+                console.log('Stats data:', {
+                    active_investment_value: stats.active_investment_value,
+                    daily_interest: stats.daily_interest
+                });
 
                 // Update user info
                 this.updateUserInfo(user);
                 
-                // Update dashboard stats with all data
-                const combinedStats = {
-                    ...stats,
-                    pending_referral_earnings: referralStats.pending_earnings || 0,
-                    pending_referrals: referralStats.pending_referrals || 0,
-                    total_referrals: referralStats.total_referrals || 0
-                };
-                
-                this.updateDashboardStats(user, combinedStats);
+                // Update dashboard stats with real data
+                this.updateDashboardStats(user, stats);
                 
                 // Load user investments
                 await this.loadUserInvestments();
@@ -4190,14 +4149,12 @@ const app = {
                     dailyEarnings: stats.daily_interest || 0,
                     totalEarnings: user.total_earnings || 0,
                     referralEarnings: user.referral_earnings || 0,
-                    portfolioValue: user.portfolio_value || 0,
-                    totalDeposits: user.total_deposits || 0,
-                    totalWithdrawals: user.total_withdrawals || 0
+                    portfolioValue: user.portfolio_value || 0
                 };
 
-                console.log('✅ Dashboard updated successfully');
+                console.log('Dashboard updated successfully');
             } else {
-                console.error('Failed to load dashboard data:', profileResponse.message);
+                console.error('Failed to load dashboard data:', response.message);
                 this.showToast('Failed to load dashboard data', 'error');
             }
         } catch (error) {
@@ -4225,29 +4182,22 @@ const app = {
     updateDashboardStats(user, stats) {
         console.log('Updating dashboard stats with:', { user, stats });
         
-        // Calculate withdrawable balance (only from daily interest and referral earnings)
-        const withdrawableBalance = (stats.daily_interest || 0) + (user.referral_earnings || 0);
-        
         const statElements = {
             'total-balance': `₦${(user.balance || 0).toLocaleString()}`,
             'active-investments': `₦${(stats.active_investment_value || 0).toLocaleString()}`,
             'total-earnings': `₦${(user.total_earnings || 0).toLocaleString()}`,
             'referral-bonus': `₦${(user.referral_earnings || 0).toLocaleString()}`,
             'daily-earnings': `₦${(stats.daily_interest || 0).toLocaleString()}`,
-            'portfolio-value': `₦${(user.portfolio_value || 0).toLocaleString()}`,
+            'portfolio-value': `₦${(user.portfolio_value || (user.balance || 0) + (user.total_earnings || 0) + (user.referral_earnings || 0)).toLocaleString()}`,
             'total-deposits': `₦${(user.total_deposits || 0).toLocaleString()}`,
-            'total-withdrawals': `₦${(user.total_withdrawals || 0).toLocaleString()}`,
-            'pending-referrals': stats.pending_referrals || 0,
-            'pending-earnings': `₦${(stats.pending_referral_earnings || 0).toLocaleString()}`,
-            'withdrawable-balance': `₦${withdrawableBalance.toLocaleString()}`
+            'total-withdrawals': `₦${(user.total_withdrawals || 0).toLocaleString()}`
         };
 
         Object.entries(statElements).forEach(([id, value]) => {
             const element = document.getElementById(id);
             if (element) {
+                console.log(`Setting ${id} to ${value}`);
                 element.textContent = value;
-            } else if (this.state.debugMode) {
-                console.warn(`Element with id "${id}" not found in dashboard`);
             }
         });
     },
@@ -4291,9 +4241,9 @@ const app = {
                                 </div>
                                 <div class="investment-progress">
                                     <div class="progress-bar">
-                                        <div class="progress-fill" style="width: ${Math.min(progress, 100)}%"></div>
+                                        <div class="progress-fill" style="width: ${progress}%"></div>
                                     </div>
-                                    <div class="progress-text">${Math.min(progress, 100)}% Complete</div>
+                                    <div class="progress-text">${progress}% Complete</div>
                                 </div>
                                 <div class="investment-footer">
                                     <div class="investment-amount">₦${amount.toLocaleString()}</div>
@@ -4379,209 +4329,6 @@ const app = {
         return icons[type] || 'exchange-alt';
     },
 
-    // ==================== ENHANCED WITHDRAWAL WITH VALIDATION ====================
-    async handleWithdrawal(e) {
-        e.preventDefault();
-
-        if (!this.state.currentUser) {
-            this.showToast('Please login to make a withdrawal', 'error');
-            this.showPage('login');
-            return;
-        }
-
-        const amount = parseFloat(document.getElementById('withdraw-amount').value);
-        const paymentMethod = document.getElementById('withdraw-method').value;
-
-        // Enhanced validation
-        const validation = this.validateWithdrawal(amount);
-        if (!validation.valid) {
-            this.showToast(validation.message, 'error');
-            return;
-        }
-
-        // Check if user has enough withdrawable balance
-        const withdrawableBalance = (this.state.userStats.dailyEarnings || 0) + (this.state.userStats.referralEarnings || 0);
-        if (amount > withdrawableBalance) {
-            this.showToast(`Withdrawal amount exceeds your withdrawable balance of ₦${withdrawableBalance.toLocaleString()}. You can only withdraw from daily interest and referral earnings.`, 'error');
-            return;
-        }
-
-        if (!paymentMethod) {
-            this.showToast('Please select a withdrawal method', 'error');
-            return;
-        }
-
-        // Calculate fees
-        const fee = amount * (this.config.PLATFORM_FEE_PERCENT / 100);
-        const netAmount = amount - fee;
-
-        // Enhanced confirmation dialog
-        const confirmed = await this.showConfirmationDialog(
-            `Are you sure you want to withdraw ₦${amount.toLocaleString()}?`,
-            `<strong>Withdrawal Details:</strong><br>
-            • Amount: ₦${amount.toLocaleString()}<br>
-            • Platform Fee (${this.config.PLATFORM_FEE_PERCENT}%): ₦${fee.toLocaleString()}<br>
-            • Net Amount: ₦${netAmount.toLocaleString()}<br><br>
-            <small>Note: You can only withdraw from daily interest and referral earnings.</small>`
-        );
-        
-        if (!confirmed) {
-            return;
-        }
-
-        this.setLoadingState('withdraw-btn', true);
-
-        try {
-            const response = await this.apiRequest('/api/withdrawals', {
-                method: 'POST',
-                body: {
-                    amount: amount,
-                    payment_method: paymentMethod
-                }
-            });
-
-            if (response.success) {
-                this.showToast('✅ Withdrawal request submitted successfully!', 'success');
-                this.closeModal('withdraw-modal');
-                
-                // Update user stats
-                if (this.state.currentUser) {
-                    this.state.currentUser.balance -= amount;
-                }
-                
-                // Send WhatsApp notification
-                await this.sendWhatsAppWithdrawalNotification(amount, paymentMethod, fee, netAmount);
-                
-                // Update dashboard
-                this.updateDashboard();
-                
-                // Clear form
-                e.target.reset();
-            } else {
-                this.showToast(response.message || 'Withdrawal failed', 'error');
-            }
-        } catch (error) {
-            console.error('Withdrawal error:', error);
-            this.showToast('Error processing withdrawal: ' + error.message, 'error');
-        } finally {
-            this.setLoadingState('withdraw-btn', false);
-        }
-    },
-
-    validateWithdrawal(amount) {
-        if (!amount || isNaN(amount)) {
-            return { valid: false, message: 'Please enter a valid amount' };
-        }
-
-        if (amount < this.config.MIN_WITHDRAWAL) {
-            return { valid: false, message: `Minimum withdrawal is ₦${this.config.MIN_WITHDRAWAL.toLocaleString()}` };
-        }
-
-        if (amount > this.config.MAX_WITHDRAWAL) {
-            return { valid: false, message: `Maximum withdrawal is ₦${this.config.MAX_WITHDRAWAL.toLocaleString()}` };
-        }
-
-        if (amount > (this.state.currentUser.balance || 0)) {
-            return { valid: false, message: 'Insufficient balance for withdrawal' };
-        }
-
-        return { valid: true, message: '' };
-    },
-
-    async showConfirmationDialog(title, message) {
-        return new Promise((resolve) => {
-            // Create modal for confirmation
-            const modalId = 'confirmation-modal';
-            let modal = document.getElementById(modalId);
-            
-            if (!modal) {
-                modal = document.createElement('div');
-                modal.id = modalId;
-                modal.className = 'modal';
-                modal.innerHTML = `
-                    <div class="modal-content" style="max-width: 400px;">
-                        <div class="modal-header">
-                            <h2>${title}</h2>
-                            <button class="close-modal" onclick="app.closeModal('${modalId}'); document.getElementById('confirmation-result').value = 'false';">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <div style="padding: 1rem; background: rgba(245, 158, 11, 0.1); border-radius: 8px; margin-bottom: 1rem;">
-                                <i class="fas fa-info-circle" style="color: var(--warning); margin-right: 0.5rem;"></i>
-                                <span>${message}</span>
-                            </div>
-                            <input type="hidden" id="confirmation-result" value="">
-                        </div>
-                        <div class="modal-footer" style="display: flex; gap: 1rem; padding: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
-                            <button class="btn btn-outline" onclick="app.closeModal('${modalId}'); document.getElementById('confirmation-result').value = 'false';" style="flex: 1;">
-                                Cancel
-                            </button>
-                            <button class="btn btn-primary" onclick="app.closeModal('${modalId}'); document.getElementById('confirmation-result').value = 'true';" style="flex: 1;">
-                                Confirm
-                            </button>
-                        </div>
-                    </div>
-                `;
-                document.body.appendChild(modal);
-            }
-
-            // Reset result
-            const resultInput = document.getElementById('confirmation-result');
-            if (resultInput) resultInput.value = '';
-
-            // Show modal
-            this.openModal(modalId);
-
-            // Wait for result
-            const checkResult = setInterval(() => {
-                if (!modal || modal.style.display === 'none') {
-                    clearInterval(checkResult);
-                    const result = document.getElementById('confirmation-result');
-                    resolve(result && result.value === 'true');
-                }
-            }, 100);
-        });
-    },
-
-    updateWithdrawalFee() {
-        const amountInput = document.getElementById('withdraw-amount');
-        const feeNotice = document.getElementById('withdrawal-fee-notice');
-        const withdrawableBalance = (this.state.userStats.dailyEarnings || 0) + (this.state.userStats.referralEarnings || 0);
-        
-        if (!amountInput || !feeNotice) return;
-
-        const amount = parseFloat(amountInput.value) || 0;
-        const fee = amount * (this.config.PLATFORM_FEE_PERCENT / 100);
-        const netAmount = amount - fee;
-
-        let validationMessage = '';
-        let isValid = true;
-
-        if (amount > withdrawableBalance) {
-            validationMessage = `⚠️ Amount exceeds withdrawable balance (₦${withdrawableBalance.toLocaleString()})`;
-            isValid = false;
-        } else if (amount < this.config.MIN_WITHDRAWAL) {
-            validationMessage = `⚠️ Minimum withdrawal is ₦${this.config.MIN_WITHDRAWAL.toLocaleString()}`;
-            isValid = false;
-        } else if (amount > this.config.MAX_WITHDRAWAL) {
-            validationMessage = `⚠️ Maximum withdrawal is ₦${this.config.MAX_WITHDRAWAL.toLocaleString()}`;
-            isValid = false;
-        }
-
-        feeNotice.innerHTML = `
-            <div style="background: ${isValid ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)'}; 
-                        padding: 0.75rem; border-radius: 8px; border-left: 3px solid ${isValid ? 'var(--success)' : 'var(--error)'};">
-                <i class="fas fa-${isValid ? 'info-circle' : 'exclamation-triangle'}" 
-                   style="color: ${isValid ? 'var(--success)' : 'var(--error)'}; margin-right: 0.5rem;"></i>
-                ${validationMessage || `
-                    <strong>Withdrawal Summary:</strong><br>
-                    • Platform Fee (${this.config.PLATFORM_FEE_PERCENT}%): <strong>₦${fee.toLocaleString()}</strong><br>
-                    • Net Amount You'll Receive: <strong>₦${netAmount.toLocaleString()}</strong><br>
-                    • Available for withdrawal: <strong>₦${withdrawableBalance.toLocaleString()}</strong>
-                `}
-            </div>
-        `;
-    },
-
     // ==================== ENHANCED DEPOSIT WITH WHATSAPP ====================
     async handleDeposit(e) {
         e.preventDefault();
@@ -4630,7 +4377,7 @@ const app = {
                 this.closeModal('deposit-modal');
                 
                 // Send WhatsApp notification
-                await this.sendWhatsAppDepositNotification(amount, proofFile, paymentMethod);
+                await this.sendWhatsAppDepositNotification(amount, proofFile);
 
                 // Clear form
                 e.target.reset();
@@ -4653,7 +4400,7 @@ const app = {
         }
     },
 
-    async sendWhatsAppDepositNotification(amount, proofFile, paymentMethod) {
+    async sendWhatsAppDepositNotification(amount, proofFile) {
         if (!this.config.WHATSAPP_ENABLED) return;
         
         try {
@@ -4671,7 +4418,6 @@ const app = {
 
 💵 *Transaction Details:*
 • Amount: ₦${amount.toLocaleString()}
-• Method: ${paymentMethod}
 • Date: ${timestamp}
 • Status: Pending Approval
 
@@ -4689,52 +4435,212 @@ Please log into admin panel to review and approve this deposit.`;
             // Open WhatsApp in new tab
             window.open(whatsappURL, '_blank');
             
-            console.log('📱 WhatsApp deposit notification sent:', { amount, user: userName, timestamp });
+            console.log('📱 WhatsApp notification sent:', { amount, user: userName, timestamp });
 
         } catch (error) {
             console.error('Failed to send WhatsApp notification:', error);
         }
     },
 
-    async sendWhatsAppWithdrawalNotification(amount, paymentMethod, fee, netAmount) {
-        if (!this.config.WHATSAPP_ENABLED) return;
+    // ==================== ENHANCED WITHDRAWAL WITH CONFIRMATION ====================
+    async handleWithdrawal(e) {
+        e.preventDefault();
+
+        if (!this.state.currentUser) {
+            this.showToast('Please login to make a withdrawal', 'error');
+            this.showPage('login');
+            return;
+        }
+
+        const amount = parseFloat(document.getElementById('withdraw-amount').value);
+        const paymentMethod = document.getElementById('withdraw-method').value;
+
+        // Validation
+        if (amount < this.config.MIN_WITHDRAWAL) {
+            this.showToast(`Minimum withdrawal is ₦${this.config.MIN_WITHDRAWAL.toLocaleString()}`, 'error');
+            return;
+        }
+
+        if (amount > (this.state.currentUser.balance || 0)) {
+            this.showToast('Insufficient balance for withdrawal', 'error');
+            return;
+        }
+
+        if (!paymentMethod) {
+            this.showToast('Please select a withdrawal method', 'error');
+            return;
+        }
+
+        // Calculate fees
+        const fee = amount * (this.config.PLATFORM_FEE_PERCENT / 100);
+        const netAmount = amount - fee;
+
+        // Confirmation dialog
+        const confirmed = confirm(`Are you sure you want to withdraw ₦${amount.toLocaleString()}?\n\nPlatform Fee (${this.config.PLATFORM_FEE_PERCENT}%): ₦${fee.toLocaleString()}\nNet Amount: ₦${netAmount.toLocaleString()}\n\nClick OK to proceed.`);
         
+        if (!confirmed) {
+            return;
+        }
+
+        this.setLoadingState('withdraw-btn', true);
+
         try {
-            const user = this.state.currentUser;
-            const userName = user.full_name || 'User';
-            const timestamp = new Date().toLocaleString();
-            
-            const message = `💸 *NEW WITHDRAWAL REQUEST* 💸
-            
-👤 *User Details:*
-• Name: ${userName}
-• Email: ${user.email || 'N/A'}
-• Phone: ${user.phone || 'N/A'}
+            const response = await this.apiRequest('/api/withdrawals', {
+                method: 'POST',
+                body: {
+                    amount: amount,
+                    payment_method: paymentMethod
+                }
+            });
 
-💵 *Transaction Details:*
-• Amount: ₦${amount.toLocaleString()}
-• Method: ${paymentMethod}
-• Platform Fee: ₦${fee.toLocaleString()}
-• Net Amount: ₦${netAmount.toLocaleString()}
-• Date: ${timestamp}
-• Status: Pending Approval
-
-⚠️ *ACTION REQUIRED:* 
-Please log into admin panel to review and approve this withdrawal.`;
-
-            const encodedMessage = encodeURIComponent(message);
-            const whatsappURL = `https://wa.me/${this.config.WHATSAPP_ADMIN_NUMBER}?text=${encodedMessage}`;
-
-            window.open(whatsappURL, '_blank');
-            
-            console.log('📱 WhatsApp withdrawal notification sent:', { amount, user: userName, timestamp });
-
+            if (response.success) {
+                this.showToast('✅ Withdrawal request submitted successfully!', 'success');
+                this.closeModal('withdraw-modal');
+                
+                // Update user balance in state
+                if (this.state.currentUser) {
+                    this.state.currentUser.balance -= amount;
+                }
+                
+                // Update dashboard
+                this.updateDashboard();
+                
+                // Clear form
+                e.target.reset();
+            } else {
+                this.showToast(response.message || 'Withdrawal failed', 'error');
+            }
         } catch (error) {
-            console.error('Failed to send WhatsApp notification:', error);
+            console.error('Withdrawal error:', error);
+            this.showToast('Error processing withdrawal', 'error');
+        } finally {
+            this.setLoadingState('withdraw-btn', false);
         }
     },
 
-    // ==================== ENHANCED INVESTMENT FUNCTIONS ====================
+    updateWithdrawalFee() {
+        const amountInput = document.getElementById('withdraw-amount');
+        const feeNotice = document.getElementById('withdrawal-fee-notice');
+        
+        if (!amountInput || !feeNotice) return;
+
+        const amount = parseFloat(amountInput.value) || 0;
+        const fee = amount * (this.config.PLATFORM_FEE_PERCENT / 100);
+        const netAmount = amount - fee;
+
+        feeNotice.innerHTML = `
+            <i class="fas fa-info-circle"></i>
+            <span>
+                Platform Fee (${this.config.PLATFORM_FEE_PERCENT}%): <strong>₦${fee.toLocaleString()}</strong><br>
+                Net Amount You'll Receive: <strong>₦${netAmount.toLocaleString()}</strong>
+            </span>
+        `;
+    },
+
+    // ==================== ADVANCED REFERRAL SYSTEM ====================
+    async loadReferralData() {
+        if (!this.state.currentUser) return;
+
+        try {
+            const response = await this.apiRequest('/api/referrals/stats');
+            
+            if (response.success && response.data) {
+                const stats = response.data.stats || {};
+                const referrals = response.data.referrals || [];
+
+                // Update referral link and code
+                const baseUrl = window.location.origin;
+                const referralLink = `${baseUrl}/?ref=${this.state.currentUser.referral_code || ''}`;
+                
+                const linkInput = document.getElementById('referral-link');
+                const codeInput = document.getElementById('referral-code');
+                
+                if (linkInput) linkInput.value = referralLink;
+                if (codeInput) codeInput.value = this.state.currentUser.referral_code || '';
+
+                // Update stats
+                const statElements = {
+                    'total-referrals': stats.total_referrals || 0,
+                    'active-referrals': stats.active_referrals || 0,
+                    'total-referral-earnings': `₦${(stats.total_earnings || 0).toLocaleString()}`,
+                    'pending-referral-earnings': `₦${(stats.pending_earnings || 0).toLocaleString()}`,
+                    'commission-rate': `${stats.commission_rate || this.config.REFERRAL_COMMISSION_PERCENT}%`
+                };
+
+                Object.entries(statElements).forEach(([id, value]) => {
+                    const element = document.getElementById(id);
+                    if (element) element.textContent = value;
+                });
+
+                // Load referral list
+                await this.loadReferralList(referrals);
+            }
+        } catch (error) {
+            console.error('Failed to load referral data:', error);
+            this.showToast('Error loading referral data', 'error');
+        }
+    },
+
+    async loadReferralList(referrals) {
+        const container = document.getElementById('referral-list');
+        if (!container) return;
+
+        if (!referrals || referrals.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-user-friends"></i>
+                    <p>No referrals yet</p>
+                    <p class="small">Share your referral link to start earning</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML = referrals.map(ref => {
+                const user = ref.referred_user || {};
+                const date = ref.createdAt ? new Date(ref.createdAt).toLocaleDateString() : 'N/A';
+                const earnings = ref.earnings || 0;
+                const status = ref.status || 'pending';
+                
+                return `
+                    <div class="referral-item">
+                        <div class="referral-user">
+                            <div class="user-avatar-small">
+                                ${user.full_name ? user.full_name.charAt(0).toUpperCase() : 'U'}
+                            </div>
+                            <div class="user-info">
+                                <div class="user-name">${user.full_name || 'Unknown User'}</div>
+                                <div class="user-email">${user.email || 'N/A'}</div>
+                            </div>
+                        </div>
+                        <div class="referral-details">
+                            <div class="referral-date">${date}</div>
+                            <div class="referral-status status-badge ${status}">${status}</div>
+                        </div>
+                        <div class="referral-earnings">₦${earnings.toLocaleString()}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+    },
+
+    copyReferralLink() {
+        const linkInput = document.getElementById('referral-link');
+        if (linkInput) {
+            linkInput.select();
+            document.execCommand('copy');
+            this.showToast('✅ Referral link copied to clipboard!', 'success');
+        }
+    },
+
+    copyReferralCode() {
+        const codeInput = document.getElementById('referral-code');
+        if (codeInput) {
+            codeInput.select();
+            document.execCommand('copy');
+            this.showToast('✅ Referral code copied to clipboard!', 'success');
+        }
+    },
+
+    // ==================== INVESTMENT FUNCTIONS ====================
     async loadInvestmentPlans() {
         try {
             const response = await this.apiRequest('/api/plans');
@@ -4874,7 +4780,7 @@ Please log into admin panel to review and approve this withdrawal.`;
             return;
         }
 
-        // Enhanced validation
+        // Validation
         if (amount < (plan.min_amount || this.config.MIN_INVESTMENT)) {
             this.showToast(`Minimum investment for ${plan.name} is ₦${(plan.min_amount || this.config.MIN_INVESTMENT).toLocaleString()}`, 'error');
             return;
@@ -4908,9 +4814,6 @@ Please log into admin panel to review and approve this withdrawal.`;
                 this.showToast('✅ Investment request submitted successfully!', 'success');
                 this.closeModal('invest-modal');
                 
-                // Send WhatsApp notification
-                await this.sendWhatsAppInvestmentNotification(amount, plan.name);
-                
                 // Clear form
                 e.target.reset();
                 const preview = document.getElementById('investment-preview');
@@ -4937,42 +4840,7 @@ Please log into admin panel to review and approve this withdrawal.`;
         }
     },
 
-    async sendWhatsAppInvestmentNotification(amount, planName) {
-        if (!this.config.WHATSAPP_ENABLED) return;
-        
-        try {
-            const user = this.state.currentUser;
-            const timestamp = new Date().toLocaleString();
-            
-            const message = `📈 *NEW INVESTMENT REQUEST* 📈
-            
-👤 *User Details:*
-• Name: ${user.full_name}
-• Email: ${user.email}
-• Phone: ${user.phone || 'N/A'}
-
-💵 *Investment Details:*
-• Amount: ₦${amount.toLocaleString()}
-• Plan: ${planName}
-• Date: ${timestamp}
-• Status: Pending Approval
-
-⚠️ *ACTION REQUIRED:* 
-Please log into admin panel to review and approve this investment.`;
-
-            const encodedMessage = encodeURIComponent(message);
-            const whatsappURL = `https://wa.me/${this.config.WHATSAPP_ADMIN_NUMBER}?text=${encodedMessage}`;
-
-            window.open(whatsappURL, '_blank');
-            
-            console.log('📱 WhatsApp investment notification sent:', { amount, planName, user: user.full_name });
-
-        } catch (error) {
-            console.error('Failed to send WhatsApp notification:', error);
-        }
-    },
-
-    // ==================== ENHANCED PROFILE FUNCTIONS ====================
+    // ==================== PROFILE FUNCTIONS ====================
     async loadProfileData() {
         if (!this.state.currentUser) return;
 
@@ -5035,308 +4903,107 @@ Please log into admin panel to review and approve this investment.`;
         }
     },
 
-    // ==================== ENHANCED REFERRAL SYSTEM ====================
-    async loadReferralData() {
-        if (!this.state.currentUser) return;
+    async handleProfileUpdate(e) {
+        e.preventDefault();
+
+        const formData = {
+            full_name: document.getElementById('profile-fullname').value.trim(),
+            phone: document.getElementById('profile-phone').value.trim(),
+            country: document.getElementById('profile-country').value
+        };
 
         try {
-            const response = await this.apiRequest('/api/referrals/stats');
-            
-            if (response.success && response.data) {
-                const stats = response.data.stats || {};
-                const referrals = response.data.referrals || [];
+            const response = await this.apiRequest('/api/profile', {
+                method: 'PUT',
+                body: formData
+            });
 
-                // Update referral link and code
-                const baseUrl = window.location.origin;
-                const referralLink = `${baseUrl}/?ref=${this.state.currentUser.referral_code || ''}`;
-                
-                const linkInput = document.getElementById('referral-link');
-                const codeInput = document.getElementById('referral-code');
-                
-                if (linkInput) linkInput.value = referralLink;
-                if (codeInput) codeInput.value = this.state.currentUser.referral_code || '';
-
-                // Update stats
-                const statElements = {
-                    'total-referrals': stats.total_referrals || 0,
-                    'active-referrals': stats.active_referrals || 0,
-                    'total-referral-earnings': `₦${(stats.total_earnings || 0).toLocaleString()}`,
-                    'pending-referral-earnings': `₦${(stats.pending_earnings || 0).toLocaleString()}`,
-                    'commission-rate': `${stats.commission_rate || this.config.REFERRAL_COMMISSION_PERCENT}%`
-                };
-
-                Object.entries(statElements).forEach(([id, value]) => {
-                    const element = document.getElementById(id);
-                    if (element) element.textContent = value;
-                });
-
-                // Load referral list
-                await this.loadReferralList(referrals);
+            if (response.success) {
+                this.state.currentUser = response.data?.user;
+                this.showToast('✅ Profile updated successfully!', 'success');
+            } else {
+                this.showToast(response.message || 'Profile update failed', 'error');
             }
         } catch (error) {
-            console.error('Failed to load referral data:', error);
-            this.showToast('Error loading referral data', 'error');
+            console.error('Failed to update profile:', error);
+            this.showToast('Error updating profile', 'error');
         }
     },
 
-    // ==================== ENHANCED ADMIN FUNCTIONS ====================
-    async loadAdminData() {
-        if (!this.state.isAdmin) return;
+    async handleBankUpdate(e) {
+        e.preventDefault();
 
-        try {
-            await Promise.all([
-                this.loadAdminDashboard(),
-                this.loadAdminUsers(),
-                this.loadAdminInvestments(),
-                this.loadAdminDeposits(),
-                this.loadAdminWithdrawals(),
-                this.loadAdminKYC()
-            ]);
-        } catch (error) {
-            console.error('Failed to load admin data:', error);
-            this.showToast('Error loading admin dashboard', 'error');
-        }
-    },
+        const formData = {
+            bank_name: document.getElementById('bank-name').value.trim(),
+            account_name: document.getElementById('account-name').value.trim(),
+            account_number: document.getElementById('account-number').value.trim(),
+            bank_code: document.getElementById('bank-code').value.trim()
+        };
 
-    async loadAdminDashboard() {
-        try {
-            const response = await this.apiRequest('/api/admin/dashboard');
-            
-            if (response.success && response.data && response.data.stats) {
-                const stats = response.data.stats.overview || {};
-                const pending = response.data.stats.pending_actions || {};
-
-                const statElements = {
-                    'admin-total-users': stats.total_users || 0,
-                    'admin-total-invested': `₦${(stats.total_portfolio_value || 0).toLocaleString()}`,
-                    'admin-total-withdrawn': `₦${(stats.total_withdrawals || 0).toLocaleString()}`,
-                    'admin-pending-requests': pending.total_pending || 0,
-                    'admin-platform-earnings': `₦${(stats.total_earnings || 0).toLocaleString()}`,
-                    'admin-active-investments': stats.active_investments || 0
-                };
-
-                Object.entries(statElements).forEach(([id, value]) => {
-                    const element = document.getElementById(id);
-                    if (element) element.textContent = value;
-                });
-            }
-        } catch (error) {
-            console.error('Failed to load admin dashboard:', error);
-        }
-    },
-
-    async loadAdminUsers() {
-        try {
-            const response = await this.apiRequest('/api/admin/users?limit=50');
-            if (response.success && response.data) {
-                this.state.adminData.users = response.data.users || [];
-                this.updateAdminUsersTable();
-            }
-        } catch (error) {
-            console.error('Failed to load admin users:', error);
-        }
-    },
-
-    updateAdminUsersTable() {
-        const table = document.getElementById('admin-users-table');
-        if (!table) return;
-
-        if (this.state.adminData.users.length === 0) {
-            table.innerHTML = `
-                <tr>
-                    <td colspan="7" class="text-center py-4">
-                        <div class="empty-state">
-                            <i class="fas fa-users"></i>
-                            <p>No users found</p>
-                        </div>
-                    </td>
-                </tr>
-            `;
+        // Validate required fields
+        if (!formData.bank_name || !formData.account_name || !formData.account_number) {
+            this.showToast('Please fill all required bank details', 'error');
             return;
         }
 
-        table.innerHTML = this.state.adminData.users.map(user => {
-            return `
-                <tr>
-                    <td>
-                        <div class="user-cell">
-                            <div class="user-avatar-small">${user.full_name ? user.full_name.charAt(0).toUpperCase() : 'U'}</div>
-                            <div class="user-info">
-                                <div class="user-name">${user.full_name || 'Unknown'}</div>
-                                <div class="user-email">${user.email || 'N/A'}</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>${user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}</td>
-                    <td>${user.role || 'user'}</td>
-                    <td>₦${(user.balance || 0).toLocaleString()}</td>
-                    <td>
-                        <span class="status-badge ${user.is_active ? 'active' : 'inactive'}">
-                            ${user.is_active ? 'Active' : 'Inactive'}
-                        </span>
-                    </td>
-                    <td>
-                        <span class="status-badge ${user.kyc_verified ? 'approved' : 'pending'}">
-                            ${user.kyc_verified ? 'Verified' : 'Pending'}
-                        </span>
-                    </td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn btn-sm btn-outline" onclick="app.viewUserDetails('${user._id}')">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline" onclick="app.editUser('${user._id}')">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `;
-        }).join('');
-    },
-
-    async viewUserDetails(userId) {
         try {
-            const response = await this.apiRequest(`/api/admin/users/${userId}`);
+            const response = await this.apiRequest('/api/profile/bank', {
+                method: 'PUT',
+                body: formData
+            });
+
             if (response.success) {
-                // Open modal with user details
-                this.showUserDetailsModal(response.data.user);
+                this.showToast('✅ Bank details updated successfully!', 'success');
+                
+                // Send WhatsApp notification to admin
+                await this.sendWhatsAppBankUpdateNotification(formData);
             } else {
-                this.showToast('Failed to load user details', 'error');
+                this.showToast(response.message || 'Bank update failed', 'error');
             }
         } catch (error) {
-            console.error('Error viewing user details:', error);
-            this.showToast('Error loading user details', 'error');
+            console.error('Failed to update bank details:', error);
+            this.showToast('Error updating bank details', 'error');
         }
     },
 
-    showUserDetailsModal(user) {
-        const modalId = 'user-details-modal';
-        let modal = document.getElementById(modalId);
+    async sendWhatsAppBankUpdateNotification(bankDetails) {
+        if (!this.config.WHATSAPP_ENABLED) return;
         
-        if (!modal) {
-            modal = document.createElement('div');
-            modal.id = modalId;
-            modal.className = 'modal';
-            document.body.appendChild(modal);
+        try {
+            const user = this.state.currentUser;
+            const timestamp = new Date().toLocaleString();
+            
+            const message = `🏦 *NEW BANK DETAILS UPDATE* 🏦
+            
+👤 *User Details:*
+• Name: ${user.full_name}
+• Email: ${user.email}
+• Phone: ${user.phone || 'N/A'}
+
+📋 *Bank Details:*
+• Bank Name: ${bankDetails.bank_name}
+• Account Name: ${bankDetails.account_name}
+• Account Number: ${bankDetails.account_number}
+• Bank Code: ${bankDetails.bank_code || 'N/A'}
+
+📅 *Updated At:* ${timestamp}
+
+⚠️ *ACTION REQUIRED:* 
+Please verify these bank details in the admin panel.`;
+
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappURL = `https://wa.me/${this.config.WHATSAPP_ADMIN_NUMBER}?text=${encodedMessage}`;
+
+            window.open(whatsappURL, '_blank');
+            
+            console.log('📱 Bank update WhatsApp notification sent');
+
+        } catch (error) {
+            console.error('Failed to send WhatsApp notification:', error);
         }
-
-        modal.innerHTML = `
-            <div class="modal-content" style="max-width: 800px; max-height: 80vh; overflow-y: auto;">
-                <div class="modal-header">
-                    <h2>User Details</h2>
-                    <button class="close-modal" onclick="app.closeModal('${modalId}')">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
-                        <div style="grid-column: span 2;">
-                            <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;">Basic Information</h3>
-                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
-                                <div>
-                                    <label style="color: var(--text-muted); font-size: 0.875rem;">Full Name</label>
-                                    <div style="font-weight: 500;">${user.full_name || 'N/A'}</div>
-                                </div>
-                                <div>
-                                    <label style="color: var(--text-muted); font-size: 0.875rem;">Email</label>
-                                    <div style="font-weight: 500;">${user.email || 'N/A'}</div>
-                                </div>
-                                <div>
-                                    <label style="color: var(--text-muted); font-size: 0.875rem;">Phone</label>
-                                    <div style="font-weight: 500;">${user.phone || 'N/A'}</div>
-                                </div>
-                                <div>
-                                    <label style="color: var(--text-muted); font-size: 0.875rem;">Role</label>
-                                    <div><span class="status-badge ${user.role || 'user'}">${user.role || 'user'}</span></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;">Financial Overview</h3>
-                            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                                <div style="display: flex; justify-content: space-between;">
-                                    <span style="color: var(--text-muted);">Balance:</span>
-                                    <span style="font-weight: 600; color: var(--accent-gold);">₦${(user.balance || 0).toLocaleString()}</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between;">
-                                    <span style="color: var(--text-muted);">Total Earnings:</span>
-                                    <span style="font-weight: 600; color: var(--accent-emerald);">₦${(user.total_earnings || 0).toLocaleString()}</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between;">
-                                    <span style="color: var(--text-muted);">Referral Earnings:</span>
-                                    <span style="font-weight: 600; color: var(--accent-blue);">₦${(user.referral_earnings || 0).toLocaleString()}</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between;">
-                                    <span style="color: var(--text-muted);">Portfolio Value:</span>
-                                    <span style="font-weight: 600; color: var(--accent-purple);">₦${(user.portfolio_value || 0).toLocaleString()}</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;">Account Status</h3>
-                            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                                <div style="display: flex; justify-content: space-between;">
-                                    <span style="color: var(--text-muted);">Status:</span>
-                                    <span class="status-badge ${user.is_active ? 'active' : 'inactive'}">
-                                        ${user.is_active ? 'Active' : 'Inactive'}
-                                    </span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between;">
-                                    <span style="color: var(--text-muted);">KYC Status:</span>
-                                    <span class="status-badge ${user.kyc_verified ? 'approved' : 'pending'}">
-                                        ${user.kyc_verified ? 'Verified' : 'Pending'}
-                                    </span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between;">
-                                    <span style="color: var(--text-muted);">Referral Code:</span>
-                                    <span style="font-weight: 500;">${user.referral_code || 'N/A'}</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between;">
-                                    <span style="color: var(--text-muted);">Joined:</span>
-                                    <span style="font-weight: 500;">${user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    ${user.stats ? `
-                    <div style="margin-top: 1.5rem;">
-                        <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;">Statistics</h3>
-                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; text-align: center;">
-                            <div style="background: var(--secondary); padding: 1rem; border-radius: 8px;">
-                                <div style="color: var(--text-muted); font-size: 0.875rem;">Investments</div>
-                                <div style="font-size: 1.25rem; font-weight: 600; color: var(--accent-gold);">${user.stats.total_investments || 0}</div>
-                            </div>
-                            <div style="background: var(--secondary); padding: 1rem; border-radius: 8px;">
-                                <div style="color: var(--text-muted); font-size: 0.875rem;">Deposits</div>
-                                <div style="font-size: 1.25rem; font-weight: 600; color: var(--accent-emerald);">${user.stats.total_deposits || 0}</div>
-                            </div>
-                            <div style="background: var(--secondary); padding: 1rem; border-radius: 8px;">
-                                <div style="color: var(--text-muted); font-size: 0.875rem;">Withdrawals</div>
-                                <div style="font-size: 1.25rem; font-weight: 600; color: var(--accent-blue);">${user.stats.total_withdrawals || 0}</div>
-                            </div>
-                            <div style="background: var(--secondary); padding: 1rem; border-radius: 8px;">
-                                <div style="color: var(--text-muted); font-size: 0.875rem;">Referrals</div>
-                                <div style="font-size: 1.25rem; font-weight: 600; color: var(--accent-purple);">${user.stats.total_referrals || 0}</div>
-                            </div>
-                        </div>
-                    </div>
-                    ` : ''}
-                </div>
-                <div class="modal-footer" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; margin-top: 1rem;">
-                    <button class="btn btn-outline" onclick="app.closeModal('${modalId}')">Close</button>
-                    <button class="btn btn-primary" onclick="app.editUser('${user._id}')">
-                        <i class="fas fa-edit"></i> Edit User
-                    </button>
-                </div>
-            </div>
-        `;
-
-        this.openModal(modalId);
     },
 
-    // ==================== ENHANCED CHART FUNCTIONS ====================
+    // ==================== CHART FUNCTIONS ====================
     createEarningsChart(earningsData) {
         const ctx = document.getElementById('earnings-chart');
         if (!ctx) return;
@@ -5428,7 +5095,53 @@ Please log into admin panel to review and approve this investment.`;
         });
     },
 
-    // ==================== ENHANCED UTILITY FUNCTIONS ====================
+    // ==================== ADMIN FUNCTIONS ====================
+    async loadAdminData() {
+        if (!this.state.isAdmin) return;
+
+        try {
+            await Promise.all([
+                this.loadAdminDashboard(),
+                this.loadAdminUsers(),
+                this.loadAdminInvestments(),
+                this.loadAdminDeposits(),
+                this.loadAdminWithdrawals(),
+                this.loadAdminKYC()
+            ]);
+        } catch (error) {
+            console.error('Failed to load admin data:', error);
+            this.showToast('Error loading admin dashboard', 'error');
+        }
+    },
+
+    async loadAdminDashboard() {
+        try {
+            const response = await this.apiRequest('/api/admin/dashboard');
+            
+            if (response.success && response.data && response.data.stats) {
+                const stats = response.data.stats.overview || {};
+                const pending = response.data.stats.pending_actions || {};
+
+                const statElements = {
+                    'admin-total-users': stats.total_users || 0,
+                    'admin-total-invested': `₦${(stats.total_portfolio_value || 0).toLocaleString()}`,
+                    'admin-total-withdrawn': `₦${(stats.total_withdrawals || 0).toLocaleString()}`,
+                    'admin-pending-requests': pending.total_pending || 0,
+                    'admin-platform-earnings': `₦${(stats.total_earnings || 0).toLocaleString()}`,
+                    'admin-active-investments': stats.active_investments || 0
+                };
+
+                Object.entries(statElements).forEach(([id, value]) => {
+                    const element = document.getElementById(id);
+                    if (element) element.textContent = value;
+                });
+            }
+        } catch (error) {
+            console.error('Failed to load admin dashboard:', error);
+        }
+    },
+
+    // ==================== UTILITY FUNCTIONS ====================
     async apiRequest(endpoint, options = {}) {
         const url = `${this.config.API_BASE_URL}${endpoint}`;
         
@@ -5457,14 +5170,7 @@ Please log into admin panel to review and approve this investment.`;
 
         try {
             this.showLoadingSpinner(true);
-            const startTime = performance.now();
-            
             const response = await fetch(url, config);
-            const responseTime = performance.now() - startTime;
-            
-            if (this.state.debugMode) {
-                console.log(`🌐 API Call: ${endpoint} - ${responseTime.toFixed(0)}ms`);
-            }
             
             if (response.status === 401) {
                 this.handleTokenExpired();
@@ -5532,7 +5238,6 @@ Please log into admin panel to review and approve this investment.`;
             }
         }
 
-        // Execute page-specific logic
         switch(page) {
             case 'dashboard':
                 this.updateDashboard();
@@ -5552,32 +5257,49 @@ Please log into admin panel to review and approve this investment.`;
         }
 
         this.closeMobileMenu();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo(0, 0);
         this.updateNavbar();
     },
 
-    logout() {
-        // Clear intervals
-        if (this.state.refreshIntervals.dashboard) {
-            clearInterval(this.state.refreshIntervals.dashboard);
-        }
-        if (this.state.refreshIntervals.admin) {
-            clearInterval(this.state.refreshIntervals.admin);
+    updateNavbar() {
+        const navButtons = document.querySelector('.nav-buttons');
+        if (!navButtons) return;
+
+        if (this.state.isAuthenticated) {
+            navButtons.innerHTML = `
+                <button class="theme-toggle" id="theme-toggle">
+                    <i class="fas ${document.body.classList.contains('light-mode') ? 'fa-sun' : 'fa-moon'}"></i>
+                </button>
+                <button class="btn btn-outline" onclick="app.showPage('dashboard')">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </button>
+                <button class="btn btn-primary" onclick="app.logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            `;
+        } else {
+            navButtons.innerHTML = `
+                <button class="theme-toggle" id="theme-toggle">
+                    <i class="fas ${document.body.classList.contains('light-mode') ? 'fa-sun' : 'fa-moon'}"></i>
+                </button>
+                <button class="btn btn-outline" onclick="app.showPage('login')">Login</button>
+                <button class="btn btn-primary" onclick="app.showPage('register')">Register</button>
+            `;
         }
 
-        // Clear state
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => this.toggleTheme());
+        }
+    },
+
+    logout() {
         this.state.currentUser = null;
         this.state.token = null;
         this.state.isAdmin = false;
         this.state.isAuthenticated = false;
-        
-        // Clear storage
         localStorage.removeItem('raw_wealthy_token');
-        
-        // Show message
         this.showToast('You have been logged out.', 'info');
-        
-        // Redirect to home
         this.showPage('home');
     },
 
@@ -5627,7 +5349,6 @@ Please log into admin panel to review and approve this investment.`;
 
         container.appendChild(toast);
 
-        // Remove toast after 5 seconds
         setTimeout(() => {
             if (toast.parentNode === container) {
                 container.removeChild(toast);
@@ -5635,7 +5356,42 @@ Please log into admin panel to review and approve this investment.`;
         }, 5000);
     },
 
-    // ==================== ENHANCED UI HELPERS ====================
+    // ==================== UI HELPERS ====================
+    toggleTheme() {
+        const body = document.body;
+        const icon = document.querySelector('#theme-toggle i');
+
+        if (body.classList.contains('light-mode')) {
+            body.classList.remove('light-mode');
+            icon.classList.remove('fa-sun');
+            icon.classList.add('fa-moon');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            body.classList.add('light-mode');
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+            localStorage.setItem('theme', 'light');
+        }
+    },
+
+    openMobileMenu() {
+        const mobileMenu = document.getElementById('mobile-menu');
+        const overlay = document.getElementById('mobile-menu-overlay');
+        
+        if (mobileMenu) mobileMenu.classList.add('active');
+        if (overlay) overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    },
+
+    closeMobileMenu() {
+        const mobileMenu = document.getElementById('mobile-menu');
+        const overlay = document.getElementById('mobile-menu-overlay');
+        
+        if (mobileMenu) mobileMenu.classList.remove('active');
+        if (overlay) overlay.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    },
+
     openModal(modalId) {
         const modal = document.getElementById(modalId);
         if (modal) {
@@ -5648,8 +5404,7 @@ Please log into admin panel to review and approve this investment.`;
                     if (this.state.currentUser) {
                         const balanceElement = document.getElementById('available-balance');
                         if (balanceElement) {
-                            const withdrawableBalance = (this.state.userStats.dailyEarnings || 0) + (this.state.userStats.referralEarnings || 0);
-                            balanceElement.textContent = `₦${withdrawableBalance.toLocaleString()}`;
+                            balanceElement.textContent = `₦${(this.state.currentUser.balance || 0).toLocaleString()}`;
                         }
                         this.updateWithdrawalFee();
                     }
@@ -5724,326 +5479,6 @@ Please log into admin panel to review and approve this investment.`;
             `;
             form.insertAdjacentHTML('afterbegin', instructionsHTML);
         }
-    },
-
-    checkAuthentication() {
-        if (this.state.token) {
-            this.verifyToken();
-        } else {
-            this.showPage('home');
-        }
-    },
-
-    updateNavbar() {
-        const navButtons = document.querySelector('.nav-buttons');
-        if (!navButtons) return;
-
-        if (this.state.isAuthenticated) {
-            navButtons.innerHTML = `
-                <button class="theme-toggle" id="theme-toggle">
-                    <i class="fas ${document.body.classList.contains('light-mode') ? 'fa-sun' : 'fa-moon'}"></i>
-                </button>
-                <button class="btn btn-outline" onclick="app.showPage('dashboard')">
-                    <i class="fas fa-chart-line"></i> Dashboard
-                </button>
-                ${this.state.isAdmin ? `
-                <button class="btn btn-outline" onclick="app.showPage('admin')">
-                    <i class="fas fa-cogs"></i> Admin
-                </button>
-                ` : ''}
-                <button class="btn btn-primary" onclick="app.logout()">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
-            `;
-        } else {
-            navButtons.innerHTML = `
-                <button class="theme-toggle" id="theme-toggle">
-                    <i class="fas ${document.body.classList.contains('light-mode') ? 'fa-sun' : 'fa-moon'}"></i>
-                </button>
-                <button class="btn btn-outline" onclick="app.showPage('login')">Login</button>
-                <button class="btn btn-primary" onclick="app.showPage('register')">Register</button>
-            `;
-        }
-
-        // Re-attach theme toggle event
-        const themeToggle = document.getElementById('theme-toggle');
-        if (themeToggle) {
-            themeToggle.addEventListener('click', () => this.toggleTheme());
-        }
-    },
-
-    toggleTheme() {
-        const body = document.body;
-        const icon = document.querySelector('#theme-toggle i');
-
-        if (body.classList.contains('light-mode')) {
-            body.classList.remove('light-mode');
-            icon.classList.remove('fa-sun');
-            icon.classList.add('fa-moon');
-            localStorage.setItem('theme', 'dark');
-        } else {
-            body.classList.add('light-mode');
-            icon.classList.remove('fa-moon');
-            icon.classList.add('fa-sun');
-            localStorage.setItem('theme', 'light');
-        }
-    },
-
-    initTheme() {
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        if (savedTheme === 'light') {
-            document.body.classList.add('light-mode');
-            const themeIcon = document.querySelector('#theme-toggle i');
-            if (themeIcon) {
-                themeIcon.classList.remove('fa-moon');
-                themeIcon.classList.add('fa-sun');
-            }
-        }
-    },
-
-    testAPIConnection() {
-        fetch(`${this.config.API_BASE_URL}/health`)
-            .then(response => {
-                if (response.ok) {
-                    console.log('✅ API Connection: SUCCESS');
-                } else {
-                    console.warn('⚠️ API Connection: WEAK');
-                }
-            })
-            .catch(error => {
-                console.error('❌ API Connection: FAILED');
-                this.showToast('Backend connection issue. Some features may be limited.', 'warning');
-            });
-    },
-
-    // ==================== SETUP EVENT LISTENERS ====================
-    setupEventListeners() {
-        // Theme toggle
-        const themeToggle = document.getElementById('theme-toggle');
-        if (themeToggle) {
-            themeToggle.addEventListener('click', () => this.toggleTheme());
-        }
-
-        // Mobile menu
-        const hamburger = document.getElementById('hamburger');
-        if (hamburger) {
-            hamburger.addEventListener('click', () => this.openMobileMenu());
-        }
-
-        const closeMobileMenu = document.getElementById('close-mobile-menu');
-        if (closeMobileMenu) {
-            closeMobileMenu.addEventListener('click', () => this.closeMobileMenu());
-        }
-
-        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
-        if (mobileMenuOverlay) {
-            mobileMenuOverlay.addEventListener('click', () => this.closeMobileMenu());
-        }
-
-        // Back to top
-        const backToTop = document.getElementById('back-to-top');
-        if (backToTop) {
-            backToTop.addEventListener('click', () => this.scrollToTop());
-        }
-
-        // Form submissions
-        this.setupFormListeners();
-
-        // Password toggles
-        this.initPasswordToggles();
-
-        // File upload previews
-        this.initFileUploadPreviews();
-
-        // Scroll events
-        window.addEventListener('scroll', () => this.handleScroll());
-
-        // Withdrawal amount changes
-        const withdrawAmount = document.getElementById('withdraw-amount');
-        if (withdrawAmount) {
-            withdrawAmount.addEventListener('input', () => this.updateWithdrawalFee());
-        }
-
-        // Global error handling
-        window.addEventListener('error', (e) => this.handleGlobalError(e));
-        window.addEventListener('unhandledrejection', (e) => this.handlePromiseRejection(e));
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => this.handleKeyboardShortcuts(e));
-    },
-
-    setupFormListeners() {
-        const forms = {
-            'registration-form': (e) => this.handleRegistration(e),
-            'login-form': (e) => this.handleLogin(e),
-            'invest-form': (e) => this.handleInvestment(e),
-            'deposit-form': (e) => this.handleDeposit(e),
-            'withdraw-form': (e) => this.handleWithdrawal(e),
-            'personal-form': (e) => this.handleProfileUpdate(e),
-            'bank-form': (e) => this.handleBankUpdate(e),
-            'kyc-form': (e) => this.handleKYCSubmission(e),
-            'support-form': (e) => this.handleSupportRequest(e),
-            'password-reset-form': (e) => this.handlePasswordReset(e),
-            'password-change-form': (e) => this.handlePasswordChange(e),
-            'preferences-form': (e) => this.handlePreferencesUpdate(e)
-        };
-
-        Object.entries(forms).forEach(([formId, handler]) => {
-            const form = document.getElementById(formId);
-            if (form) {
-                form.addEventListener('submit', handler);
-            }
-        });
-    },
-
-    initPasswordToggles() {
-        document.querySelectorAll('.password-toggle').forEach(toggle => {
-            toggle.addEventListener('click', function() {
-                const input = this.previousElementSibling;
-                const icon = this.querySelector('i');
-
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    icon.classList.remove('fa-eye');
-                    icon.classList.add('fa-eye-slash');
-                } else {
-                    input.type = 'password';
-                    icon.classList.remove('fa-eye-slash');
-                    icon.classList.add('fa-eye');
-                }
-            });
-        });
-    },
-
-    initFileUploadPreviews() {
-        const fileInputs = [
-            { input: 'investment-proof', preview: 'investment-preview' },
-            { input: 'deposit-proof', preview: 'deposit-preview' },
-            { input: 'id-front', preview: 'id-front-preview' },
-            { input: 'id-back', preview: 'id-back-preview' },
-            { input: 'selfie-with-id', preview: 'selfie-with-id-preview' }
-        ];
-
-        fileInputs.forEach(({ input, preview }) => {
-            const inputElement = document.getElementById(input);
-            const previewElement = document.getElementById(preview);
-
-            if (inputElement && previewElement) {
-                inputElement.addEventListener('change', (e) => {
-                    const file = e.target.files[0];
-                    if (file) {
-                        if (file.size > 10 * 1024 * 1024) {
-                            this.showToast('File size exceeds 10MB limit', 'error');
-                            e.target.value = '';
-                            return;
-                        }
-
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            previewElement.src = e.target.result;
-                            previewElement.style.display = 'block';
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-            }
-        });
-    },
-
-    handleKeyboardShortcuts(e) {
-        // Ctrl/Cmd + K for search
-        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-            e.preventDefault();
-            const searchInput = document.querySelector('input[type="search"]');
-            if (searchInput) searchInput.focus();
-        }
-
-        // Escape to close modals
-        if (e.key === 'Escape') {
-            const modals = document.querySelectorAll('.modal');
-            modals.forEach(modal => {
-                if (modal.style.display === 'flex') {
-                    this.closeModal(modal.id);
-                }
-            });
-        }
-    },
-
-    handleScroll() {
-        const navbar = document.querySelector('.navbar');
-        const backToTop = document.getElementById('back-to-top');
-
-        if (navbar && window.scrollY > 50) {
-            navbar.classList.add('scrolled');
-        } else if (navbar) {
-            navbar.classList.remove('scrolled');
-        }
-
-        if (backToTop && window.scrollY > 300) {
-            backToTop.classList.add('visible');
-        } else if (backToTop) {
-            backToTop.classList.remove('visible');
-        }
-    },
-
-    scrollToTop() {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    },
-
-    initAnimations() {
-        if ('IntersectionObserver' in window) {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('animate__animated', 'animate__fadeInUp');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { 
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            });
-
-            document.querySelectorAll('.feature, .plan-card, .step, .testimonial-card').forEach(el => {
-                observer.observe(el);
-            });
-        }
-    },
-
-    handleGlobalError(event) {
-        console.error('Global error:', event.error);
-        if (this.state.debugMode) {
-            this.showToast(`Error: ${event.error.message}`, 'error');
-        }
-    },
-
-    handlePromiseRejection(event) {
-        console.error('Unhandled promise rejection:', event.reason);
-        if (this.state.debugMode) {
-            this.showToast(`Promise rejected: ${event.reason}`, 'error');
-        }
-    },
-
-    // ==================== MISC FUNCTIONS ====================
-    openMobileMenu() {
-        const mobileMenu = document.getElementById('mobile-menu');
-        const overlay = document.getElementById('mobile-menu-overlay');
-        
-        if (mobileMenu) mobileMenu.classList.add('active');
-        if (overlay) overlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    },
-
-    closeMobileMenu() {
-        const mobileMenu = document.getElementById('mobile-menu');
-        const overlay = document.getElementById('mobile-menu-overlay');
-        
-        if (mobileMenu) mobileMenu.classList.remove('active');
-        if (overlay) overlay.classList.remove('active');
-        document.body.style.overflow = 'auto';
     },
 
     closeModal(modalId) {
@@ -6160,97 +5595,246 @@ Please log into admin panel to review and approve this investment.`;
         }
     },
 
-    // ==================== TEMPLATE FUNCTIONS ====================
-    loadInvestmentPlansPage() {
-        this.renderInvestmentPlans();
+    initPasswordToggles() {
+        document.querySelectorAll('.password-toggle').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const input = this.previousElementSibling;
+                const icon = this.querySelector('i');
+
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        });
     },
 
-    async handleProfileUpdate(e) {
-        e.preventDefault();
-        // Implementation for profile update
-        this.showToast('Profile update would be processed here', 'info');
+    initFileUploadPreviews() {
+        const fileInputs = [
+            { input: 'investment-proof', preview: 'investment-preview' },
+            { input: 'deposit-proof', preview: 'deposit-preview' },
+            { input: 'id-front', preview: 'id-front-preview' },
+            { input: 'id-back', preview: 'id-back-preview' },
+            { input: 'selfie-with-id', preview: 'selfie-with-id-preview' }
+        ];
+
+        fileInputs.forEach(({ input, preview }) => {
+            const inputElement = document.getElementById(input);
+            const previewElement = document.getElementById(preview);
+
+            if (inputElement && previewElement) {
+                inputElement.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        if (file.size > 10 * 1024 * 1024) {
+                            this.showToast('File size exceeds 10MB limit', 'error');
+                            e.target.value = '';
+                            return;
+                        }
+
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            previewElement.src = e.target.result;
+                            previewElement.style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        });
     },
 
-    async handleBankUpdate(e) {
-        e.preventDefault();
-        // Implementation for bank update
-        this.showToast('Bank details update would be processed here', 'info');
+    initAnimations() {
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate__animated', 'animate__fadeInUp');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { 
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            document.querySelectorAll('.feature, .plan-card, .step, .testimonial-card').forEach(el => {
+                observer.observe(el);
+            });
+        }
+    },
+
+    handleScroll() {
+        const navbar = document.querySelector('.navbar');
+        const backToTop = document.getElementById('back-to-top');
+
+        if (navbar && window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else if (navbar) {
+            navbar.classList.remove('scrolled');
+        }
+
+        if (backToTop && window.scrollY > 300) {
+            backToTop.classList.add('visible');
+        } else if (backToTop) {
+            backToTop.classList.remove('visible');
+        }
+    },
+
+    scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    },
+
+    initTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+            const themeIcon = document.querySelector('#theme-toggle i');
+            if (themeIcon) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            }
+        }
+    },
+
+    setupEventListeners() {
+        // Theme toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => this.toggleTheme());
+        }
+
+        // Mobile menu
+        const hamburger = document.getElementById('hamburger');
+        if (hamburger) {
+            hamburger.addEventListener('click', () => this.openMobileMenu());
+        }
+
+        const closeMobileMenu = document.getElementById('close-mobile-menu');
+        if (closeMobileMenu) {
+            closeMobileMenu.addEventListener('click', () => this.closeMobileMenu());
+        }
+
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+        if (mobileMenuOverlay) {
+            mobileMenuOverlay.addEventListener('click', () => this.closeMobileMenu());
+        }
+
+        // Back to top
+        const backToTop = document.getElementById('back-to-top');
+        if (backToTop) {
+            backToTop.addEventListener('click', () => this.scrollToTop());
+        }
+
+        // Form submissions
+        this.setupFormListeners();
+
+        // Password toggles
+        this.initPasswordToggles();
+
+        // File upload previews
+        this.initFileUploadPreviews();
+
+        // Scroll events
+        window.addEventListener('scroll', () => this.handleScroll());
+
+        // Withdrawal amount changes
+        const withdrawAmount = document.getElementById('withdraw-amount');
+        if (withdrawAmount) {
+            withdrawAmount.addEventListener('input', () => this.updateWithdrawalFee());
+        }
+
+        // Global error handling
+        window.addEventListener('error', (e) => this.handleGlobalError(e));
+        window.addEventListener('unhandledrejection', (e) => this.handlePromiseRejection(e));
+    },
+
+    setupFormListeners() {
+        const forms = {
+            'registration-form': (e) => this.handleRegistration(e),
+            'login-form': (e) => this.handleLogin(e),
+            'invest-form': (e) => this.handleInvestment(e),
+            'deposit-form': (e) => this.handleDeposit(e),
+            'withdraw-form': (e) => this.handleWithdrawal(e),
+            'personal-form': (e) => this.handleProfileUpdate(e),
+            'bank-form': (e) => this.handleBankUpdate(e),
+            'kyc-form': (e) => this.handleKYCSubmission(e),
+            'support-form': (e) => this.handleSupportRequest(e),
+            'password-reset-form': (e) => this.handlePasswordReset(e),
+            'password-change-form': (e) => this.handlePasswordChange(e),
+            'preferences-form': (e) => this.handlePreferencesUpdate(e)
+        };
+
+        Object.entries(forms).forEach(([formId, handler]) => {
+            const form = document.getElementById(formId);
+            if (form) {
+                form.addEventListener('submit', handler);
+            }
+        });
     },
 
     async handleKYCSubmission(e) {
         e.preventDefault();
-        // Implementation for KYC submission
         this.showToast('KYC submission would be processed here', 'info');
+        // KYC implementation would go here
     },
 
     async handleSupportRequest(e) {
         e.preventDefault();
-        // Implementation for support request
-        this.showToast('Support request would be processed here', 'info');
+        this.showToast('Support ticket would be submitted here', 'info');
+        // Support implementation would go here
     },
 
     async handlePasswordReset(e) {
         e.preventDefault();
-        // Implementation for password reset
         this.showToast('Password reset would be processed here', 'info');
+        // Password reset implementation would go here
     },
 
     async handlePasswordChange(e) {
         e.preventDefault();
-        // Implementation for password change
         this.showToast('Password change would be processed here', 'info');
+        // Password change implementation would go here
     },
 
     async handlePreferencesUpdate(e) {
         e.preventDefault();
-        // Implementation for preferences update
-        this.showToast('Preferences update would be processed here', 'info');
+        this.showToast('Preferences would be updated here', 'info');
+        // Preferences implementation would go here
     },
 
-    async loadReferralList(referrals) {
-        // Implementation for loading referral list
-        console.log('Referrals:', referrals);
+    testAPIConnection() {
+        fetch(`${this.config.API_BASE_URL}/health`)
+            .then(response => {
+                if (response.ok) {
+                    console.log('✅ API Connection: SUCCESS');
+                } else {
+                    console.warn('⚠️ API Connection: WEAK');
+                }
+            })
+            .catch(error => {
+                console.error('❌ API Connection: FAILED');
+                this.showToast('Backend connection issue. Some features may be limited.', 'warning');
+            });
     },
 
-    async loadAdminInvestments() {
-        // Implementation for loading admin investments
+    handleGlobalError(event) {
+        console.error('Global error:', event.error);
     },
 
-    async loadAdminDeposits() {
-        // Implementation for loading admin deposits
+    handlePromiseRejection(event) {
+        console.error('Unhandled promise rejection:', event.reason);
     },
 
-    async loadAdminWithdrawals() {
-        // Implementation for loading admin withdrawals
-    },
-
-    async loadAdminKYC() {
-        // Implementation for loading admin KYC
-    },
-
-    showTwoFactorPrompt() {
-        // Implementation for 2FA prompt
-        this.showToast('Two-factor authentication would be processed here', 'info');
-    },
-
-    copyReferralLink() {
-        const linkInput = document.getElementById('referral-link');
-        if (linkInput) {
-            linkInput.select();
-            document.execCommand('copy');
-            this.showToast('✅ Referral link copied to clipboard!', 'success');
-        }
-    },
-
-    copyReferralCode() {
-        const codeInput = document.getElementById('referral-code');
-        if (codeInput) {
-            codeInput.select();
-            document.execCommand('copy');
-            this.showToast('✅ Referral code copied to clipboard!', 'success');
-        }
-    },
-
+    // ==================== PAGE SWITCHING HELPERS ====================
     switchProfileTab(tab) {
         ['personal', 'security', 'bank', 'preferences', 'kyc'].forEach(tabId => {
             const element = document.getElementById(`${tabId}-tab`);
@@ -6309,6 +5893,522 @@ Please log into admin panel to review and approve this investment.`;
         }
     },
 
+    // ==================== ADMIN FUNCTIONS ====================
+    async loadAdminUsers() {
+        try {
+            const response = await this.apiRequest('/api/admin/users?limit=50');
+            if (response.success && response.data) {
+                this.state.adminData.users = response.data.users || [];
+                this.updateAdminUsersTable();
+            }
+        } catch (error) {
+            console.error('Failed to load admin users:', error);
+        }
+    },
+
+    async loadAdminInvestments() {
+        try {
+            const response = await this.apiRequest('/api/admin/pending-investments');
+            if (response.success && response.data) {
+                this.state.adminData.investments = response.data.investments || [];
+                this.updateAdminInvestmentsTable();
+            }
+        } catch (error) {
+            console.error('Failed to load admin investments:', error);
+        }
+    },
+
+    async loadAdminDeposits() {
+        try {
+            const response = await this.apiRequest('/api/admin/pending-deposits');
+            if (response.success && response.data) {
+                this.state.adminData.deposits = response.data.deposits || [];
+                this.updateAdminDepositsTable();
+            }
+        } catch (error) {
+            console.error('Failed to load admin deposits:', error);
+        }
+    },
+
+    async loadAdminWithdrawals() {
+        try {
+            const response = await this.apiRequest('/api/admin/pending-withdrawals');
+            if (response.success && response.data) {
+                this.state.adminData.withdrawals = response.data.withdrawals || [];
+                this.updateAdminWithdrawalsTable();
+            }
+        } catch (error) {
+            console.error('Failed to load admin withdrawals:', error);
+        }
+    },
+
+    async loadAdminKYC() {
+        try {
+            const response = await this.apiRequest('/api/admin/pending-kyc');
+            if (response.success && response.data) {
+                this.state.adminData.kycSubmissions = response.data.kyc_submissions || [];
+                this.updateAdminKYCTable();
+            }
+        } catch (error) {
+            console.error('Failed to load admin KYC:', error);
+        }
+    },
+
+    updateAdminUsersTable() {
+        const table = document.getElementById('admin-users-table');
+        if (!table) return;
+
+        if (this.state.adminData.users.length === 0) {
+            table.innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center py-4">
+                        <div class="empty-state">
+                            <i class="fas fa-users"></i>
+                            <p>No users found</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        table.innerHTML = this.state.adminData.users.map(user => {
+            return `
+                <tr>
+                    <td>
+                        <div class="user-cell">
+                            <div class="user-avatar-small">${user.full_name ? user.full_name.charAt(0).toUpperCase() : 'U'}</div>
+                            <div class="user-info">
+                                <div class="user-name">${user.full_name || 'Unknown'}</div>
+                                <div class="user-email">${user.email || 'N/A'}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}</td>
+                    <td>${user.role || 'user'}</td>
+                    <td>₦${(user.balance || 0).toLocaleString()}</td>
+                    <td>
+                        <span class="status-badge ${user.is_active ? 'active' : 'inactive'}">
+                            ${user.is_active ? 'Active' : 'Inactive'}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="status-badge ${user.kyc_verified ? 'approved' : 'pending'}">
+                            ${user.kyc_verified ? 'Verified' : 'Pending'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-sm btn-outline" onclick="app.viewUserDetails('${user._id}')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline" onclick="app.editUser('${user._id}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    },
+
+    viewUserDetails(userId) {
+        alert(`View user details for ID: ${userId}`);
+        // Implementation for viewing user details
+    },
+
+    editUser(userId) {
+        alert(`Edit user with ID: ${userId}`);
+        // Implementation for editing user
+    },
+
+    updateAdminInvestmentsTable() {
+        const table = document.getElementById('admin-investments-table');
+        if (!table) return;
+
+        if (this.state.adminData.investments.length === 0) {
+            table.innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center py-4">
+                        <div class="empty-state">
+                            <i class="fas fa-chart-line"></i>
+                            <p>No investment requests found</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        table.innerHTML = this.state.adminData.investments.map(inv => {
+            return `
+                <tr>
+                    <td>${inv.user?.full_name || 'Unknown User'}</td>
+                    <td>${inv.plan?.name || 'Unknown Plan'}</td>
+                    <td>₦${(inv.amount || 0).toLocaleString()}</td>
+                    <td>${inv.plan?.daily_interest || 0}%</td>
+                    <td>${inv.createdAt ? new Date(inv.createdAt).toLocaleDateString() : 'N/A'}</td>
+                    <td>
+                        <span class="status-badge ${inv.status || 'pending'}">
+                            ${inv.status || 'pending'}
+                        </span>
+                    </td>
+                    <td>
+                        ${inv.status === 'pending' ? `
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-success" onclick="app.approveInvestment('${inv._id}')">
+                                    <i class="fas fa-check"></i> Approve
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="app.rejectInvestment('${inv._id}')">
+                                    <i class="fas fa-times"></i> Reject
+                                </button>
+                            </div>
+                        ` : `
+                            <span class="text-muted">Processed</span>
+                        `}
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    },
+
+    updateAdminDepositsTable() {
+        const table = document.getElementById('admin-deposits-table');
+        if (!table) return;
+
+        if (this.state.adminData.deposits.length === 0) {
+            table.innerHTML = `
+                <tr>
+                    <td colspan="6" class="text-center py-4">
+                        <div class="empty-state">
+                            <i class="fas fa-wallet"></i>
+                            <p>No deposit requests found</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        table.innerHTML = this.state.adminData.deposits.map(deposit => {
+            return `
+                <tr>
+                    <td>${deposit.user?.full_name || 'Unknown User'}</td>
+                    <td>₦${(deposit.amount || 0).toLocaleString()}</td>
+                    <td>${deposit.payment_method || 'N/A'}</td>
+                    <td>${deposit.createdAt ? new Date(deposit.createdAt).toLocaleDateString() : 'N/A'}</td>
+                    <td>
+                        <span class="status-badge ${deposit.status || 'pending'}">
+                            ${deposit.status || 'pending'}
+                        </span>
+                    </td>
+                    <td>
+                        ${deposit.status === 'pending' ? `
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-success" onclick="app.approveDeposit('${deposit._id}')">
+                                    <i class="fas fa-check"></i> Approve
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="app.rejectDeposit('${deposit._id}')">
+                                    <i class="fas fa-times"></i> Reject
+                                </button>
+                            </div>
+                        ` : `
+                            <span class="text-muted">Processed</span>
+                        `}
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    },
+
+    updateAdminWithdrawalsTable() {
+        const table = document.getElementById('admin-withdrawals-table');
+        if (!table) return;
+
+        if (this.state.adminData.withdrawals.length === 0) {
+            table.innerHTML = `
+                <tr>
+                    <td colspan="8" class="text-center py-4">
+                        <div class="empty-state">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <p>No withdrawal requests found</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        table.innerHTML = this.state.adminData.withdrawals.map(wdl => {
+            return `
+                <tr>
+                    <td>${wdl.user?.full_name || 'Unknown User'}</td>
+                    <td>₦${(wdl.amount || 0).toLocaleString()}</td>
+                    <td>₦${(wdl.platform_fee || 0).toLocaleString()}</td>
+                    <td>₦${(wdl.net_amount || 0).toLocaleString()}</td>
+                    <td>${wdl.payment_method || 'N/A'}</td>
+                    <td>${wdl.createdAt ? new Date(wdl.createdAt).toLocaleDateString() : 'N/A'}</td>
+                    <td>
+                        <span class="status-badge ${wdl.status || 'pending'}">
+                            ${wdl.status || 'pending'}
+                        </span>
+                    </td>
+                    <td>
+                        ${wdl.status === 'pending' ? `
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-success" onclick="app.approveWithdrawal('${wdl._id}')">
+                                    <i class="fas fa-check"></i> Approve
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="app.rejectWithdrawal('${wdl._id}')">
+                                    <i class="fas fa-times"></i> Reject
+                                </button>
+                            </div>
+                        ` : `
+                            <span class="text-muted">Processed</span>
+                        `}
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    },
+
+    updateAdminKYCTable() {
+        const table = document.getElementById('admin-kyc-table');
+        if (!table) return;
+
+        if (this.state.adminData.kycSubmissions.length === 0) {
+            table.innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center py-4">
+                        <div class="empty-state">
+                            <i class="fas fa-id-card"></i>
+                            <p>No KYC requests found</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        table.innerHTML = this.state.adminData.kycSubmissions.map(kyc => {
+            return `
+                <tr>
+                    <td>${kyc.user?.full_name || 'Unknown User'}</td>
+                    <td>${kyc.id_type || 'N/A'}</td>
+                    <td>${kyc.id_number || 'N/A'}</td>
+                    <td>${kyc.createdAt ? new Date(kyc.createdAt).toLocaleDateString() : 'N/A'}</td>
+                    <td>
+                        <div class="kyc-files">
+                            <span title="ID Front">${kyc.id_front_url ? '✅' : '❌'}</span>
+                            <span title="Selfie">${kyc.selfie_with_id_url ? '✅' : '❌'}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="status-badge ${kyc.status || 'pending'}">
+                            ${kyc.status || 'pending'}
+                        </span>
+                    </td>
+                    <td>
+                        ${kyc.status === 'pending' ? `
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-success" onclick="app.approveKYC('${kyc._id}')">
+                                    <i class="fas fa-check"></i> Approve
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="app.rejectKYC('${kyc._id}')">
+                                    <i class="fas fa-times"></i> Reject
+                                </button>
+                            </div>
+                        ` : `
+                            <span class="text-muted">Processed</span>
+                        `}
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    },
+
+    async approveDeposit(depositId) {
+        if (!confirm('Approve this deposit?')) return;
+
+        try {
+            const response = await this.apiRequest(`/api/admin/deposits/${depositId}/approve`, {
+                method: 'POST',
+                body: { remarks: 'Approved by admin' }
+            });
+
+            if (response.success) {
+                this.showToast('✅ Deposit approved successfully!', 'success');
+                this.loadAdminDeposits();
+                this.loadAdminDashboard();
+            } else {
+                this.showToast(response.message || 'Approval failed', 'error');
+            }
+        } catch (error) {
+            console.error('Failed to approve deposit:', error);
+            this.showToast('Error approving deposit', 'error');
+        }
+    },
+
+    async rejectDeposit(depositId) {
+        const reason = prompt('Enter rejection reason:');
+        if (!reason) return;
+
+        try {
+            const response = await this.apiRequest(`/api/admin/deposits/${depositId}/reject`, {
+                method: 'POST',
+                body: { remarks: reason }
+            });
+
+            if (response.success) {
+                this.showToast('✅ Deposit rejected!', 'success');
+                this.loadAdminDeposits();
+            } else {
+                this.showToast(response.message || 'Rejection failed', 'error');
+            }
+        } catch (error) {
+            console.error('Failed to reject deposit:', error);
+            this.showToast('Error rejecting deposit', 'error');
+        }
+    },
+
+    async approveInvestment(investmentId) {
+        if (!confirm('Approve this investment?')) return;
+
+        try {
+            const response = await this.apiRequest(`/api/admin/investments/${investmentId}/approve`, {
+                method: 'POST',
+                body: { remarks: 'Approved by admin' }
+            });
+
+            if (response.success) {
+                this.showToast('✅ Investment approved successfully!', 'success');
+                this.loadAdminInvestments();
+                this.loadAdminDashboard();
+            } else {
+                this.showToast(response.message || 'Approval failed', 'error');
+            }
+        } catch (error) {
+            console.error('Failed to approve investment:', error);
+            this.showToast('Error approving investment', 'error');
+        }
+    },
+
+    async rejectInvestment(investmentId) {
+        const reason = prompt('Enter rejection reason:');
+        if (!reason) return;
+
+        try {
+            const response = await this.apiRequest(`/api/admin/investments/${investmentId}/reject`, {
+                method: 'POST',
+                body: { remarks: reason }
+            });
+
+            if (response.success) {
+                this.showToast('✅ Investment rejected!', 'success');
+                this.loadAdminInvestments();
+            } else {
+                this.showToast(response.message || 'Rejection failed', 'error');
+            }
+        } catch (error) {
+            console.error('Failed to reject investment:', error);
+            this.showToast('Error rejecting investment', 'error');
+        }
+    },
+
+    async approveWithdrawal(withdrawalId) {
+        if (!confirm('Approve this withdrawal?')) return;
+
+        try {
+            const response = await this.apiRequest(`/api/admin/withdrawals/${withdrawalId}/approve`, {
+                method: 'POST',
+                body: { 
+                    transaction_id: 'TXN' + Date.now(),
+                    remarks: 'Approved by admin'
+                }
+            });
+
+            if (response.success) {
+                this.showToast('✅ Withdrawal approved successfully!', 'success');
+                this.loadAdminWithdrawals();
+                this.loadAdminDashboard();
+            } else {
+                this.showToast(response.message || 'Approval failed', 'error');
+            }
+        } catch (error) {
+            console.error('Failed to approve withdrawal:', error);
+            this.showToast('Error approving withdrawal', 'error');
+        }
+    },
+
+    async rejectWithdrawal(withdrawalId) {
+        const reason = prompt('Enter rejection reason:');
+        if (!reason) return;
+
+        try {
+            const response = await this.apiRequest(`/api/admin/withdrawals/${withdrawalId}/reject`, {
+                method: 'POST',
+                body: { remarks: reason }
+            });
+
+            if (response.success) {
+                this.showToast('✅ Withdrawal rejected!', 'success');
+                this.loadAdminWithdrawals();
+            } else {
+                this.showToast(response.message || 'Rejection failed', 'error');
+            }
+        } catch (error) {
+            console.error('Failed to reject withdrawal:', error);
+            this.showToast('Error rejecting withdrawal', 'error');
+        }
+    },
+
+    async approveKYC(kycId) {
+        if (!confirm('Approve this KYC?')) return;
+
+        try {
+            const response = await this.apiRequest(`/api/admin/kyc/${kycId}/approve`, {
+                method: 'POST',
+                body: { remarks: 'KYC approved' }
+            });
+
+            if (response.success) {
+                this.showToast('✅ KYC approved successfully!', 'success');
+                this.loadAdminKYC();
+                this.loadAdminDashboard();
+            } else {
+                this.showToast(response.message || 'Approval failed', 'error');
+            }
+        } catch (error) {
+            console.error('Failed to approve KYC:', error);
+            this.showToast('Error approving KYC', 'error');
+        }
+    },
+
+    async rejectKYC(kycId) {
+        const reason = prompt('Enter rejection reason:');
+        if (!reason) return;
+
+        try {
+            const response = await this.apiRequest(`/api/admin/kyc/${kycId}/reject`, {
+                method: 'POST',
+                body: { 
+                    rejection_reason: reason,
+                    remarks: 'KYC rejected'
+                }
+            });
+
+            if (response.success) {
+                this.showToast('✅ KYC rejected!', 'success');
+                this.loadAdminKYC();
+            } else {
+                this.showToast(response.message || 'Rejection failed', 'error');
+            }
+        } catch (error) {
+            console.error('Failed to reject KYC:', error);
+            this.showToast('Error rejecting KYC', 'error');
+        }
+    },
+
     switchAdminTab(tab) {
         ['overview', 'users', 'investments', 'deposits', 'withdrawals'].forEach(tabId => {
             const element = document.getElementById(`${tabId}-tab`);
@@ -6344,20 +6444,134 @@ Please log into admin panel to review and approve this investment.`;
                 this.loadAdminWithdrawals(); 
                 break;
         }
+    },
+
+    // ==================== TWO-FACTOR AUTHENTICATION ====================
+    showTwoFactorPrompt() {
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.id = 'two-factor-modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Two-Factor Authentication</h2>
+                    <button class="close-modal" onclick="app.closeModal('two-factor-modal')">&times;</button>
+                </div>
+                <form id="two-factor-form">
+                    <div class="form-group">
+                        <label for="two-factor-code">Enter 6-digit code from your authenticator app</label>
+                        <input type="text" id="two-factor-code" class="form-control" 
+                               placeholder="000000" maxlength="6" pattern="[0-9]{6}" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        Verify
+                    </button>
+                </form>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+        this.openModal('two-factor-modal');
+
+        document.getElementById('two-factor-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.verifyTwoFactorCode();
+        });
+    },
+
+    async verifyTwoFactorCode() {
+        const code = document.getElementById('two-factor-code').value;
+        
+        try {
+            const response = await this.apiRequest('/api/auth/verify-2fa', {
+                method: 'POST',
+                body: { code }
+            });
+
+            if (response.success) {
+                this.showToast('✅ Two-factor authentication successful!', 'success');
+                this.closeModal('two-factor-modal');
+                
+                setTimeout(() => {
+                    if (this.state.isAdmin) {
+                        this.showPage('admin');
+                    } else {
+                        this.showPage('dashboard');
+                    }
+                }, 1000);
+            } else {
+                this.showToast(response.message || 'Invalid verification code', 'error');
+            }
+        } catch (error) {
+            this.showToast('Error verifying code', 'error');
+        }
+    },
+
+    // ==================== LOAD INVESTMENT PLANS PAGE ====================
+    loadInvestmentPlansPage() {
+        this.renderInvestmentPlans();
+    },
+
+    // ==================== NOTIFICATION FUNCTIONS ====================
+    async loadNotifications() {
+        if (!this.state.currentUser) return;
+
+        try {
+            const response = await this.apiRequest('/api/notifications?limit=10');
+            if (response.success && response.data) {
+                this.state.notifications = response.data.notifications || [];
+                this.updateNotificationBadge();
+            }
+        } catch (error) {
+            console.error('Failed to load notifications:', error);
+        }
+    },
+
+    updateNotificationBadge() {
+        const unreadCount = this.state.notifications.filter(n => !n.is_read).length;
+        const badge = document.getElementById('notification-badge');
+        if (badge) {
+            badge.textContent = unreadCount;
+            badge.style.display = unreadCount > 0 ? 'flex' : 'none';
+        }
     }
 };
 
-// ==================== INITIALIZE APPLICATION ====================
+// ==================== GLOBAL EVENT HANDLERS ====================
 window.addEventListener('DOMContentLoaded', function() {
     console.log('DOM fully loaded and parsed');
     app.init();
 });
 
-// Global event handlers
 window.onclick = function(event) {
     if (event.target.classList.contains('modal')) {
         app.closeModal(event.target.id);
     }
-};</script>
+};
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(modal => {
+            if (modal.style.display === 'flex') {
+                app.closeModal(modal.id);
+            }
+        });
+    }
+});
+
+// Auto-refresh dashboard every 30 seconds
+setInterval(() => {
+    if (app.state.isAuthenticated && !app.state.isAdmin && document.getElementById('dashboard-page').style.display !== 'none') {
+        app.updateDashboard();
+    }
+}, 30000);
+
+// Auto-refresh admin data every minute
+setInterval(() => {
+    if (app.state.isAdmin && document.getElementById('admin-page').style.display !== 'none') {
+        app.loadAdminData();
+    }
+}, 60000);</script>
 </body>
 </html>
