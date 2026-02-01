@@ -1,4 +1,4 @@
-            <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -3830,7 +3830,7 @@
         <i class="fas fa-chevron-up"></i>
     </div>
 
-    <script>// ==================== RAW WEALTHY FRONTEND v47.0 - COMPLETE DASHBOARD FIX ====================
+    <script>// ==================== RAW WEALTHY FRONTEND v50.0 - COMPLETE DASHBOARD FIX ====================
 const app = {
     // ==================== ENHANCED CONFIGURATION WITH DEBUGGING ====================
     config: {
@@ -3846,11 +3846,11 @@ const app = {
             }
             return window.location.origin;
         })(),
-        VERSION: '47.0.0',
+        VERSION: '50.0.0',
         ENVIRONMENT: window.location.hostname === 'localhost' ? 'development' : 'production',
         MIN_INVESTMENT: 3500,
         MIN_DEPOSIT: 3500,
-        MIN_WITHDRAWAL: 1000,
+        MIN_WITHDRAWAL: 3500,
         PLATFORM_FEE_PERCENT: 10,
         REFERRAL_COMMISSION_PERCENT: 10,
         WELCOME_BONUS: 100,
@@ -3891,7 +3891,7 @@ const app = {
 
     // ==================== INITIALIZATION ====================
     init() {
-        console.log('🚀 Raw Wealthy Frontend v47.0 Initializing...');
+        console.log('🚀 Raw Wealthy Frontend v50.0 Initializing...');
         console.log(`🌐 Backend URL: ${this.config.API_BASE_URL}`);
         
         this.setupEventListeners();
@@ -3901,18 +3901,6 @@ const app = {
         this.checkReferralFromURL();
         this.initTheme();
         this.testAPIConnection();
-        this.initializeDashboardDefaults();
-    },
-
-    // ==================== FIX: INITIALIZE DASHBOARD DEFAULTS ====================
-    initializeDashboardDefaults() {
-        const fixElements = ['total-balance', 'active-investments', 'total-earnings', 'referral-bonus'];
-        fixElements.forEach(id => {
-            const element = document.getElementById(id);
-            if (element) {
-                element.textContent = '₦0.00';
-            }
-        });
     },
 
     // ==================== AUTHENTICATION FUNCTIONS ====================
@@ -3926,8 +3914,9 @@ const app = {
 
     async verifyToken() {
         try {
+            console.log('🔑 Verifying token...');
             const response = await this.apiRequest('/api/profile');
-            console.log('Token verification response:', response);
+            console.log('✅ Token verification response:', response);
             
             if (response.success && response.data && response.data.user) {
                 this.state.currentUser = response.data.user;
@@ -3955,18 +3944,22 @@ const app = {
                 
                 // Update navbar
                 this.updateNavbar();
+                
+                console.log('✅ User authenticated:', this.state.currentUser.email);
             } else {
+                console.error('❌ Token verification failed');
                 this.logout();
                 this.showPage('home');
             }
         } catch (error) {
-            console.error('Token verification failed:', error);
+            console.error('❌ Token verification error:', error);
             this.logout();
             this.showPage('home');
         }
     },
 
     handleTokenExpired() {
+        console.log('⚠️ Token expired');
         localStorage.removeItem('raw_wealthy_token');
         this.state.token = null;
         this.state.currentUser = null;
@@ -3997,12 +3990,13 @@ const app = {
         this.setLoadingState('register-btn', true);
 
         try {
+            console.log('📝 Registration attempt for:', formData.email);
             const response = await this.apiRequest('/api/auth/register', {
                 method: 'POST',
                 body: formData
             });
 
-            console.log('Registration response:', response);
+            console.log('✅ Registration response:', response);
 
             if (response.success && response.data && response.data.token) {
                 this.state.token = response.data.token;
@@ -4014,6 +4008,7 @@ const app = {
                 // Update navbar
                 this.updateNavbar();
 
+                // Auto-login and redirect
                 setTimeout(() => {
                     this.showPage('dashboard');
                 }, 1500);
@@ -4021,7 +4016,7 @@ const app = {
                 this.showToast(response.message || 'Registration failed', 'error');
             }
         } catch (error) {
-            console.error('Registration error:', error);
+            console.error('❌ Registration error:', error);
             this.showToast('Registration failed. Please try again.', 'error');
         } finally {
             this.setLoadingState('register-btn', false);
@@ -4070,13 +4065,13 @@ const app = {
         this.setLoadingState('login-btn', true);
 
         try {
-            console.log('Login attempt with:', formData.email);
+            console.log('🔐 Login attempt for:', formData.email);
             const response = await this.apiRequest('/api/auth/login', {
                 method: 'POST',
                 body: formData
             });
 
-            console.log('Login response:', response);
+            console.log('✅ Login response:', response);
 
             if (response.success && response.data && response.data.token) {
                 this.state.token = response.data.token;
@@ -4104,7 +4099,7 @@ const app = {
                 this.showToast(response.message || 'Login failed', 'error');
             }
         } catch (error) {
-            console.error('Login error:', error);
+            console.error('❌ Login error:', error);
             this.showToast('Login failed. Please check your credentials.', 'error');
         } finally {
             this.setLoadingState('login-btn', false);
@@ -4114,7 +4109,7 @@ const app = {
     // ==================== FIXED DASHBOARD FUNCTIONS ====================
     async updateDashboard() {
         if (!this.state.currentUser) {
-            console.error('No current user for dashboard');
+            console.error('❌ No current user for dashboard');
             return;
         }
 
@@ -4127,30 +4122,30 @@ const app = {
                 const user = response.data.user;
                 const stats = response.data.stats || {};
 
-                console.log('📈 User data:', {
+                console.log('📈 User financial data:', {
                     balance: user.balance,
                     total_earnings: user.total_earnings,
                     referral_earnings: user.referral_earnings,
                     portfolio_value: user.portfolio_value
                 });
 
-                console.log('📊 Stats data:', {
+                console.log('📊 Investment stats:', {
                     active_investment_value: stats.active_investment_value,
                     daily_interest: stats.daily_interest,
                     total_interest_earned: stats.total_interest_earned
                 });
 
-                // FIX: Use calculated interest from stats if available
-                const totalEarnings = stats.total_interest_earned || user.total_earnings || 0;
-                const referralEarnings = user.referral_earnings || 0;
-                const portfolioValue = stats.portfolio_value || 
-                                     (user.balance || 0) + totalEarnings + referralEarnings;
+                // Calculate portfolio value from backend data
+                const portfolioValue = user.portfolio_value || 
+                                     (user.balance || 0) + 
+                                     (user.total_earnings || 0) + 
+                                     (user.referral_earnings || 0);
 
-                // Update dashboard with REAL data
+                // Update dashboard with REAL data from backend
                 this.updateDashboardStats({
                     balance: user.balance || 0,
-                    total_earnings: totalEarnings,
-                    referral_earnings: referralEarnings,
+                    total_earnings: user.total_earnings || 0,
+                    referral_earnings: user.referral_earnings || 0,
                     portfolio_value: portfolioValue,
                     total_deposits: user.total_deposits || 0,
                     total_withdrawals: user.total_withdrawals || 0
@@ -4173,8 +4168,8 @@ const app = {
                     balance: user.balance || 0,
                     activeInvestments: stats.active_investment_value || 0,
                     dailyEarnings: stats.daily_interest || 0,
-                    totalEarnings: totalEarnings,
-                    referralEarnings: referralEarnings,
+                    totalEarnings: user.total_earnings || 0,
+                    referralEarnings: user.referral_earnings || 0,
                     portfolioValue: portfolioValue
                 };
 
@@ -4192,21 +4187,23 @@ const app = {
     updateDashboardStats(user, stats) {
         console.log('📊 Updating dashboard stats:', { user, stats });
         
-        // Calculate total earnings from investments if not provided
-        const totalEarnings = stats.total_interest_earned || user.total_earnings || 0;
-        const referralEarnings = user.referral_earnings || 0;
-        const portfolioValue = stats.portfolio_value || user.portfolio_value || 
-                             (user.balance || 0) + totalEarnings + referralEarnings;
+        // Ensure we have valid numbers (not "NO" or undefined)
+        const formatValue = (value) => {
+            if (value === undefined || value === null || isNaN(value)) {
+                return 0;
+            }
+            return value;
+        };
 
         const statElements = {
-            'total-balance': `₦${(user.balance || 0).toLocaleString()}`,
-            'active-investments': `₦${(stats.active_investment_value || 0).toLocaleString()}`,
-            'total-earnings': `₦${totalEarnings.toLocaleString()}`,
-            'referral-bonus': `₦${referralEarnings.toLocaleString()}`,
-            'daily-earnings': `₦${(stats.daily_interest || 0).toLocaleString()}`,
-            'portfolio-value': `₦${portfolioValue.toLocaleString()}`,
-            'total-deposits': `₦${(user.total_deposits || 0).toLocaleString()}`,
-            'total-withdrawals': `₦${(user.total_withdrawals || 0).toLocaleString()}`
+            'total-balance': `₦${formatValue(user.balance).toLocaleString()}`,
+            'active-investments': `₦${formatValue(stats.active_investment_value).toLocaleString()}`,
+            'total-earnings': `₦${formatValue(user.total_earnings).toLocaleString()}`,
+            'referral-bonus': `₦${formatValue(user.referral_earnings).toLocaleString()}`,
+            'daily-earnings': `₦${formatValue(stats.daily_interest).toLocaleString()}`,
+            'portfolio-value': `₦${formatValue(user.portfolio_value).toLocaleString()}`,
+            'total-deposits': `₦${formatValue(user.total_deposits).toLocaleString()}`,
+            'total-withdrawals': `₦${formatValue(user.total_withdrawals).toLocaleString()}`
         };
 
         Object.entries(statElements).forEach(([id, value]) => {
@@ -4214,8 +4211,24 @@ const app = {
             if (element) {
                 console.log(`📊 Setting ${id} to ${value}`);
                 element.textContent = value;
+                // Remove any "NO" text that might be present
+                if (element.innerHTML.includes('NO')) {
+                    element.innerHTML = value;
+                }
             }
         });
+
+        // Also update the user name and tier in dashboard header
+        const userNameElement = document.getElementById('user-name');
+        const userTierElement = document.getElementById('user-tier');
+        
+        if (userNameElement && this.state.currentUser) {
+            userNameElement.textContent = this.state.currentUser.full_name || 'User';
+        }
+        
+        if (userTierElement) {
+            userTierElement.textContent = this.state.currentUser?.role === 'admin' ? 'Admin Investor' : 'Standard Investor';
+        }
     },
 
     async loadUserInvestments() {
@@ -4241,8 +4254,10 @@ const app = {
                 } else {
                     container.innerHTML = investments.map(inv => {
                         const planName = inv.plan?.name || 'Unknown Plan';
-                        const remainingDays = inv.remaining_days || Math.ceil((new Date(inv.end_date) - new Date()) / (1000 * 60 * 60 * 24));
-                        const progress = inv.progress_percentage || 0;
+                        const remainingDays = Math.ceil((new Date(inv.end_date) - new Date()) / (1000 * 60 * 60 * 24));
+                        const progress = inv.progress_percentage || 
+                                       ((Date.now() - new Date(inv.start_date).getTime()) / 
+                                       (new Date(inv.end_date).getTime() - new Date(inv.start_date).getTime()) * 100);
                         const amount = inv.amount || 0;
                         const earned = inv.earned_so_far || 0;
                         
@@ -4257,9 +4272,9 @@ const app = {
                                 </div>
                                 <div class="investment-progress">
                                     <div class="progress-bar">
-                                        <div class="progress-fill" style="width: ${progress}%"></div>
+                                        <div class="progress-fill" style="width: ${Math.min(progress, 100)}%"></div>
                                     </div>
-                                    <div class="progress-text">${progress}% Complete</div>
+                                    <div class="progress-text">${Math.round(progress)}% Complete</div>
                                 </div>
                                 <div class="investment-footer">
                                     <div class="investment-amount">₦${amount.toLocaleString()}</div>
@@ -4271,7 +4286,7 @@ const app = {
                 }
             }
         } catch (error) {
-            console.error('Failed to load investments:', error);
+            console.error('❌ Failed to load investments:', error);
             const container = document.getElementById('active-investments-list');
             if (container) {
                 container.innerHTML = `
@@ -4327,7 +4342,7 @@ const app = {
                 }
             }
         } catch (error) {
-            console.error('Failed to load transactions:', error);
+            console.error('❌ Failed to load transactions:', error);
         }
     },
 
@@ -4345,7 +4360,7 @@ const app = {
         return icons[type] || 'exchange-alt';
     },
 
-    // ==================== FIXED DEPOSIT WITH WHATSAPP ====================
+    // ==================== FIXED DEPOSIT FUNCTION ====================
     async handleDeposit(e) {
         e.preventDefault();
 
@@ -4383,6 +4398,7 @@ const app = {
             formData.append('payment_method', paymentMethod);
             formData.append('payment_proof', proofFile);
 
+            console.log('💰 Deposit request:', { amount, paymentMethod });
             const response = await this.apiRequest('/api/deposits', {
                 method: 'POST',
                 body: formData
@@ -4400,13 +4416,15 @@ const app = {
                     preview.src = '';
                 }
 
-                // Update dashboard
-                this.updateDashboard();
+                // Update dashboard after 2 seconds to allow backend processing
+                setTimeout(() => {
+                    this.updateDashboard();
+                }, 2000);
             } else {
                 this.showToast(response.message || 'Deposit failed', 'error');
             }
         } catch (error) {
-            console.error('Deposit error:', error);
+            console.error('❌ Deposit error:', error);
             this.showToast('Error submitting deposit', 'error');
         } finally {
             this.setLoadingState('deposit-btn', false);
@@ -4432,7 +4450,11 @@ const app = {
             return;
         }
 
-        if (amount > (this.state.currentUser.balance || 0)) {
+        // Get current user balance from backend
+        const userResponse = await this.apiRequest('/api/profile');
+        const userBalance = userResponse.success ? userResponse.data.user.balance : 0;
+        
+        if (amount > userBalance) {
             this.showToast('Insufficient balance for withdrawal', 'error');
             return;
         }
@@ -4442,9 +4464,8 @@ const app = {
             return;
         }
 
-        // FIX: Check bank details properly
+        // Check bank details for bank transfer
         if (paymentMethod === 'bank_transfer') {
-            // Check if bank details exist and have account number
             if (!this.state.currentUser.bank_details || 
                 !this.state.currentUser.bank_details.account_number || 
                 this.state.currentUser.bank_details.account_number.trim() === '') {
@@ -4460,7 +4481,7 @@ const app = {
         const netAmount = amount - fee;
 
         // Confirmation dialog
-        const confirmed = confirm(`Are you sure you want to withdraw ₦${amount.toLocaleString()}?\n\nPlatform Fee (${this.config.PLATFORM_FEE_PERCENT}%): ₦${fee.toLocaleString()}\nNet Amount: ₦${netAmount.toLocaleString()}\n\nClick OK to proceed.`);
+        const confirmed = confirm(`Withdrawal Confirmation:\n\nAmount: ₦${amount.toLocaleString()}\nPlatform Fee (${this.config.PLATFORM_FEE_PERCENT}%): ₦${fee.toLocaleString()}\nNet Amount: ₦${netAmount.toLocaleString()}\n\nClick OK to proceed.`);
         
         if (!confirmed) {
             return;
@@ -4487,7 +4508,9 @@ const app = {
                 }
                 
                 // Update dashboard
-                this.updateDashboard();
+                setTimeout(() => {
+                    this.updateDashboard();
+                }, 2000);
                 
                 // Clear form
                 e.target.reset();
@@ -4495,8 +4518,8 @@ const app = {
                 this.showToast(response.message || 'Withdrawal failed', 'error');
             }
         } catch (error) {
-            console.error('Withdrawal error:', error);
-            this.showToast('Error processing withdrawal', 'error');
+            console.error('❌ Withdrawal error:', error);
+            this.showToast('Error processing withdrawal: ' + (error.message || 'Please try again'), 'error');
         } finally {
             this.setLoadingState('withdraw-btn', false);
         }
@@ -4518,27 +4541,33 @@ const app = {
             balanceElement.textContent = `₦${(this.state.currentUser.balance || 0).toLocaleString()}`;
         }
 
-        feeNotice.innerHTML = `
-            <i class="fas fa-info-circle"></i>
-            <span>
-                Platform Fee (${this.config.PLATFORM_FEE_PERCENT}%): <strong>₦${fee.toLocaleString()}</strong><br>
-                Net Amount You'll Receive: <strong>₦${netAmount.toLocaleString()}</strong>
-            </span>
-        `;
+        if (amount > 0) {
+            feeNotice.innerHTML = `
+                <i class="fas fa-info-circle"></i>
+                <span>
+                    Platform Fee (${this.config.PLATFORM_FEE_PERCENT}%): <strong>₦${fee.toLocaleString()}</strong><br>
+                    Net Amount You'll Receive: <strong>₦${netAmount.toLocaleString()}</strong>
+                </span>
+            `;
+        }
     },
 
     // ==================== FIXED REFERRAL SYSTEM ====================
     async loadReferralData() {
-        if (!this.state.currentUser) return;
+        if (!this.state.currentUser) {
+            console.log('⚠️ No current user for referral data');
+            return;
+        }
 
         try {
+            console.log('🔄 Loading referral data...');
             const response = await this.apiRequest('/api/referrals/stats');
             
             if (response.success && response.data) {
                 const stats = response.data.stats || {};
                 const referrals = response.data.referrals || [];
 
-                console.log('📊 Referral stats:', stats);
+                console.log('📊 Referral stats from backend:', stats);
 
                 // Update referral link and code
                 const baseUrl = window.location.origin;
@@ -4550,15 +4579,18 @@ const app = {
                 if (linkInput) linkInput.value = referralLink;
                 if (codeInput) codeInput.value = this.state.currentUser.referral_code || '';
 
-                // FIX: Calculate pending earnings from active referrals
-                const activeReferrals = referrals.filter(r => r.status === 'active' && !r.earnings_paid);
-                const pendingEarnings = activeReferrals.reduce((sum, ref) => sum + (ref.earnings || 0), 0);
+                // Calculate pending earnings from active referrals (where earnings_paid is false)
+                const pendingEarnings = referrals
+                    .filter(r => r.status === 'active' && !r.earnings_paid)
+                    .reduce((sum, ref) => sum + (ref.earnings || 0), 0);
+                
+                // Calculate total earnings from all referrals
                 const totalEarnings = referrals.reduce((sum, r) => sum + (r.earnings || 0), 0);
 
                 // Update stats with FIXED calculations
                 const statElements = {
                     'total-referrals': referrals.length || 0,
-                    'active-referrals': activeReferrals.length || 0,
+                    'active-referrals': referrals.filter(r => r.status === 'active').length || 0,
                     'total-referral-earnings': `₦${totalEarnings.toLocaleString()}`,
                     'pending-referral-earnings': `₦${pendingEarnings.toLocaleString()}`,
                     'commission-rate': `${stats.commission_rate || this.config.REFERRAL_COMMISSION_PERCENT}%`
@@ -4567,16 +4599,27 @@ const app = {
                 Object.entries(statElements).forEach(([id, value]) => {
                     const element = document.getElementById(id);
                     if (element) {
-                        console.log(`📊 Setting ${id} to ${value}`);
+                        console.log(`📊 Setting referral ${id} to ${value}`);
                         element.textContent = value;
                     }
                 });
 
+                // Also update the referral earnings in dashboard if on that page
+                const dashboardReferralElement = document.getElementById('referral-earnings-amount');
+                if (dashboardReferralElement) {
+                    dashboardReferralElement.textContent = `₦${totalEarnings.toLocaleString()}`;
+                }
+
                 // Load referral list
                 await this.loadReferralList(referrals);
+                
+                console.log('✅ Referral data loaded successfully');
+            } else {
+                console.error('❌ Failed to load referral data:', response.message);
+                this.showToast('Failed to load referral data', 'error');
             }
         } catch (error) {
-            console.error('Failed to load referral data:', error);
+            console.error('❌ Failed to load referral data:', error);
             this.showToast('Error loading referral data', 'error');
         }
     },
@@ -4615,7 +4658,7 @@ const app = {
                         <div class="referral-details">
                             <div class="referral-date">${date}</div>
                             <div class="referral-status status-badge ${status}">${status}</div>
-                            <div class="referral-payment-status">${paidStatus}</div>
+                            <div class="referral-payment-status status-badge ${paidStatus.toLowerCase()}">${paidStatus}</div>
                         </div>
                         <div class="referral-earnings">₦${earnings.toLocaleString()}</div>
                     </div>
@@ -4628,7 +4671,19 @@ const app = {
         const linkInput = document.getElementById('referral-link');
         if (linkInput) {
             linkInput.select();
+            linkInput.setSelectionRange(0, 99999);
             document.execCommand('copy');
+            
+            // Visual feedback
+            const copyBtn = linkInput.nextElementSibling;
+            if (copyBtn) {
+                const originalText = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalText;
+                }, 2000);
+            }
+            
             this.showToast('✅ Referral link copied to clipboard!', 'success');
         }
     },
@@ -4637,26 +4692,73 @@ const app = {
         const codeInput = document.getElementById('referral-code');
         if (codeInput) {
             codeInput.select();
+            codeInput.setSelectionRange(0, 99999);
             document.execCommand('copy');
+            
+            // Visual feedback
+            const copyBtn = codeInput.nextElementSibling;
+            if (copyBtn) {
+                const originalText = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalText;
+                }, 2000);
+            }
+            
             this.showToast('✅ Referral code copied to clipboard!', 'success');
+        }
+    },
+
+    // ==================== AUTOMATIC REFERRAL BONUS SYSTEM ====================
+    async processReferralBonus(userId, investmentAmount) {
+        try {
+            console.log(`🎁 Processing referral bonus for user: ${userId}, amount: ${investmentAmount}`);
+            
+            // The backend should automatically handle referral bonuses when a user invests
+            // This function is just for frontend tracking and UI updates
+            
+            // Check if user was referred
+            const userResponse = await this.apiRequest(`/api/referrals/check-referred/${userId}`);
+            
+            if (userResponse.success && userResponse.data.is_referred) {
+                const referrerId = userResponse.data.referrer_id;
+                const commissionPercent = this.config.REFERRAL_COMMISSION_PERCENT;
+                const bonusAmount = investmentAmount * (commissionPercent / 100);
+                
+                console.log(`🎁 Referral bonus calculated: ₦${bonusAmount} for referrer: ${referrerId}`);
+                
+                // The backend will automatically credit this bonus when the investment is approved
+                // We'll just show a notification to the referrer
+                
+                // Update the referrer's dashboard if they're online
+                this.showToast(`🎉 You earned ₦${bonusAmount.toLocaleString()} referral bonus!`, 'success');
+                
+                // Update referral data
+                this.loadReferralData();
+            }
+        } catch (error) {
+            console.error('❌ Error processing referral bonus:', error);
         }
     },
 
     // ==================== INVESTMENT FUNCTIONS ====================
     async loadInvestmentPlans() {
         try {
+            console.log('🔄 Loading investment plans...');
             const response = await this.apiRequest('/api/plans');
             
             if (response.success && response.data && response.data.plans) {
                 this.state.investmentPlans = response.data.plans;
                 this.renderInvestmentPlans();
+                console.log(`✅ Loaded ${this.state.investmentPlans.length} investment plans`);
             } else {
                 // Fallback to default plans
+                console.log('⚠️ Using default investment plans');
                 this.state.investmentPlans = this.getDefaultPlans();
                 this.renderInvestmentPlans();
             }
         } catch (error) {
-            console.error('Failed to load investment plans:', error);
+            console.error('❌ Failed to load investment plans:', error);
             this.state.investmentPlans = this.getDefaultPlans();
             this.renderInvestmentPlans();
         }
@@ -4729,7 +4831,7 @@ const app = {
                     <div class="plan-header">
                         <h3 class="plan-name">${plan.name}</h3>
                         <div class="plan-icon">${plan.icon || '💎'}</div>
-                        <div class="plan-price">₦${(plan.min_amount || 0).toLocaleString()}</div>
+                        <div class="plan-price">₦${(plan.min_amount || 0).toLocaleString()}+</div>
                         <div class="plan-period">Minimum Investment</div>
                     </div>
                     <div class="plan-features">
@@ -4788,7 +4890,11 @@ const app = {
             return;
         }
 
-        if (amount > (this.state.currentUser.balance || 0)) {
+        // Check user balance from backend
+        const userResponse = await this.apiRequest('/api/profile');
+        const userBalance = userResponse.success ? userResponse.data.user.balance : 0;
+        
+        if (amount > userBalance) {
             this.showToast('Insufficient balance for this investment', 'error');
             return;
         }
@@ -4807,6 +4913,7 @@ const app = {
             formData.append('auto_renew', autoRenew);
             formData.append('payment_proof', proofFile);
 
+            console.log('💼 Investment request:', { planId, amount, autoRenew });
             const response = await this.apiRequest('/api/investments', {
                 method: 'POST',
                 body: formData
@@ -4824,57 +4931,22 @@ const app = {
                     preview.src = '';
                 }
 
-                // Update user balance in state
-                if (this.state.currentUser) {
-                    this.state.currentUser.balance -= amount;
-                }
+                // Process referral bonus automatically
+                await this.processReferralBonus(this.state.currentUser._id, amount);
                 
-                // FIX: Trigger referral bonus if user was referred
-                await this.triggerReferralBonus(amount);
-                
-                // Update dashboard
-                this.updateDashboard();
+                // Update dashboard after 2 seconds to allow backend processing
+                setTimeout(() => {
+                    this.updateDashboard();
+                    this.loadReferralData(); // Refresh referral earnings
+                }, 2000);
             } else {
                 this.showToast(response.message || 'Investment failed', 'error');
             }
         } catch (error) {
-            console.error('Investment error:', error);
+            console.error('❌ Investment error:', error);
             this.showToast('Error submitting investment', 'error');
         } finally {
             this.setLoadingState('invest-btn', false);
-        }
-    },
-
-    // ==================== NEW: REFERRAL BONUS TRIGGER ====================
-    async triggerReferralBonus(investmentAmount) {
-        try {
-            // Check if user has referrer
-            if (!this.state.currentUser || !this.state.currentUser.referred_by) {
-                return;
-            }
-
-            // Calculate referral bonus (10% of investment)
-            const referralBonus = investmentAmount * (this.config.REFERRAL_COMMISSION_PERCENT / 100);
-            
-            console.log(`🎁 Triggering referral bonus: ₦${referralBonus} for user ${this.state.currentUser._id}`);
-
-            // Call backend to process referral bonus
-            const response = await this.apiRequest('/api/referrals/process-bonus', {
-                method: 'POST',
-                body: {
-                    referred_user_id: this.state.currentUser._id,
-                    investment_amount: investmentAmount,
-                    referral_bonus: referralBonus
-                }
-            });
-
-            if (response.success) {
-                console.log('✅ Referral bonus processed successfully');
-                // Update dashboard to show new referral earnings
-                this.updateDashboard();
-            }
-        } catch (error) {
-            console.error('Error triggering referral bonus:', error);
         }
     },
 
@@ -4883,6 +4955,7 @@ const app = {
         if (!this.state.currentUser) return;
 
         try {
+            console.log('🔄 Loading profile data...');
             const response = await this.apiRequest('/api/profile');
             
             if (response.success && response.data && response.data.user) {
@@ -4903,7 +4976,7 @@ const app = {
                     if (element) element.value = value || '';
                 });
 
-                // Update bank details - FIXED: Check for bank_details object
+                // Update bank details
                 if (user.bank_details && typeof user.bank_details === 'object') {
                     const bankFields = {
                         'bank-name': user.bank_details.bank_name || '',
@@ -4914,19 +4987,6 @@ const app = {
                     Object.entries(bankFields).forEach(([id, value]) => {
                         const element = document.getElementById(id);
                         if (element) element.value = value;
-                    });
-
-                    // Update bank details status
-                    const bankStatus = document.getElementById('bank-status');
-                    if (bankStatus) {
-                        bankStatus.textContent = user.bank_details.verified ? 'Verified' : 'Not Verified';
-                        bankStatus.className = `status-badge ${user.bank_details.verified ? 'approved' : 'pending'}`;
-                    }
-                } else {
-                    // Clear bank fields if no bank details
-                    ['bank-name', 'account-name', 'account-number'].forEach(id => {
-                        const element = document.getElementById(id);
-                        if (element) element.value = '';
                     });
                 }
 
@@ -4949,34 +5009,11 @@ const app = {
                     if (element) element.value = value;
                 });
 
-                // FIX: Update bank details status display
-                this.updateBankDetailsStatus(user.bank_details);
+                console.log('✅ Profile data loaded successfully');
             }
         } catch (error) {
-            console.error('Failed to load profile data:', error);
+            console.error('❌ Failed to load profile data:', error);
             this.showToast('Error loading profile data', 'error');
-        }
-    },
-
-    updateBankDetailsStatus(bankDetails) {
-        const statusElement = document.getElementById('bank-details-status');
-        if (!statusElement) return;
-
-        if (!bankDetails || !bankDetails.account_number) {
-            statusElement.innerHTML = `
-                <span class="status-badge pending">Not Set</span>
-                <p class="text-muted small">Please add your bank details for withdrawals</p>
-            `;
-        } else if (bankDetails.verified) {
-            statusElement.innerHTML = `
-                <span class="status-badge approved">Verified</span>
-                <p class="text-success small">Your bank details are verified and ready for withdrawals</p>
-            `;
-        } else {
-            statusElement.innerHTML = `
-                <span class="status-badge pending">Pending Verification</span>
-                <p class="text-warning small">Your bank details are pending admin verification</p>
-            `;
         }
     },
 
@@ -5002,7 +5039,7 @@ const app = {
                 this.showToast(response.message || 'Profile update failed', 'error');
             }
         } catch (error) {
-            console.error('Failed to update profile:', error);
+            console.error('❌ Failed to update profile:', error);
             this.showToast('Error updating profile', 'error');
         }
     },
@@ -5044,16 +5081,13 @@ const app = {
                     this.state.currentUser.bank_details = response.data.bank_details;
                 }
                 
-                // Update bank details status
-                this.updateBankDetailsStatus(response.data.bank_details);
-                
                 // Clear form
                 e.target.reset();
             } else {
                 this.showToast(response.message || 'Bank update failed', 'error');
             }
         } catch (error) {
-            console.error('Failed to update bank details:', error);
+            console.error('❌ Failed to update bank details:', error);
             this.showToast('Error updating bank details', 'error');
         } finally {
             this.setLoadingState('bank-update-btn', false);
@@ -5198,7 +5232,7 @@ const app = {
                 calculator.style.display = 'block';
             }
         } catch (error) {
-            console.error('Failed to calculate daily interest:', error);
+            console.error('❌ Failed to calculate daily interest:', error);
         }
     },
 
@@ -5207,6 +5241,7 @@ const app = {
         if (!this.state.isAdmin) return;
 
         try {
+            console.log('🔄 Loading admin data...');
             await Promise.all([
                 this.loadAdminDashboard(),
                 this.loadAdminUsers(),
@@ -5215,8 +5250,9 @@ const app = {
                 this.loadAdminWithdrawals(),
                 this.loadAdminKYC()
             ]);
+            console.log('✅ Admin data loaded successfully');
         } catch (error) {
-            console.error('Failed to load admin data:', error);
+            console.error('❌ Failed to load admin data:', error);
             this.showToast('Error loading admin dashboard', 'error');
         }
     },
@@ -5244,7 +5280,7 @@ const app = {
                 });
             }
         } catch (error) {
-            console.error('Failed to load admin dashboard:', error);
+            console.error('❌ Failed to load admin dashboard:', error);
         }
     },
 
@@ -5277,8 +5313,11 @@ const app = {
 
         try {
             this.showLoadingSpinner(true);
+            console.log(`🌐 API Request: ${config.method} ${url}`);
+            
             const response = await fetch(url, config);
             
+            // Handle specific status codes
             if (response.status === 401) {
                 this.handleTokenExpired();
                 throw new Error('Authentication required');
@@ -5295,14 +5334,15 @@ const app = {
                 throw new Error(errorMessage);
             }
 
+            console.log(`✅ API Response: ${endpoint}`, data);
             return data;
         } catch (error) {
-            console.error(`API Request Error [${endpoint}]:`, error);
+            console.error(`❌ API Request Error [${endpoint}]:`, error);
             
             if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
                 this.showToast('Network error. Please check your connection.', 'error');
             } else if (error.message.includes('401') || error.message.includes('token')) {
-                this.handleTokenExpired();
+                // Already handled in handleTokenExpired
             } else {
                 this.showToast(error.message || 'An error occurred', 'error');
             }
@@ -5345,6 +5385,7 @@ const app = {
             }
         }
 
+        // Page-specific initialization
         switch(page) {
             case 'dashboard':
                 this.updateDashboard();
@@ -5401,6 +5442,7 @@ const app = {
     },
 
     logout() {
+        console.log('👋 Logging out...');
         this.state.currentUser = null;
         this.state.token = null;
         this.state.isAdmin = false;
@@ -5456,6 +5498,7 @@ const app = {
 
         container.appendChild(toast);
 
+        // Remove toast after 5 seconds
         setTimeout(() => {
             if (toast.parentNode === container) {
                 container.removeChild(toast);
@@ -5514,9 +5557,6 @@ const app = {
                             balanceElement.textContent = `₦${(this.state.currentUser.balance || 0).toLocaleString()}`;
                         }
                         this.updateWithdrawalFee();
-                        
-                        // FIX: Check bank details status
-                        this.checkBankDetailsForWithdrawal();
                     }
                     break;
 
@@ -5529,32 +5569,6 @@ const app = {
                     break;
             }
         }
-    },
-
-    checkBankDetailsForWithdrawal() {
-        const methodSelect = document.getElementById('withdraw-method');
-        const bankWarning = document.getElementById('bank-details-warning');
-        
-        if (!methodSelect || !bankWarning) return;
-
-        // Show warning if bank transfer selected but no bank details
-        methodSelect.addEventListener('change', () => {
-            if (methodSelect.value === 'bank_transfer') {
-                if (!this.state.currentUser.bank_details || !this.state.currentUser.bank_details.account_number) {
-                    bankWarning.innerHTML = `
-                        <div class="alert alert-warning">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <strong>Bank details required!</strong> Please update your bank details in profile settings.
-                        </div>
-                    `;
-                    bankWarning.style.display = 'block';
-                } else {
-                    bankWarning.style.display = 'none';
-                }
-            } else {
-                bankWarning.style.display = 'none';
-            }
-        });
     },
 
     showDepositInstructions() {
@@ -5984,7 +5998,7 @@ const app = {
                 this.updateAdminUsersTable();
             }
         } catch (error) {
-            console.error('Failed to load admin users:', error);
+            console.error('❌ Failed to load admin users:', error);
         }
     },
 
@@ -5996,7 +6010,7 @@ const app = {
                 this.updateAdminInvestmentsTable();
             }
         } catch (error) {
-            console.error('Failed to load admin investments:', error);
+            console.error('❌ Failed to load admin investments:', error);
         }
     },
 
@@ -6008,7 +6022,7 @@ const app = {
                 this.updateAdminDepositsTable();
             }
         } catch (error) {
-            console.error('Failed to load admin deposits:', error);
+            console.error('❌ Failed to load admin deposits:', error);
         }
     },
 
@@ -6020,7 +6034,7 @@ const app = {
                 this.updateAdminWithdrawalsTable();
             }
         } catch (error) {
-            console.error('Failed to load admin withdrawals:', error);
+            console.error('❌ Failed to load admin withdrawals:', error);
         }
     },
 
@@ -6032,7 +6046,7 @@ const app = {
                 this.updateAdminKYCTable();
             }
         } catch (error) {
-            console.error('Failed to load admin KYC:', error);
+            console.error('❌ Failed to load admin KYC:', error);
         }
     },
 
@@ -6324,7 +6338,7 @@ const app = {
                 this.showToast(response.message || 'Approval failed', 'error');
             }
         } catch (error) {
-            console.error('Failed to approve deposit:', error);
+            console.error('❌ Failed to approve deposit:', error);
             this.showToast('Error approving deposit', 'error');
         }
     },
@@ -6346,7 +6360,7 @@ const app = {
                 this.showToast(response.message || 'Rejection failed', 'error');
             }
         } catch (error) {
-            console.error('Failed to reject deposit:', error);
+            console.error('❌ Failed to reject deposit:', error);
             this.showToast('Error rejecting deposit', 'error');
         }
     },
@@ -6364,11 +6378,14 @@ const app = {
                 this.showToast('✅ Investment approved successfully!', 'success');
                 this.loadAdminInvestments();
                 this.loadAdminDashboard();
+                
+                // NOTE: Referral bonus is automatically processed by the backend
+                // when the investment is approved (see server.js line ~2830)
             } else {
                 this.showToast(response.message || 'Approval failed', 'error');
             }
         } catch (error) {
-            console.error('Failed to approve investment:', error);
+            console.error('❌ Failed to approve investment:', error);
             this.showToast('Error approving investment', 'error');
         }
     },
@@ -6390,7 +6407,7 @@ const app = {
                 this.showToast(response.message || 'Rejection failed', 'error');
             }
         } catch (error) {
-            console.error('Failed to reject investment:', error);
+            console.error('❌ Failed to reject investment:', error);
             this.showToast('Error rejecting investment', 'error');
         }
     },
@@ -6415,7 +6432,7 @@ const app = {
                 this.showToast(response.message || 'Approval failed', 'error');
             }
         } catch (error) {
-            console.error('Failed to approve withdrawal:', error);
+            console.error('❌ Failed to approve withdrawal:', error);
             this.showToast('Error approving withdrawal', 'error');
         }
     },
@@ -6437,7 +6454,7 @@ const app = {
                 this.showToast(response.message || 'Rejection failed', 'error');
             }
         } catch (error) {
-            console.error('Failed to reject withdrawal:', error);
+            console.error('❌ Failed to reject withdrawal:', error);
             this.showToast('Error rejecting withdrawal', 'error');
         }
     },
@@ -6459,7 +6476,7 @@ const app = {
                 this.showToast(response.message || 'Approval failed', 'error');
             }
         } catch (error) {
-            console.error('Failed to approve KYC:', error);
+            console.error('❌ Failed to approve KYC:', error);
             this.showToast('Error approving KYC', 'error');
         }
     },
@@ -6484,7 +6501,7 @@ const app = {
                 this.showToast(response.message || 'Rejection failed', 'error');
             }
         } catch (error) {
-            console.error('Failed to reject KYC:', error);
+            console.error('❌ Failed to reject KYC:', error);
             this.showToast('Error rejecting KYC', 'error');
         }
     },
@@ -6603,7 +6620,7 @@ const app = {
                 this.updateNotificationBadge();
             }
         } catch (error) {
-            console.error('Failed to load notifications:', error);
+            console.error('❌ Failed to load notifications:', error);
         }
     },
 
@@ -6619,7 +6636,7 @@ const app = {
 
 // ==================== GLOBAL EVENT HANDLERS ====================
 window.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM fully loaded and parsed');
+    console.log('🚀 DOM fully loaded and parsed');
     app.init();
 });
 
@@ -6640,18 +6657,33 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
-// Auto-refresh dashboard every 30 seconds
+// Auto-refresh dashboard every 30 seconds when on dashboard
 setInterval(() => {
-    if (app.state.isAuthenticated && !app.state.isAdmin && document.getElementById('dashboard-page').style.display !== 'none') {
+    if (app.state.isAuthenticated && !app.state.isAdmin && 
+        document.getElementById('dashboard-page') && 
+        document.getElementById('dashboard-page').style.display !== 'none') {
+        console.log('🔄 Auto-refreshing dashboard...');
         app.updateDashboard();
     }
 }, 30000);
 
-// Auto-refresh admin data every minute
+// Auto-refresh admin data every minute when on admin page
 setInterval(() => {
-    if (app.state.isAdmin && document.getElementById('admin-page').style.display !== 'none') {
+    if (app.state.isAdmin && document.getElementById('admin-page') && 
+        document.getElementById('admin-page').style.display !== 'none') {
+        console.log('🔄 Auto-refreshing admin data...');
         app.loadAdminData();
     }
-}, 60000);</script>
+}, 60000);
+
+// Refresh referral data when returning to referral page
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden && app.state.isAuthenticated && 
+        document.getElementById('referral-page') && 
+        document.getElementById('referral-page').style.display !== 'none') {
+        console.log('🔄 Refreshing referral data...');
+        app.loadReferralData();
+    }
+});</script>
 </body>
-</html>    
+</html>
