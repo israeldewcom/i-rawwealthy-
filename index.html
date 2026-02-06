@@ -3328,9 +3328,9 @@
     <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>// ==============================================
-// ENHANCED RAW WEALTHY FRONTEND v38.0 - DEBUGGED VERSION
-// Production-Ready with Complete Debugging System
-// Fully Integrated with Backend v38.0
+// RAW WEALTHY PREMIUM v38.0 - PRODUCTION READY
+// Advanced Investment Platform with Complete Features
+// ENHANCED WITH CUSTOM AMOUNT INPUT AND 8 INVESTMENT PLANS
 // ==============================================
 
 // ===== ENHANCED CONFIGURATION =====
@@ -3342,7 +3342,7 @@ const CONFIG = {
     DEBUG_MODE: true,
     VERSION: '38.0.0',
     
-    // Business Logic (must match backend)
+    // Business Logic
     MIN_INVESTMENT: 3500,
     MIN_DEPOSIT: 3500,
     MIN_WITHDRAWAL: 3500,
@@ -3350,8 +3350,8 @@ const CONFIG = {
     REFERRAL_COMMISSION_PERCENT: 10,
     WELCOME_BONUS: 100,
     
-    // File upload (must match backend)
-    MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
+    // File upload limits
+    MAX_FILE_SIZE: 10 * 1024 * 1024,
     ALLOWED_MIME_TYPES: {
         'image/jpeg': 'jpg',
         'image/jpg': 'jpg',
@@ -3360,39 +3360,48 @@ const CONFIG = {
         'image/webp': 'webp',
         'application/pdf': 'pdf',
         'image/svg+xml': 'svg'
+    },
+
+    // Platform Bank Details (Updated from screenshot)
+    PLATFORM_BANK_DETAILS: {
+        bank_name: "OPay",
+        account_name: "JOSEPH INALEGWU ISRAEL",
+        account_number: "7072859483",
+        note: "Use your registered name as depositor name",
+        deposit_instructions: "After payment, upload your payment proof for verification"
     }
 };
 
-// ===== ENHANCED DEBUGGING SYSTEM =====
+// ===== ADVANCED DEBUGGING SYSTEM =====
 const Debug = {
     enabled: CONFIG.DEBUG_MODE,
-    levels: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3, TRACE: 4 },
-    currentLevel: 4,
     
     log(level, module, message, data = null) {
-        if (this.enabled && level <= this.currentLevel) {
+        if (this.enabled) {
             const timestamp = new Date().toISOString().split('T')[1].slice(0, -1);
-            const levelNames = ['❌ ERROR', '⚠️ WARN', 'ℹ️ INFO', '🐛 DEBUG', '🔍 TRACE'];
-            const colors = ['#ef4444', '#f59e0b', '#3b82f6', '#10b981', '#8b5cf6'];
+            const colors = {
+                error: '#ef4444',
+                warn: '#f59e0b',
+                info: '#3b82f6',
+                debug: '#10b981',
+                trace: '#8b5cf6'
+            };
             
             console.log(
-                `%c[${timestamp}] %c${levelNames[level]}%c [${module}] ${message}`,
-                'color: #94a3b8',
-                `color: ${colors[level]}; font-weight: bold`,
-                'color: inherit',
+                `%c[${timestamp}] [${module}] ${message}`,
+                `color: ${colors[level] || '#94a3b8'}`,
                 data ? data : ''
             );
         }
     },
     
-    error(module, message, data) { this.log(0, module, message, data); },
-    warn(module, message, data) { this.log(1, module, message, data); },
-    info(module, message, data) { this.log(2, module, message, data); },
-    debug(module, message, data) { this.log(3, module, message, data); },
-    trace(module, message, data) { this.log(4, module, message, data); }
+    error(module, message, data) { this.log('error', module, message, data); },
+    warn(module, message, data) { this.log('warn', module, message, data); },
+    info(module, message, data) { this.log('info', module, message, data); },
+    debug(module, message, data) { this.log('debug', module, message, data); }
 };
 
-// ===== ENHANCED STATE MANAGEMENT =====
+// ===== STATE MANAGEMENT =====
 class StateManager {
     static KEY_PREFIX = 'rawwealthy_';
     
@@ -3425,21 +3434,6 @@ class StateManager {
             return false;
         }
     }
-    
-    static clear() {
-        try {
-            const keys = Object.keys(localStorage);
-            keys.forEach(key => {
-                if (key.startsWith(this.KEY_PREFIX)) {
-                    localStorage.removeItem(key);
-                }
-            });
-            return true;
-        } catch (error) {
-            Debug.error('StateManager', 'Failed to clear state:', error);
-            return false;
-        }
-    }
 }
 
 // ===== GLOBAL STATE =====
@@ -3457,9 +3451,8 @@ let appState = StateManager.get('appState', {
     lastUpdated: null
 });
 
-// ===== ENHANCED UTILITY FUNCTIONS =====
+// ===== ENHANCED UTILITIES =====
 class Utils {
-    // Format currency with Nigerian Naira as default
     static formatCurrency(amount, currency = '₦') {
         try {
             if (amount === null || amount === undefined || isNaN(amount)) {
@@ -3475,7 +3468,6 @@ class Utils {
         }
     }
     
-    // Format date
     static formatDate(dateString) {
         try {
             if (!dateString) return 'N/A';
@@ -3491,7 +3483,6 @@ class Utils {
         }
     }
     
-    // Format date with time
     static formatDateTime(dateString) {
         try {
             if (!dateString) return 'N/A';
@@ -3509,7 +3500,6 @@ class Utils {
         }
     }
     
-    // Show loader
     static showLoader(message = 'Loading...') {
         const loader = document.getElementById('loaderOverlay');
         if (loader) {
@@ -3523,7 +3513,6 @@ class Utils {
         Debug.debug('UI', 'Loader shown:', message);
     }
     
-    // Hide loader
     static hideLoader() {
         const loader = document.getElementById('loaderOverlay');
         if (loader) {
@@ -3533,14 +3522,10 @@ class Utils {
         Debug.debug('UI', 'Loader hidden');
     }
     
-    // Show notification
     static showNotification(message, type = 'info', duration = 5000) {
         try {
             const container = document.getElementById('notificationContainer');
-            if (!container) {
-                Debug.warn('UI', 'Notification container not found');
-                return;
-            }
+            if (!container) return;
             
             const notification = document.createElement('div');
             notification.className = `notification ${type}`;
@@ -3565,12 +3550,10 @@ class Utils {
             
             container.appendChild(notification);
             
-            // Close button
             notification.querySelector('.notification-close').addEventListener('click', () => {
                 notification.remove();
             });
             
-            // Auto remove
             setTimeout(() => {
                 if (notification.parentNode) {
                     notification.remove();
@@ -3583,7 +3566,6 @@ class Utils {
         }
     }
     
-    // Show error with proper handling
     static showError(error, context = 'Unknown') {
         Debug.error('API', `Error in ${context}:`, error);
         
@@ -3599,7 +3581,6 @@ class Utils {
         this.showNotification(message, 'error');
     }
     
-    // Copy to clipboard
     static async copyToClipboard(text) {
         try {
             await navigator.clipboard.writeText(text);
@@ -3612,27 +3593,36 @@ class Utils {
         }
     }
     
-    // Validate email
     static validateEmail(email) {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return re.test(email);
     }
     
-    // Validate password
-    static validatePassword(password) {
-        if (password.length < 6) return { valid: false, message: 'Password must be at least 6 characters' };
-        if (!/[A-Z]/.test(password)) return { valid: false, message: 'Password must contain at least one uppercase letter' };
-        if (!/[0-9]/.test(password)) return { valid: false, message: 'Password must contain at least one number' };
-        return { valid: true, message: 'Password is strong' };
-    }
-    
-    // Generate unique ID
     static generateId(prefix = 'id') {
         return `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     }
+
+    static calculateTotalEarnings(user) {
+        if (!user) return 0;
+        const dailyEarnings = user.total_earnings || 0;
+        const referralEarnings = user.referral_earnings || 0;
+        return dailyEarnings + referralEarnings;
+    }
+
+    static calculateWithdrawableBalance(user) {
+        if (!user) return 0;
+        const dailyEarnings = user.total_earnings || 0;
+        const referralEarnings = user.referral_earnings || 0;
+        const totalWithdrawn = user.total_withdrawn || 0;
+        return Math.max(0, dailyEarnings + referralEarnings - totalWithdrawn);
+    }
+
+    static hasBankDetails(user) {
+        return user && user.bank_details && user.bank_details.account_number && user.bank_details.account_number.trim() !== '';
+    }
 }
 
-// ===== ENHANCED API SERVICE WITH PROPER FILE UPLOAD =====
+// ===== ADVANCED API SERVICE =====
 class ApiService {
     static async request(endpoint, options = {}) {
         const url = `${CONFIG.API_BASE_URL}${endpoint}`;
@@ -3640,9 +3630,8 @@ class ApiService {
         
         Debug.debug('API', `[${requestId}] ${options.method || 'GET'} ${endpoint}`);
         
-        const headers = {
-            'Content-Type': 'application/json',
-            ...options.headers
+        const headers = options.body instanceof FormData ? {} : {
+            'Content-Type': 'application/json'
         };
         
         if (authToken) {
@@ -3732,23 +3721,19 @@ class ApiService {
     }
     
     static async createInvestment(investmentData) {
-        // Handle file upload separately
         if (investmentData.payment_proof) {
             const formData = new FormData();
             
-            // Add all investment data
             Object.keys(investmentData).forEach(key => {
                 if (key !== 'payment_proof') {
                     formData.append(key, investmentData[key]);
                 }
             });
             
-            // Add file with correct field name (MATCHING BACKEND)
             formData.append('payment_proof', investmentData.payment_proof);
             
             return this.request('/api/investments', {
                 method: 'POST',
-                headers: {}, // Let browser set Content-Type for FormData
                 body: formData
             });
         } else {
@@ -3779,7 +3764,6 @@ class ApiService {
             
             return this.request('/api/deposits', {
                 method: 'POST',
-                headers: {},
                 body: formData
             });
         } else {
@@ -3796,10 +3780,10 @@ class ApiService {
         return this.request(`/api/withdrawals${params ? `?${params}` : ''}`);
     }
     
-    static async createWithdrawal(withdrawalData) {
+    static async createWithdrawal(amount, payment_method = 'bank_transfer') {
         return this.request('/api/withdrawals', {
             method: 'POST',
-            body: JSON.stringify(withdrawalData)
+            body: JSON.stringify({ amount, payment_method })
         });
     }
     
@@ -3809,7 +3793,7 @@ class ApiService {
         return this.request(`/api/transactions${params ? `?${params}` : ''}`);
     }
     
-    // KYC endpoints - FIXED VERSION
+    // KYC endpoints
     static async getKYCStatus() {
         return this.request('/api/kyc/status');
     }
@@ -3817,14 +3801,12 @@ class ApiService {
     static async submitKYC(kycData) {
         const formData = new FormData();
         
-        // Add form data
         Object.keys(kycData).forEach(key => {
             if (key !== 'id_front' && key !== 'id_back' && key !== 'selfie_with_id' && key !== 'address_proof') {
                 formData.append(key, kycData[key]);
             }
         });
         
-        // Add files with correct field names (matching backend)
         if (kycData.id_front) formData.append('id_front', kycData.id_front);
         if (kycData.id_back) formData.append('id_back', kycData.id_back);
         if (kycData.selfie_with_id) formData.append('selfie_with_id', kycData.selfie_with_id);
@@ -3832,7 +3814,6 @@ class ApiService {
         
         return this.request('/api/kyc', {
             method: 'POST',
-            headers: {},
             body: formData
         });
     }
@@ -3857,7 +3838,6 @@ class ApiService {
             
             return this.request('/api/support', {
                 method: 'POST',
-                headers: {},
                 body: formData
             });
         } else {
@@ -3904,23 +3884,12 @@ class ApiService {
         
         return this.request('/api/upload', {
             method: 'POST',
-            headers: {},
             body: formData
         });
     }
-    
-    // Health check
-    static async healthCheck() {
-        try {
-            const response = await fetch(`${CONFIG.API_BASE_URL}/health`);
-            return response.ok;
-        } catch (error) {
-            return false;
-        }
-    }
 }
 
-// ===== ENHANCED AUTH MANAGER =====
+// ===== AUTH MANAGER =====
 class AuthManager {
     static async login(email, password) {
         try {
@@ -3934,18 +3903,14 @@ class AuthManager {
                 currentUser = response.data.user;
                 isAdmin = currentUser.role === 'admin' || currentUser.role === 'super_admin';
                 
-                // Save to state
                 StateManager.set('authToken', authToken);
                 StateManager.set('currentUser', currentUser);
                 StateManager.set('isAdmin', isAdmin);
                 
-                // Update UI
                 this.updateUI();
                 
-                // Show notification
                 Utils.showNotification('Login successful!', 'success');
                 
-                // Navigate to dashboard
                 Router.navigateTo('dashboard');
                 
                 Debug.info('Auth', 'Login successful:', { userId: currentUser._id, email: currentUser.email });
@@ -3968,14 +3933,6 @@ class AuthManager {
             Utils.showLoader('Creating account...');
             Debug.info('Auth', 'Registration attempt:', { email: userData.email });
             
-            // Validate password
-            const passwordValidation = Utils.validatePassword(userData.password);
-            if (!passwordValidation.valid) {
-                Utils.showNotification(passwordValidation.message, 'error');
-                return false;
-            }
-            
-            // Validate email
             if (!Utils.validateEmail(userData.email)) {
                 Utils.showNotification('Please enter a valid email address', 'error');
                 return false;
@@ -4004,18 +3961,15 @@ class AuthManager {
     static logout() {
         Debug.info('Auth', 'Logout initiated');
         
-        // Clear state
         authToken = null;
         currentUser = null;
         isAdmin = false;
         
-        // Clear storage
         StateManager.remove('authToken');
         StateManager.remove('currentUser');
         StateManager.remove('isAdmin');
         StateManager.remove('appState');
         
-        // Reset app state
         appState = {
             investments: [],
             deposits: [],
@@ -4027,10 +3981,8 @@ class AuthManager {
             lastUpdated: null
         };
         
-        // Update UI
         this.updateUI();
         
-        // Navigate to login
         Router.navigateTo('login');
         
         Utils.showNotification('Logged out successfully', 'info');
@@ -4052,20 +4004,16 @@ class AuthManager {
                 currentUser = response.data.user;
                 isAdmin = currentUser.role === 'admin' || currentUser.role === 'super_admin';
                 
-                // Update state
                 StateManager.set('currentUser', currentUser);
                 StateManager.set('isAdmin', isAdmin);
                 
-                // Update app state
                 if (response.data.stats) {
                     appState.dashboardStats = response.data.stats;
                     StateManager.set('appState', appState);
                 }
                 
-                // Update UI
                 this.updateUI();
                 
-                // Load dashboard data if on dashboard
                 if (Router.currentSection === 'dashboard') {
                     DashboardManager.loadDashboardData();
                 }
@@ -4077,7 +4025,6 @@ class AuthManager {
         } catch (error) {
             Debug.error('Auth', 'Failed to load user data:', error);
             
-            // If unauthorized, logout
             if (error.status === 401) {
                 this.logout();
             }
@@ -4087,12 +4034,10 @@ class AuthManager {
     static updateUI() {
         Debug.info('Auth', 'Updating UI...');
         
-        // Update admin navigation
         document.querySelectorAll('.admin-nav').forEach(el => {
             el.classList.toggle('d-none', !isAdmin);
         });
         
-        // Update user avatar
         const avatarElement = document.getElementById('userAvatar');
         if (avatarElement && currentUser?.full_name) {
             const initials = currentUser.full_name
@@ -4103,14 +4048,12 @@ class AuthManager {
             avatarElement.textContent = initials || 'U';
         }
         
-        // Update user greeting
         const greetingElement = document.getElementById('userGreeting');
         if (greetingElement && currentUser?.full_name) {
             const firstName = currentUser.full_name.split(' ')[0];
             greetingElement.textContent = firstName || 'User';
         }
         
-        // Update login/logout state
         const loginSection = document.getElementById('login');
         const dashboardSection = document.getElementById('dashboard');
         
@@ -4124,7 +4067,7 @@ class AuthManager {
     }
 }
 
-// ===== ENHANCED ROUTER =====
+// ===== ROUTER =====
 class Router {
     static currentSection = 'login';
     static previousSection = null;
@@ -4132,7 +4075,6 @@ class Router {
     static init() {
         Debug.info('Router', 'Initializing...');
         
-        // Check authentication
         if (authToken) {
             AuthManager.loadUserData();
             this.navigateTo('dashboard');
@@ -4140,14 +4082,12 @@ class Router {
             this.navigateTo('login');
         }
         
-        // Setup navigation listeners
         this.setupNavigation();
     }
     
     static setupNavigation() {
         Debug.info('Router', 'Setting up navigation listeners...');
         
-        // Link clicks
         document.addEventListener('click', (e) => {
             const link = e.target.closest('a[href^="#"]');
             if (link) {
@@ -4155,7 +4095,6 @@ class Router {
                 const section = link.getAttribute('href').substring(1);
                 this.navigateTo(section);
                 
-                // Close sidebar on mobile
                 if (window.innerWidth < 768) {
                     const sidebar = document.getElementById('sidebar');
                     const sidebarOverlay = document.getElementById('sidebarOverlay');
@@ -4165,7 +4104,6 @@ class Router {
             }
         });
         
-        // Button actions
         document.addEventListener('click', (e) => {
             const button = e.target.closest('button[data-action]');
             if (button) {
@@ -4174,7 +4112,6 @@ class Router {
             }
         });
         
-        // Hash change
         window.addEventListener('hashchange', () => {
             const section = window.location.hash.substring(1) || 'login';
             if (section !== this.currentSection) {
@@ -4188,30 +4125,24 @@ class Router {
     static navigateTo(section) {
         Debug.info('Router', `Navigating to: ${section}`, { previous: this.currentSection });
         
-        // Don't navigate to same section
         if (section === this.currentSection) {
             Debug.debug('Router', 'Already on section, skipping navigation');
             return;
         }
         
-        // Update URL
         window.location.hash = section;
         
-        // Update state
         this.previousSection = this.currentSection;
         this.currentSection = section;
         
-        // Hide all sections
         document.querySelectorAll('.page-section').forEach(el => {
             el.classList.remove('active');
         });
         
-        // Show target section
         const targetSection = document.getElementById(section);
         if (targetSection) {
             targetSection.classList.add('active');
             
-            // Update active nav links
             document.querySelectorAll('.nav-link, .sidebar-link').forEach(link => {
                 link.classList.remove('active');
                 if (link.getAttribute('href') === `#${section}`) {
@@ -4219,10 +4150,8 @@ class Router {
                 }
             });
             
-            // Update page title
             document.title = `Raw Wealthy | ${this.getPageTitle(section)}`;
             
-            // Load section data
             this.loadSectionData(section);
             
             Debug.info('Router', `Navigation complete: ${section}`);
@@ -4254,7 +4183,6 @@ class Router {
     static async loadSectionData(section) {
         Debug.info('Router', `Loading data for section: ${section}`);
         
-        // Check authentication for protected sections
         const protectedSections = ['dashboard', 'investments', 'deposits', 'withdrawals', 
                                  'transactions', 'kyc', 'support', 'referrals', 'profile', 'admin'];
         
@@ -4339,7 +4267,7 @@ class Router {
     }
 }
 
-// ===== ENHANCED DASHBOARD MANAGER =====
+// ===== DASHBOARD MANAGER =====
 class DashboardManager {
     static chartInstance = null;
     
@@ -4349,25 +4277,21 @@ class DashboardManager {
         try {
             Utils.showLoader('Loading dashboard...');
             
-            // Load profile data (includes stats)
             const profileResponse = await ApiService.getProfile();
             
             if (profileResponse.success) {
                 this.updateDashboardStats(profileResponse.data);
                 
-                // Load recent transactions
                 const transactionsResponse = await ApiService.getTransactions({ limit: 5 });
                 if (transactionsResponse.success) {
                     this.updateRecentActivity(transactionsResponse.data.transactions || []);
                 }
                 
-                // Load notifications
                 const notificationsResponse = await ApiService.getNotifications({ limit: 5 });
                 if (notificationsResponse.success) {
                     this.updateNotifications(notificationsResponse.data.notifications || []);
                 }
                 
-                // Update investment chart
                 this.updateInvestmentChart();
                 
                 Debug.info('Dashboard', 'Dashboard data loaded successfully');
@@ -4390,24 +4314,20 @@ class DashboardManager {
             const user = data.user || {};
             const stats = data.stats || {};
             
-            // Calculate portfolio value (balance + total earnings + referral earnings)
             const portfolioValue = (user.balance || 0) + (user.total_earnings || 0) + (user.referral_earnings || 0);
+            const totalEarnings = Utils.calculateTotalEarnings(user);
+            const withdrawableBalance = Utils.calculateWithdrawableBalance(user);
             
-            // Update total balance
             document.getElementById('totalBalance').textContent = Utils.formatCurrency(user.balance || 0);
-            
-            // Update active investments
             document.getElementById('activeInvestments').textContent = Utils.formatCurrency(stats.active_investment_value || 0);
-            
-            // Update daily interest (CHANGED from total earnings)
-            document.getElementById('totalEarnings').textContent = Utils.formatCurrency(stats.daily_interest || 0);
-            document.getElementById('totalEarnings').parentElement.querySelector('.stat-label').textContent = 'Daily Interest';
-            
-            // Update total referrals
+            document.getElementById('totalEarnings').textContent = Utils.formatCurrency(totalEarnings);
             document.getElementById('totalReferrals').textContent = user.referral_count || 0;
+            document.getElementById('availableBalance').textContent = Utils.formatCurrency(withdrawableBalance);
             
-            // Update available balance for withdrawals
-            document.getElementById('availableBalance').textContent = Utils.formatCurrency(user.balance || 0);
+            const withdrawableElement = document.getElementById('withdrawableBalance');
+            if (withdrawableElement) {
+                withdrawableElement.textContent = Utils.formatCurrency(withdrawableBalance);
+            }
             
             Debug.info('Dashboard', 'Dashboard stats updated successfully');
         } catch (error) {
@@ -4435,7 +4355,6 @@ class DashboardManager {
             const transactionsHTML = transactions.map(transaction => {
                 const amount = parseFloat(transaction.amount) || 0;
                 const isPositive = amount >= 0;
-                const icon = isPositive ? 'fa-arrow-down text-success' : 'fa-arrow-up text-danger';
                 const typeIcon = this.getTransactionTypeIcon(transaction.type);
                 
                 return `
@@ -4534,12 +4453,10 @@ class DashboardManager {
         try {
             const ctx = canvas.getContext('2d');
             
-            // Destroy existing chart instance
             if (this.chartInstance) {
                 this.chartInstance.destroy();
             }
             
-            // Sample data
             const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'];
             const data = [10000, 15000, 22000, 30000, 45000, 65000, 85000];
             
@@ -4659,7 +4576,7 @@ class DashboardManager {
     }
 }
 
-// ===== ENHANCED INVESTMENT MANAGER =====
+// ===== INVESTMENT MANAGER =====
 class InvestmentManager {
     static currentPlan = null;
     
@@ -4669,13 +4586,11 @@ class InvestmentManager {
         try {
             Utils.showLoader('Loading investments...');
             
-            // Load plans
             const plansResponse = await ApiService.getPlans();
             if (plansResponse.success) {
                 this.renderInvestmentPlans(plansResponse.data.plans || []);
             }
             
-            // Load user investments
             const investmentsResponse = await ApiService.getInvestments();
             if (investmentsResponse.success) {
                 this.renderInvestmentsTable(investmentsResponse.data.investments || []);
@@ -4712,6 +4627,7 @@ class InvestmentManager {
                 const isPopular = plan.is_popular || false;
                 const icon = this.getPlanIcon(plan.category);
                 const color = this.getPlanColor(plan.category);
+                const maxAmount = plan.max_amount || 'Unlimited';
                 
                 return `
                     <div class="plan-card">
@@ -4725,6 +4641,7 @@ class InvestmentManager {
                         </div>
                         <ul class="plan-features">
                             <li><i class="fas fa-check"></i> Minimum: ${Utils.formatCurrency(plan.min_amount || 0)}</li>
+                            <li><i class="fas fa-check"></i> Maximum: ${maxAmount === 'Unlimited' ? 'Unlimited' : Utils.formatCurrency(maxAmount)}</li>
                             <li><i class="fas fa-check"></i> Daily Interest: ${plan.daily_interest || 0}%</li>
                             <li><i class="fas fa-check"></i> Total Return: ${plan.total_interest || 0}%</li>
                             <li><i class="fas fa-check"></i> Duration: ${plan.duration || 0} Days</li>
@@ -4748,9 +4665,12 @@ class InvestmentManager {
                             data-plan-id="${plan._id}"
                             data-plan-name="${plan.name}"
                             data-min-amount="${plan.min_amount}"
+                            data-max-amount="${plan.max_amount || ''}"
                             data-daily-interest="${plan.daily_interest}"
                             data-total-interest="${plan.total_interest}"
-                            data-duration="${plan.duration}">
+                            data-duration="${plan.duration}"
+                            data-category="${plan.category}"
+                            data-raw-material="${plan.raw_material}">
                             <i class="fas fa-chart-line"></i> Invest Now
                         </button>
                     </div>
@@ -4759,16 +4679,18 @@ class InvestmentManager {
             
             container.innerHTML = plansHTML;
             
-            // Add event listeners to invest buttons
             container.querySelectorAll('.invest-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const planData = {
                         id: btn.dataset.planId,
                         name: btn.dataset.planName,
                         minAmount: parseFloat(btn.dataset.minAmount) || 0,
+                        maxAmount: btn.dataset.maxAmount ? parseFloat(btn.dataset.maxAmount) : null,
                         dailyInterest: parseFloat(btn.dataset.dailyInterest) || 0,
                         totalInterest: parseFloat(btn.dataset.totalInterest) || 0,
-                        duration: parseInt(btn.dataset.duration) || 0
+                        duration: parseInt(btn.dataset.duration) || 0,
+                        category: btn.dataset.category,
+                        rawMaterial: btn.dataset.rawMaterial
                     };
                     this.showInvestmentModal(planData);
                 });
@@ -4815,13 +4737,19 @@ class InvestmentManager {
                 const status = investment.status || 'pending';
                 const statusClass = this.getStatusClass(status);
                 const statusText = this.getStatusText(status);
+                const endDate = investment.end_date ? new Date(investment.end_date) : null;
+                const isActive = status === 'active';
+                const daysRemaining = isActive && endDate ? Math.ceil((endDate - new Date()) / (1000 * 60 * 60 * 24)) : 0;
                 
                 return `
                     <tr>
                         <td>${plan.name || 'N/A'}</td>
                         <td>${Utils.formatCurrency(investment.amount)}</td>
                         <td>${Utils.formatDate(investment.start_date)}</td>
-                        <td>${Utils.formatDate(investment.end_date)}</td>
+                        <td>
+                            ${endDate ? Utils.formatDate(investment.end_date) : 'N/A'}
+                            ${isActive && daysRemaining > 0 ? `<br><small class="text-muted">${daysRemaining} days remaining</small>` : ''}
+                        </td>
                         <td class="text-success">${Utils.formatCurrency(investment.earned_so_far || 0)}</td>
                         <td><span class="badge ${statusClass}">${statusText}</span></td>
                         <td>
@@ -4855,33 +4783,84 @@ class InvestmentManager {
         
         this.currentPlan = planData;
         
-        // Update modal content
         document.getElementById('modalPlanName').textContent = planData.name;
         document.getElementById('modalMinAmount').textContent = Utils.formatCurrency(planData.minAmount);
+        
+        if (planData.maxAmount) {
+            document.getElementById('modalMinAmount').innerHTML += ` (Max: ${Utils.formatCurrency(planData.maxAmount)})`;
+        }
         
         const amountInput = document.getElementById('modalInvestmentAmount');
         if (amountInput) {
             amountInput.value = planData.minAmount;
             amountInput.min = planData.minAmount;
+            amountInput.max = planData.maxAmount || '';
+            amountInput.placeholder = `Enter amount (Min: ${Utils.formatCurrency(planData.minAmount)}${planData.maxAmount ? `, Max: ${Utils.formatCurrency(planData.maxAmount)}` : ''})`;
+            
+            // Add event listener for input validation
+            amountInput.addEventListener('input', (e) => {
+                this.validateInvestmentAmount(e.target);
+            });
         }
         
-        // Update summary
         document.getElementById('summaryPlanName').textContent = planData.name;
         document.getElementById('summaryDailyInterest').textContent = `${planData.dailyInterest}%`;
         document.getElementById('summaryDuration').textContent = `${planData.duration} days`;
         
-        // Calculate and update expected earnings
         this.updateInvestmentSummary();
         
-        // Show modal
         const modal = document.getElementById('investmentModal');
         if (modal) {
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
         
-        // Add event listeners
         this.setupInvestmentModalEvents();
+    }
+    
+    static validateInvestmentAmount(input) {
+        const value = parseFloat(input.value) || 0;
+        const minAmount = this.currentPlan.minAmount;
+        const maxAmount = this.currentPlan.maxAmount;
+        
+        // Clear any previous validation messages
+        const existingError = input.parentElement.querySelector('.validation-error');
+        if (existingError) {
+            existingError.remove();
+        }
+        
+        if (value < minAmount) {
+            this.showValidationError(input, `Minimum investment is ${Utils.formatCurrency(minAmount)}`);
+            return false;
+        }
+        
+        if (maxAmount && value > maxAmount) {
+            this.showValidationError(input, `Maximum investment is ${Utils.formatCurrency(maxAmount)}`);
+            return false;
+        }
+        
+        // Check user balance
+        if (currentUser && value > currentUser.balance) {
+            this.showValidationError(input, `Insufficient balance. Available: ${Utils.formatCurrency(currentUser.balance)}`);
+            return false;
+        }
+        
+        return true;
+    }
+    
+    static showValidationError(input, message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'validation-error text-danger small mt-1';
+        errorDiv.textContent = message;
+        
+        // Remove existing error if any
+        const existingError = input.parentElement.querySelector('.validation-error');
+        if (existingError) {
+            existingError.remove();
+        }
+        
+        input.parentElement.appendChild(errorDiv);
+        input.classList.add('is-invalid');
     }
     
     static setupInvestmentModalEvents() {
@@ -4895,12 +4874,31 @@ class InvestmentManager {
             return;
         }
         
-        // Update summary when amount changes
+        // Clear input field when user clicks on it
+        amountInput.addEventListener('focus', () => {
+            if (parseFloat(amountInput.value) === this.currentPlan.minAmount) {
+                amountInput.value = '';
+            }
+        });
+        
+        // Restore min amount if user leaves field empty
+        amountInput.addEventListener('blur', () => {
+            if (!amountInput.value || parseFloat(amountInput.value) === 0) {
+                amountInput.value = this.currentPlan.minAmount;
+            }
+        });
+        
         amountInput.addEventListener('input', () => {
+            // Clear validation error
+            amountInput.classList.remove('is-invalid');
+            const existingError = amountInput.parentElement.querySelector('.validation-error');
+            if (existingError) {
+                existingError.remove();
+            }
+            
             this.updateInvestmentSummary();
         });
         
-        // Show/hide payment proof section
         paymentMethodSelect.addEventListener('change', (e) => {
             const showProof = e.target.value !== 'wallet';
             if (paymentProofSection) {
@@ -4908,13 +4906,11 @@ class InvestmentManager {
             }
         });
         
-        // Form submission
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             await this.submitInvestment();
         });
         
-        // Modal close
         const closeBtn = document.querySelector('#investmentModal .modal-close');
         const backdrop = document.querySelector('#investmentModal .modal-backdrop');
         
@@ -4924,6 +4920,18 @@ class InvestmentManager {
                 modal.classList.remove('active');
                 document.body.style.overflow = '';
                 form.reset();
+                
+                // Reset amount to plan minimum
+                if (amountInput && this.currentPlan) {
+                    amountInput.value = this.currentPlan.minAmount;
+                }
+                
+                // Clear validation errors
+                amountInput.classList.remove('is-invalid');
+                const existingError = amountInput.parentElement.querySelector('.validation-error');
+                if (existingError) {
+                    existingError.remove();
+                }
             }
         };
         
@@ -4940,17 +4948,19 @@ class InvestmentManager {
         const amount = parseFloat(amountInput.value) || 0;
         const minAmount = this.currentPlan.minAmount;
         
-        // Validate minimum amount
+        // Validate amount
+        if (!this.validateInvestmentAmount(amountInput)) {
+            return;
+        }
+        
         if (amount < minAmount) {
             amountInput.value = minAmount;
             return;
         }
         
-        // Calculate expected earnings
         const expectedEarnings = (amount * this.currentPlan.totalInterest) / 100;
         const dailyEarnings = (amount * this.currentPlan.dailyInterest) / 100;
         
-        // Update summary
         document.getElementById('summaryEarnings').textContent = Utils.formatCurrency(expectedEarnings);
         document.getElementById('summaryTotalReturn').textContent = Utils.formatCurrency(amount + expectedEarnings);
         
@@ -4981,9 +4991,15 @@ class InvestmentManager {
             const autoRenew = autoRenewCheckbox ? autoRenewCheckbox.checked : false;
             const paymentProof = paymentProofInput ? paymentProofInput.files[0] : null;
             
-            // Check if user has enough balance for wallet payment
+            // Final validation
+            if (!this.validateInvestmentAmount(amountInput)) {
+                Utils.hideLoader();
+                return;
+            }
+            
             if (paymentMethod === 'wallet' && currentUser.balance < amount) {
                 Utils.showNotification('Insufficient wallet balance', 'error');
+                Utils.hideLoader();
                 return;
             }
             
@@ -4994,7 +5010,6 @@ class InvestmentManager {
                 auto_renew: autoRenew
             };
             
-            // Add payment proof if provided
             if (paymentProof) {
                 investmentData.payment_proof = paymentProof;
             }
@@ -5006,21 +5021,18 @@ class InvestmentManager {
             if (response.success) {
                 Utils.showNotification('Investment created successfully!', 'success');
                 
-                // Update user balance if paid from wallet
                 if (paymentMethod === 'wallet' && currentUser) {
                     currentUser.balance -= amount;
                     StateManager.set('currentUser', currentUser);
                     AuthManager.updateUI();
                 }
                 
-                // Close modal
                 const modal = document.getElementById('investmentModal');
                 if (modal) {
                     modal.classList.remove('active');
                     document.body.style.overflow = '';
                 }
                 
-                // Refresh investments
                 await this.loadInvestments();
                 
                 Debug.info('Investment', 'Investment submitted successfully');
@@ -5043,7 +5055,10 @@ class InvestmentManager {
             metals: 'fas fa-gem',
             crypto: 'fab fa-bitcoin',
             real_estate: 'fas fa-home',
-            precious_stones: 'fas fa-gem'
+            precious_stones: 'fas fa-gem',
+            livestock: 'fas fa-paw',
+            timber: 'fas fa-tree',
+            aquaculture: 'fas fa-fish'
         };
         return icons[category] || 'fas fa-chart-line';
     }
@@ -5056,7 +5071,10 @@ class InvestmentManager {
             metals: { background: 'rgba(251, 191, 36, 0.2)', color: '#FBBF24' },
             crypto: { background: 'rgba(139, 92, 246, 0.2)', color: '#8B5CF6' },
             real_estate: { background: 'rgba(59, 130, 246, 0.2)', color: '#3B82F6' },
-            precious_stones: { background: 'rgba(236, 72, 153, 0.2)', color: '#EC4899' }
+            precious_stones: { background: 'rgba(236, 72, 153, 0.2)', color: '#EC4899' },
+            livestock: { background: 'rgba(239, 68, 68, 0.2)', color: '#EF4444' },
+            timber: { background: 'rgba(101, 163, 13, 0.2)', color: '#65A30D' },
+            aquaculture: { background: 'rgba(6, 182, 212, 0.2)', color: '#06B6D4' }
         };
         return colors[category] || { background: 'rgba(124, 58, 237, 0.2)', color: '#7C3AED' };
     }
@@ -5117,7 +5135,7 @@ class InvestmentManager {
     }
 }
 
-// ===== ENHANCED DEPOSIT MANAGER =====
+// ===== DEPOSIT MANAGER =====
 class DepositManager {
     static async loadDeposits() {
         Debug.info('Deposit', 'Loading deposits...');
@@ -5131,6 +5149,10 @@ class DepositManager {
                 const deposits = response.data.deposits || [];
                 this.renderDepositsTable(deposits);
                 this.updateDepositStats(deposits);
+                
+                // Update bank details section
+                this.updateBankDetailsSection();
+                
                 Debug.info('Deposit', `Loaded ${deposits.length} deposits`);
             } else {
                 Debug.warn('Deposit', 'Failed to load deposits:', response.message);
@@ -5212,10 +5234,10 @@ class DepositManager {
             const total = deposits.reduce((sum, deposit) => sum + (deposit.amount || 0), 0);
             const pending = deposits
                 .filter(d => d.status === 'pending')
-                .reduce((sum, deposit) => sum + (deposit.amount || 0), 0);
+                .reduce((sum, d) => sum + (d.amount || 0), 0);
             const approved = deposits
                 .filter(d => d.status === 'approved')
-                .reduce((sum, deposit) => sum + (deposit.amount || 0), 0);
+                .reduce((sum, d) => sum + (d.amount || 0), 0);
             
             document.getElementById('totalDeposits').textContent = Utils.formatCurrency(total);
             document.getElementById('pendingDeposits').textContent = Utils.formatCurrency(pending);
@@ -5224,6 +5246,209 @@ class DepositManager {
             Debug.debug('Deposit', 'Deposit stats updated', { total, pending, approved });
         } catch (error) {
             Debug.error('Deposit', 'Failed to update deposit stats:', error);
+        }
+    }
+    
+    // ENHANCED: Add bank details section with platform details
+    static updateBankDetailsSection() {
+        const bankDetailsInfo = document.getElementById('bankDetailsInfo');
+        if (!bankDetailsInfo) return;
+        
+        const hasUserBankDetails = Utils.hasBankDetails(currentUser);
+        
+        // Clear existing content
+        bankDetailsInfo.innerHTML = '';
+        
+        if (hasUserBankDetails) {
+            // Show user's bank details for withdrawals
+            bankDetailsInfo.innerHTML = `
+                <div class="bank-details-card p-3 border rounded">
+                    <h6 class="mb-3">Your Bank Details</h6>
+                    <div class="mb-2">
+                        <small class="text-muted">Bank Name</small>
+                        <div>${currentUser.bank_details.bank_name || 'N/A'}</div>
+                    </div>
+                    <div class="mb-2">
+                        <small class="text-muted">Account Name</small>
+                        <div>${currentUser.bank_details.account_name || 'N/A'}</div>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted">Account Number</small>
+                        <div>${currentUser.bank_details.account_number || 'N/A'}</div>
+                    </div>
+                    <button class="btn btn-sm btn-outline w-100" data-action="add-bank-details">
+                        <i class="fas fa-edit"></i> Update Bank Details
+                    </button>
+                </div>
+            `;
+        }
+        
+        // Always show platform bank details for deposits
+        const platformDetailsHTML = `
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="card-title">Platform Bank Details for Deposit</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info mb-3">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        <strong>Deposit Instructions:</strong> Transfer to the account below and upload payment proof
+                    </div>
+                    
+                    <div class="bank-details-transfer p-3 border rounded bg-dark-card">
+                        <div class="bank-detail-item mb-3">
+                            <div class="d-flex align-center mb-1">
+                                <i class="fas fa-university text-primary mr-2"></i>
+                                <small class="text-muted">Bank Name</small>
+                            </div>
+                            <div class="bank-value font-weight-bold">${CONFIG.PLATFORM_BANK_DETAILS.bank_name}</div>
+                        </div>
+                        
+                        <div class="bank-detail-item mb-3">
+                            <div class="d-flex align-center mb-1">
+                                <i class="fas fa-user text-primary mr-2"></i>
+                                <small class="text-muted">Account Name</small>
+                            </div>
+                            <div class="bank-value font-weight-bold">${CONFIG.PLATFORM_BANK_DETAILS.account_name}</div>
+                        </div>
+                        
+                        <div class="bank-detail-item mb-3">
+                            <div class="d-flex align-center mb-1">
+                                <i class="fas fa-credit-card text-primary mr-2"></i>
+                                <small class="text-muted">Account Number</small>
+                            </div>
+                            <div class="bank-value font-weight-bold">${CONFIG.PLATFORM_BANK_DETAILS.account_number}</div>
+                        </div>
+                        
+                        <div class="d-flex align-center justify-between mb-3">
+                            <div class="copy-bank-details">
+                                <button class="btn btn-sm btn-primary" id="copyBankDetails">
+                                    <i class="fas fa-copy mr-1"></i> Copy All Details
+                                </button>
+                            </div>
+                            <div class="share-bank-details">
+                                <button class="btn btn-sm btn-outline" id="shareBankDetails">
+                                    <i class="fas fa-share-alt mr-1"></i> Share
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="bank-instructions mt-3 p-3 border rounded">
+                            <h6 class="mb-2"><i class="fas fa-lightbulb text-warning mr-2"></i>Important Instructions:</h6>
+                            <ul class="mb-0 pl-3">
+                                <li class="mb-1 small">Use your registered name as depositor name</li>
+                                <li class="mb-1 small">Minimum deposit amount: ${Utils.formatCurrency(CONFIG.MIN_DEPOSIT)}</li>
+                                <li class="mb-1 small">Upload clear screenshot of payment confirmation</li>
+                                <li class="small">Deposits are processed within 1-24 hours</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="quick-actions mt-4">
+                        <h6 class="mb-3">Quick Actions:</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button class="btn btn-sm btn-outline" data-action="save-bank-details">
+                                <i class="fas fa-save mr-1"></i> Save Details
+                            </button>
+                            <button class="btn btn-sm btn-outline" data-action="print-bank-details">
+                                <i class="fas fa-print mr-1"></i> Print
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Insert platform bank details before user bank details
+        bankDetailsInfo.insertAdjacentHTML('beforeend', platformDetailsHTML);
+        
+        // Add event listeners for copy and share buttons
+        this.setupBankDetailsEvents();
+    }
+    
+    static setupBankDetailsEvents() {
+        // Copy bank details button
+        const copyBtn = document.getElementById('copyBankDetails');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', async () => {
+                const bankDetails = `Bank Name: ${CONFIG.PLATFORM_BANK_DETAILS.bank_name}\nAccount Name: ${CONFIG.PLATFORM_BANK_DETAILS.account_name}\nAccount Number: ${CONFIG.PLATFORM_BANK_DETAILS.account_number}\n\n${CONFIG.PLATFORM_BANK_DETAILS.note}`;
+                await Utils.copyToClipboard(bankDetails);
+            });
+        }
+        
+        // Share bank details button
+        const shareBtn = document.getElementById('shareBankDetails');
+        if (shareBtn) {
+            shareBtn.addEventListener('click', () => {
+                const shareText = `Deposit to Raw Wealthy:\nBank: ${CONFIG.PLATFORM_BANK_DETAILS.bank_name}\nAccount: ${CONFIG.PLATFORM_BANK_DETAILS.account_name}\nNumber: ${CONFIG.PLATFORM_BANK_DETAILS.account_number}`;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Raw Wealthy Bank Details',
+                        text: shareText,
+                        url: window.location.href
+                    }).catch(err => {
+                        console.log('Error sharing:', err);
+                    });
+                } else {
+                    // Fallback: copy to clipboard
+                    Utils.copyToClipboard(shareText);
+                }
+            });
+        }
+        
+        // Save bank details button
+        const saveBtn = document.querySelector('[data-action="save-bank-details"]');
+        if (saveBtn) {
+            saveBtn.addEventListener('click', () => {
+                const bankDetails = {
+                    bank_name: CONFIG.PLATFORM_BANK_DETAILS.bank_name,
+                    account_name: CONFIG.PLATFORM_BANK_DETAILS.account_name,
+                    account_number: CONFIG.PLATFORM_BANK_DETAILS.account_number,
+                    note: CONFIG.PLATFORM_BANK_DETAILS.note
+                };
+                
+                // Save to localStorage
+                StateManager.set('platformBankDetails', bankDetails);
+                Utils.showNotification('Bank details saved for quick access!', 'success');
+            });
+        }
+        
+        // Print bank details button
+        const printBtn = document.querySelector('[data-action="print-bank-details"]');
+        if (printBtn) {
+            printBtn.addEventListener('click', () => {
+                const printContent = `
+                    <div style="padding: 20px; font-family: Arial, sans-serif;">
+                        <h2 style="color: #7C3AED; margin-bottom: 20px;">Raw Wealthy - Bank Details for Deposit</h2>
+                        <div style="margin-bottom: 15px;">
+                            <strong>Bank Name:</strong> ${CONFIG.PLATFORM_BANK_DETAILS.bank_name}
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <strong>Account Name:</strong> ${CONFIG.PLATFORM_BANK_DETAILS.account_name}
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <strong>Account Number:</strong> ${CONFIG.PLATFORM_BANK_DETAILS.account_number}
+                        </div>
+                        <div style="margin-top: 30px; padding: 15px; border: 1px solid #ccc; border-radius: 5px;">
+                            <strong>Important Instructions:</strong>
+                            <ul style="margin-top: 10px;">
+                                <li>Use your registered name as depositor name</li>
+                                <li>Minimum deposit amount: ${Utils.formatCurrency(CONFIG.MIN_DEPOSIT)}</li>
+                                <li>Upload clear screenshot of payment confirmation</li>
+                                <li>Deposits are processed within 1-24 hours</li>
+                            </ul>
+                        </div>
+                        <div style="margin-top: 20px; font-size: 12px; color: #666;">
+                            Printed from Raw Wealthy Platform on ${new Date().toLocaleDateString()}
+                        </div>
+                `;
+                
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(printContent);
+                printWindow.document.close();
+                printWindow.print();
+            });
         }
     }
     
@@ -5257,7 +5482,6 @@ class DepositManager {
                 payment_method: paymentMethod
             };
             
-            // Add payment proof if provided
             if (paymentProof) {
                 depositData.payment_proof = paymentProof;
             }
@@ -5269,13 +5493,11 @@ class DepositManager {
             if (response.success) {
                 Utils.showNotification('Deposit request submitted successfully!', 'success');
                 
-                // Reset form
                 const form = document.getElementById('depositForm');
                 if (form) form.reset();
                 
                 if (amountInput) amountInput.value = CONFIG.MIN_DEPOSIT;
                 
-                // Refresh deposits
                 await this.loadDeposits();
                 
                 Debug.info('Deposit', 'Deposit submitted successfully');
@@ -5341,7 +5563,7 @@ class DepositManager {
     }
 }
 
-// ===== ENHANCED WITHDRAWAL MANAGER =====
+// ===== WITHDRAWAL MANAGER =====
 class WithdrawalManager {
     static async loadWithdrawals() {
         Debug.info('Withdrawal', 'Loading withdrawals...');
@@ -5456,81 +5678,41 @@ class WithdrawalManager {
             Utils.showLoader('Processing withdrawal...');
             
             const amountInput = document.getElementById('withdrawalAmount');
-            const paymentMethodRadio = document.querySelector('input[name="withdrawMethod"]:checked');
             
-            if (!amountInput || !paymentMethodRadio) {
+            if (!amountInput) {
                 throw new Error('Required form elements not found');
             }
             
             const amount = parseFloat(amountInput.value) || 0;
-            const paymentMethod = paymentMethodRadio.value;
             
             if (amount < CONFIG.MIN_WITHDRAWAL) {
                 Utils.showNotification(`Minimum withdrawal amount is ${Utils.formatCurrency(CONFIG.MIN_WITHDRAWAL)}`, 'error');
                 return;
             }
             
-            if (amount > (currentUser?.balance || 0)) {
-                Utils.showNotification('Insufficient balance', 'error');
+            const withdrawableBalance = Utils.calculateWithdrawableBalance(currentUser);
+            
+            if (amount > withdrawableBalance) {
+                Utils.showNotification(`Insufficient withdrawable balance. Available: ${Utils.formatCurrency(withdrawableBalance)}`, 'error');
                 return;
             }
             
-            let withdrawalData = {
-                amount: amount,
-                payment_method: paymentMethod
-            };
-            
-            // Add payment method specific details
-            if (paymentMethod === 'bank_transfer') {
-                const bankName = document.getElementById('withdrawBankName')?.value;
-                const accountName = document.getElementById('withdrawAccountName')?.value;
-                const accountNumber = document.getElementById('withdrawAccountNumber')?.value;
-                
-                if (!bankName || !accountName || !accountNumber) {
-                    Utils.showNotification('Please fill in all bank details', 'error');
-                    return;
-                }
-                
-                withdrawalData.bank_name = bankName;
-                withdrawalData.account_name = accountName;
-                withdrawalData.account_number = accountNumber;
-            } else if (paymentMethod === 'crypto') {
-                const walletAddress = document.getElementById('withdrawWalletAddress')?.value;
-                if (!walletAddress) {
-                    Utils.showNotification('Please enter wallet address', 'error');
-                    return;
-                }
-                withdrawalData.wallet_address = walletAddress;
-            } else if (paymentMethod === 'paypal') {
-                const paypalEmail = document.getElementById('withdrawPaypalEmail')?.value;
-                if (!paypalEmail) {
-                    Utils.showNotification('Please enter PayPal email', 'error');
-                    return;
-                }
-                withdrawalData.paypal_email = paypalEmail;
+            if (!Utils.hasBankDetails(currentUser)) {
+                Utils.showNotification('Please add your bank details in profile settings before making a withdrawal', 'error');
+                Router.navigateTo('profile');
+                return;
             }
             
-            Debug.debug('Withdrawal', 'Withdrawal data:', withdrawalData);
-            
-            const response = await ApiService.createWithdrawal(withdrawalData);
+            const response = await ApiService.createWithdrawal(amount, 'bank_transfer');
             
             if (response.success) {
-                Utils.showNotification('Withdrawal request submitted successfully!', 'success');
+                Utils.showNotification('Withdrawal request submitted successfully! It will be processed by admin.', 'success');
                 
-                // Update user balance
-                if (currentUser) {
-                    currentUser.balance -= amount;
-                    StateManager.set('currentUser', currentUser);
-                    AuthManager.updateUI();
-                }
-                
-                // Reset form
                 const form = document.getElementById('withdrawalForm');
                 if (form) form.reset();
                 
                 if (amountInput) amountInput.value = CONFIG.MIN_WITHDRAWAL;
                 
-                // Refresh withdrawals
                 await this.loadWithdrawals();
                 
                 Debug.info('Withdrawal', 'Withdrawal submitted successfully');
@@ -5542,6 +5724,84 @@ class WithdrawalManager {
             Utils.showError(error, 'Withdrawal Submission');
         } finally {
             Utils.hideLoader();
+        }
+    }
+    
+    static updateWithdrawalForm() {
+        const withdrawalForm = document.getElementById('withdrawalForm');
+        if (!withdrawalForm) return;
+        
+        const withdrawableBalance = Utils.calculateWithdrawableBalance(currentUser);
+        const hasBankDetails = Utils.hasBankDetails(currentUser);
+        
+        const availableBalanceElement = document.getElementById('availableBalance');
+        if (availableBalanceElement) {
+            availableBalanceElement.textContent = Utils.formatCurrency(withdrawableBalance);
+        }
+        
+        const withdrawalDetails = document.getElementById('withdrawalDetails');
+        if (withdrawalDetails) {
+            if (hasBankDetails) {
+                withdrawalDetails.innerHTML = `
+                    <div class="alert alert-success">
+                        <div class="d-flex align-start">
+                            <i class="fas fa-check-circle mt-1 mr-2"></i>
+                            <div>
+                                <h6 class="mb-2">Bank Details Verified</h6>
+                                <p class="small mb-1">Your withdrawal will be sent to your registered bank account:</p>
+                                <div class="bg-light p-2 rounded small">
+                                    <div><strong>Bank:</strong> ${currentUser.bank_details.bank_name}</div>
+                                    <div><strong>Account:</strong> ${currentUser.bank_details.account_name}</div>
+                                    <div><strong>Number:</strong> ${currentUser.bank_details.account_number}</div>
+                                </div>
+                                <p class="small mt-2 mb-0">To update bank details, go to <a href="#profile" class="text-primary">Profile Settings</a></p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                withdrawalDetails.innerHTML = `
+                    <div class="alert alert-warning">
+                        <div class="d-flex align-start">
+                            <i class="fas fa-exclamation-triangle mt-1 mr-2"></i>
+                            <div>
+                                <h6 class="mb-2">Bank Details Required</h6>
+                                <p class="small mb-2">Please add your bank details to make withdrawals.</p>
+                                <a href="#profile" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-university"></i> Add Bank Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        const amountInput = document.getElementById('withdrawalAmount');
+        if (amountInput) {
+            amountInput.max = withdrawableBalance;
+        }
+        
+        this.calculateWithdrawalFees();
+    }
+    
+    static calculateWithdrawalFees() {
+        const amountInput = document.getElementById('withdrawalAmount');
+        if (!amountInput) return;
+        
+        const amount = parseFloat(amountInput.value) || 0;
+        const platformFee = amount * (CONFIG.PLATFORM_FEE_PERCENT / 100);
+        const netAmount = amount - platformFee;
+        
+        const platformFeeElement = document.getElementById('platformFee');
+        const netAmountElement = document.getElementById('netAmount');
+        
+        if (platformFeeElement) {
+            platformFeeElement.textContent = Utils.formatCurrency(platformFee);
+        }
+        
+        if (netAmountElement) {
+            netAmountElement.textContent = Utils.formatCurrency(netAmount);
         }
     }
     
@@ -5595,7 +5855,7 @@ class WithdrawalManager {
     }
 }
 
-// ===== ENHANCED TRANSACTION MANAGER =====
+// ===== TRANSACTION MANAGER =====
 class TransactionManager {
     static async loadTransactions() {
         Debug.info('Transaction', 'Loading transactions...');
@@ -5790,7 +6050,336 @@ class TransactionManager {
     }
 }
 
-// ===== ENHANCED PROFILE MANAGER =====
+// ===== KYC MANAGER =====
+class KYCManager {
+    static async loadKYCStatus() {
+        Debug.info('KYC', 'Loading KYC status...');
+        
+        try {
+            Utils.showLoader('Loading KYC status...');
+            
+            const response = await ApiService.getKYCStatus();
+            
+            if (response.success) {
+                this.renderKYCStatus(response.data);
+                Debug.info('KYC', 'KYC status loaded successfully');
+                return response.data;
+            } else {
+                Debug.warn('KYC', 'Failed to load KYC status:', response.message);
+                Utils.showNotification(response.message, 'error');
+                return null;
+            }
+        } catch (error) {
+            Debug.error('KYC', 'Failed to load KYC status:', error);
+            Utils.showError(error, 'Loading KYC Status');
+            return null;
+        } finally {
+            Utils.hideLoader();
+        }
+    }
+    
+    static renderKYCStatus(data) {
+        Debug.info('KYC', 'Rendering KYC status:', data);
+        
+        const container = document.getElementById('kycStatus');
+        if (!container) {
+            Debug.error('KYC', 'KYC status container not found');
+            return;
+        }
+        
+        const status = data.status || 'not_submitted';
+        const isVerified = status === 'verified';
+        const isPending = status === 'pending';
+        const isRejected = status === 'rejected';
+        const isNotSubmitted = status === 'not_submitted';
+        
+        let statusHTML = '';
+        let statusColor = '';
+        let statusIcon = '';
+        let statusText = '';
+        let description = '';
+        
+        if (isVerified) {
+            statusColor = 'success';
+            statusIcon = 'fa-check-circle';
+            statusText = 'Verified';
+            description = 'Your identity has been successfully verified. You now have full access to all platform features.';
+        } else if (isPending) {
+            statusColor = 'warning';
+            statusIcon = 'fa-clock';
+            statusText = 'Under Review';
+            description = 'Your documents are being reviewed by our team. This usually takes 24-48 hours.';
+        } else if (isRejected) {
+            statusColor = 'danger';
+            statusIcon = 'fa-times-circle';
+            statusText = 'Rejected';
+            description = data.reason || 'Your verification was rejected. Please submit new documents.';
+        } else {
+            statusColor = 'secondary';
+            statusIcon = 'fa-id-card';
+            statusText = 'Not Verified';
+            description = 'Please submit your KYC documents to verify your identity and unlock full platform features.';
+        }
+        
+        statusHTML = `
+            <div class="kyc-status-card p-4 border rounded">
+                <div class="d-flex align-center justify-between mb-3">
+                    <div>
+                        <h4 class="mb-1">KYC Verification Status</h4>
+                        <p class="text-muted mb-0">Identity verification status</p>
+                    </div>
+                    <span class="badge badge-${statusColor} px-3 py-2">
+                        <i class="fas ${statusIcon} mr-2"></i>${statusText}
+                    </span>
+                </div>
+                
+                <div class="alert alert-${statusColor} mb-4">
+                    <i class="fas ${statusIcon} mr-2"></i>${description}
+                </div>
+                
+                ${isRejected && data.reason ? `
+                    <div class="alert alert-danger">
+                        <h6><i class="fas fa-exclamation-triangle mr-2"></i>Rejection Reason:</h6>
+                        <p class="mb-0">${data.reason}</p>
+                    </div>
+                ` : ''}
+                
+                ${data.submitted_at ? `
+                    <div class="kyc-details">
+                        <h6 class="mb-3">Verification Details</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-2">
+                                    <small class="text-muted">Submitted On</small>
+                                    <div>${Utils.formatDateTime(data.submitted_at)}</div>
+                                </div>
+                            </div>
+                            ${data.reviewed_at ? `
+                                <div class="col-md-6">
+                                    <div class="mb-2">
+                                        <small class="text-muted">Reviewed On</small>
+                                        <div>${Utils.formatDateTime(data.reviewed_at)}</div>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                ${!isVerified ? `
+                    <div class="mt-4">
+                        <button class="btn btn-primary" onclick="Router.navigateTo('kyc')">
+                            <i class="fas fa-id-card mr-2"></i>${isRejected ? 'Resubmit Documents' : 'Submit Documents'}
+                        </button>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+        
+        container.innerHTML = statusHTML;
+        Debug.info('KYC', 'KYC status rendered successfully');
+    }
+}
+
+// ===== SUPPORT MANAGER =====
+class SupportManager {
+    static async loadSupportTickets() {
+        Debug.info('Support', 'Loading support tickets...');
+        
+        try {
+            const response = await ApiService.getSupportTickets();
+            
+            if (response.success) {
+                this.renderSupportTickets(response.data.tickets || []);
+                Debug.info('Support', `Loaded ${response.data.tickets?.length || 0} support tickets`);
+            } else {
+                Debug.warn('Support', 'Failed to load support tickets:', response.message);
+            }
+        } catch (error) {
+            Debug.error('Support', 'Failed to load support tickets:', error);
+        }
+    }
+    
+    static renderSupportTickets(tickets) {
+        Debug.info('Support', 'Rendering support tickets...');
+        
+        const container = document.getElementById('ticketsList');
+        if (!container) return;
+        
+        try {
+            if (!tickets || tickets.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-4">
+                        <i class="fas fa-ticket-alt fa-2x text-muted mb-3"></i>
+                        <p class="text-muted">No support tickets yet</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const ticketsHTML = tickets.map(ticket => {
+                const status = ticket.status || 'open';
+                const priority = ticket.priority || 'medium';
+                const statusClass = this.getStatusClass(status);
+                const priorityClass = this.getPriorityClass(priority);
+                
+                return `
+                    <div class="ticket-item d-flex justify-between align-center p-3 border-bottom">
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">${ticket.subject || 'No subject'}</h6>
+                            <p class="text-muted small mb-1">${ticket.category || 'General'} • ${Utils.formatDate(ticket.createdAt)}</p>
+                            <div class="d-flex gap-2">
+                                <span class="badge ${statusClass}">${status}</span>
+                                <span class="badge ${priorityClass}">${priority}</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-sm btn-secondary view-ticket" data-id="${ticket._id}">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+            
+            container.innerHTML = ticketsHTML;
+            
+            Debug.info('Support', `Rendered ${tickets.length} support tickets`);
+        } catch (error) {
+            Debug.error('Support', 'Failed to render support tickets:', error);
+            container.innerHTML = `
+                <div class="text-center py-4">
+                    <i class="fas fa-exclamation-triangle fa-2x text-warning mb-3"></i>
+                    <p class="text-warning">Failed to load tickets</p>
+                </div>
+            `;
+        }
+    }
+    
+    static getStatusClass(status) {
+        const classes = {
+            open: 'badge-warning',
+            in_progress: 'badge-primary',
+            resolved: 'badge-success',
+            closed: 'badge-secondary'
+        };
+        return classes[status] || 'badge-secondary';
+    }
+    
+    static getPriorityClass(priority) {
+        const classes = {
+            low: 'badge-success',
+            medium: 'badge-warning',
+            high: 'badge-danger',
+            urgent: 'badge-danger'
+        };
+        return classes[priority] || 'badge-secondary';
+    }
+}
+
+// ===== REFERRAL MANAGER =====
+class ReferralManager {
+    static async loadReferralData() {
+        Debug.info('Referral', 'Loading referral data...');
+        
+        try {
+            Utils.showLoader('Loading referral data...');
+            
+            const response = await ApiService.getReferralStats();
+            
+            if (response.success) {
+                this.renderReferralStats(response.data);
+                
+                const referralsResponse = await ApiService.getReferrals();
+                if (referralsResponse.success) {
+                    this.renderReferralsTable(referralsResponse.data.referrals || []);
+                }
+                
+                Debug.info('Referral', 'Referral data loaded successfully');
+            } else {
+                Debug.warn('Referral', 'Failed to load referral data:', response.message);
+                Utils.showNotification(response.message, 'error');
+            }
+        } catch (error) {
+            Debug.error('Referral', 'Failed to load referral data:', error);
+            Utils.showError(error, 'Loading Referral Data');
+        } finally {
+            Utils.hideLoader();
+        }
+    }
+    
+    static renderReferralStats(data) {
+        Debug.info('Referral', 'Rendering referral stats:', data);
+        
+        const stats = data.stats || {};
+        
+        document.getElementById('totalReferralsCount').textContent = stats.total_referrals || 0;
+        document.getElementById('referralEarnings').textContent = Utils.formatCurrency(stats.referral_earnings || 0);
+        document.getElementById('pendingEarnings').textContent = Utils.formatCurrency(stats.pending_earnings || 0);
+        
+        if (stats.referral_code) {
+            document.getElementById('referralCode').value = stats.referral_code;
+            const referralLink = `${window.location.origin}${window.location.pathname}#register?ref=${stats.referral_code}`;
+            document.getElementById('referralLink').value = referralLink;
+        }
+        
+        Debug.info('Referral', 'Referral stats rendered successfully');
+    }
+    
+    static renderReferralsTable(referrals) {
+        Debug.info('Referral', 'Rendering referrals table...');
+        
+        const container = document.getElementById('referralsTable');
+        if (!container) return;
+        
+        try {
+            if (!referrals || referrals.length === 0) {
+                container.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center py-5">
+                            <i class="fas fa-users fa-2x text-muted mb-3"></i>
+                            <h4 class="text-muted">No referrals yet</h4>
+                            <p class="text-muted">Share your referral link to start earning!</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            const referralsHTML = referrals.map(referral => {
+                const user = referral.user || {};
+                const status = user.is_active ? 'Active' : 'Inactive';
+                const statusClass = user.is_active ? 'badge-success' : 'badge-secondary';
+                const earnings = referral.earnings || 0;
+                
+                return `
+                    <tr>
+                        <td>${user.full_name || 'N/A'}</td>
+                        <td>${user.email || 'N/A'}</td>
+                        <td>${Utils.formatDate(referral.createdAt)}</td>
+                        <td><span class="badge ${statusClass}">${status}</span></td>
+                        <td class="text-success">${Utils.formatCurrency(earnings)}</td>
+                    </tr>
+                `;
+            }).join('');
+            
+            container.innerHTML = referralsHTML;
+            
+            Debug.info('Referral', `Rendered ${referrals.length} referrals`);
+        } catch (error) {
+            Debug.error('Referral', 'Failed to render referrals table:', error);
+            container.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center py-5">
+                        <i class="fas fa-exclamation-triangle fa-2x text-warning mb-3"></i>
+                        <h4 class="text-warning">Failed to Load Referrals</h4>
+                        <p class="text-muted">Please try again later.</p>
+                    </td>
+                </tr>
+            `;
+        }
+    }
+}
+
+// ===== PROFILE MANAGER =====
 class ProfileManager {
     static updateProfilePage() {
         Debug.info('Profile', 'Updating profile page...');
@@ -5798,15 +6387,12 @@ class ProfileManager {
         if (!currentUser) return;
         
         try {
-            // Update profile name
             const profileName = document.getElementById('profileName');
             if (profileName) profileName.textContent = currentUser.full_name || 'User';
             
-            // Update profile email
             const profileEmail = document.getElementById('profileEmail');
             if (profileEmail) profileEmail.textContent = currentUser.email || 'N/A';
             
-            // Update profile form
             const fullNameInput = document.getElementById('fullName');
             if (fullNameInput) fullNameInput.value = currentUser.full_name || '';
             
@@ -5816,13 +6402,11 @@ class ProfileManager {
             const profilePhone = document.getElementById('profilePhone');
             if (profilePhone) profilePhone.value = currentUser.phone || '';
             
-            // Update member since date
             const memberSinceDate = document.getElementById('memberSinceDate');
             if (memberSinceDate) {
                 memberSinceDate.textContent = Utils.formatDate(currentUser.createdAt);
             }
             
-            // Update last login date
             const lastLoginDate = document.getElementById('lastLoginDate');
             if (lastLoginDate) {
                 lastLoginDate.textContent = currentUser.last_login 
@@ -5830,7 +6414,6 @@ class ProfileManager {
                     : 'Never';
             }
             
-            // Update KYC badge
             const kycBadge = document.getElementById('kycBadge');
             if (kycBadge) {
                 const kycStatus = currentUser.kyc_status || 'not_submitted';
@@ -5854,14 +6437,12 @@ class ProfileManager {
                 kycBadge.textContent = badgeText;
             }
             
-            // Update account status
             const accountStatus = document.getElementById('accountStatus');
             if (accountStatus) {
                 accountStatus.textContent = currentUser.is_active ? 'Active' : 'Inactive';
                 accountStatus.className = `badge ${currentUser.is_active ? 'badge-success' : 'badge-danger'}`;
             }
             
-            // Update avatar
             const profileAvatar = document.getElementById('profileAvatar');
             if (profileAvatar && currentUser.full_name) {
                 const initials = currentUser.full_name
@@ -5881,517 +6462,79 @@ class ProfileManager {
                     profileAvatar.style.fontSize = '1.5rem';
                 }
             }
+
+            this.updateBankDetailsForm();
             
             Debug.info('Profile', 'Profile page updated');
         } catch (error) {
             Debug.error('Profile', 'Failed to update profile page:', error);
         }
     }
-}
 
-// ===== ENHANCED KYC MANAGER =====
-class KYCManager {
-    static async loadKYCStatus() {
-        Debug.info('KYC', 'Loading KYC status...');
-        
-        try {
-            Utils.showLoader('Loading KYC status...');
-            
-            const response = await ApiService.getKYCStatus();
-            
-            if (response.success) {
-                this.renderKYCStatus(response.data);
-                Debug.info('KYC', 'KYC status loaded successfully');
-            } else {
-                Debug.warn('KYC', 'Failed to load KYC status:', response.message);
-                this.showKYCError('Failed to load KYC status');
-            }
-        } catch (error) {
-            Debug.error('KYC', 'Failed to load KYC status:', error);
-            this.showKYCError('Failed to load KYC status');
-        } finally {
-            Utils.hideLoader();
-        }
-    }
-    
-    static renderKYCStatus(data) {
-        Debug.info('KYC', 'Rendering KYC status...', data);
-        
-        const container = document.getElementById('kycStatus');
-        if (!container) return;
-        
-        try {
-            const status = data.kyc_status || 'not_submitted';
-            const verified = data.kyc_verified || false;
-            const submission = data.kyc_submission;
-            
-            let statusHTML = '';
-            
-            switch(status) {
-                case 'not_submitted':
-                    statusHTML = `
-                        <div class="text-center py-4">
-                            <i class="fas fa-id-card fa-3x text-muted mb-3"></i>
-                            <h4 class="text-muted">KYC Not Submitted</h4>
-                            <p class="text-muted">Submit your KYC documents to verify your identity and unlock full platform features.</p>
-                            <button class="btn btn-primary mt-2" onclick="document.getElementById('kycForm').scrollIntoView({ behavior: 'smooth' })">
-                                <i class="fas fa-upload"></i> Submit KYC
-                            </button>
-                        </div>
-                    `;
-                    break;
-                case 'pending':
-                    statusHTML = `
-                        <div class="alert alert-warning">
-                            <div class="d-flex align-start">
-                                <i class="fas fa-clock fa-2x mr-3 mt-1"></i>
-                                <div>
-                                    <h4 class="alert-heading">KYC Under Review</h4>
-                                    <p>Your KYC documents are being reviewed. This typically takes 24-48 hours.</p>
-                                    <p class="mb-0"><strong>Submitted:</strong> ${Utils.formatDateTime(data.kyc_submitted_at)}</p>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    break;
-                case 'verified':
-                    statusHTML = `
-                        <div class="alert alert-success">
-                            <div class="d-flex align-start">
-                                <i class="fas fa-check-circle fa-2x mr-3 mt-1"></i>
-                                <div>
-                                    <h4 class="alert-heading">KYC Verified</h4>
-                                    <p>Your identity has been successfully verified.</p>
-                                    <p class="mb-0"><strong>Verified:</strong> ${Utils.formatDateTime(data.kyc_verified_at)}</p>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    break;
-                case 'rejected':
-                    statusHTML = `
-                        <div class="alert alert-danger">
-                            <div class="d-flex align-start">
-                                <i class="fas fa-times-circle fa-2x mr-3 mt-1"></i>
-                                <div>
-                                    <h4 class="alert-heading">KYC Rejected</h4>
-                                    <p>Your KYC submission was rejected. Reason: <strong>${submission?.rejection_reason || 'Not specified'}</strong></p>
-                                    <p>Please submit new documents following the requirements.</p>
-                                    <button class="btn btn-primary mt-2" onclick="document.getElementById('kycForm').scrollIntoView({ behavior: 'smooth' })">
-                                        <i class="fas fa-upload"></i> Resubmit KYC
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    break;
-            }
-            
-            container.innerHTML = statusHTML;
-            Debug.info('KYC', 'KYC status rendered:', status);
-        } catch (error) {
-            Debug.error('KYC', 'Failed to render KYC status:', error);
-            container.innerHTML = `
-                <div class="text-center py-4">
-                    <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
-                    <h4 class="text-warning">Failed to Load KYC Status</h4>
-                    <p class="text-muted">Please try again later.</p>
-                </div>
-            `;
-        }
-    }
-    
-    static async submitKYC(e) {
-        Debug.info('KYC', 'Submitting KYC documents...');
-        
-        if (e) e.preventDefault();
-        
-        try {
-            Utils.showLoader('Submitting KYC documents...');
-            
-            const idType = document.getElementById('idType');
-            const idNumber = document.getElementById('idNumber');
-            const idFront = document.getElementById('idFront');
-            const idBack = document.getElementById('idBack');
-            const selfieWithId = document.getElementById('selfieWithId');
-            const addressProof = document.getElementById('addressProof');
-            
-            if (!idType || !idNumber || !idFront || !selfieWithId) {
-                Utils.showNotification('Please fill all required fields', 'error');
-                return;
-            }
-            
-            const kycData = {
-                id_type: idType.value,
-                id_number: idNumber.value
-            };
-            
-            // Add files to kycData object
-            if (idFront.files[0]) kycData.id_front = idFront.files[0];
-            if (idBack.files[0]) kycData.id_back = idBack.files[0];
-            if (selfieWithId.files[0]) kycData.selfie_with_id = selfieWithId.files[0];
-            if (addressProof.files[0]) kycData.address_proof = addressProof.files[0];
-            
-            Debug.debug('KYC', 'KYC data to submit:', {
-                id_type: kycData.id_type,
-                id_number: kycData.id_number,
-                has_id_front: !!kycData.id_front,
-                has_id_back: !!kycData.id_back,
-                has_selfie: !!kycData.selfie_with_id,
-                has_address_proof: !!kycData.address_proof
-            });
-            
-            const response = await ApiService.submitKYC(kycData);
-            
-            if (response.success) {
-                Utils.showNotification('KYC documents submitted successfully!', 'success');
-                
-                // Reset form
-                const form = document.getElementById('kycForm');
-                if (form) form.reset();
-                
-                // Reload KYC status
-                await this.loadKYCStatus();
-                
-                Debug.info('KYC', 'KYC submitted successfully');
-            } else {
-                Utils.showNotification(response.message || 'KYC submission failed', 'error');
-            }
-        } catch (error) {
-            Debug.error('KYC', 'Failed to submit KYC:', error);
-            Utils.showError(error, 'KYC Submission');
-        } finally {
-            Utils.hideLoader();
-        }
-    }
-    
-    static showKYCError(message) {
-        const container = document.getElementById('kycStatus');
-        if (container) {
-            container.innerHTML = `
-                <div class="text-center py-4">
-                    <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
-                    <h4 class="text-warning">Failed to Load KYC Status</h4>
-                    <p class="text-muted">${message}</p>
-                    <button class="btn btn-primary mt-3" onclick="KYCManager.loadKYCStatus()">
-                        <i class="fas fa-redo"></i> Retry
-                    </button>
-                </div>
-            `;
-        }
-    }
-}
+    static updateBankDetailsForm() {
+        const bankNameInput = document.getElementById('bankName');
+        const accountNameInput = document.getElementById('accountName');
+        const accountNumberInput = document.getElementById('accountNumber');
+        const bankCodeInput = document.getElementById('bankCode');
+        const bankVerificationStatus = document.getElementById('bankVerificationStatus');
 
-// ===== ENHANCED SUPPORT MANAGER =====
-class SupportManager {
-    static async loadSupportTickets() {
-        Debug.info('Support', 'Loading support tickets...');
-        
-        try {
-            Utils.showLoader('Loading support tickets...');
+        if (currentUser.bank_details) {
+            if (bankNameInput) bankNameInput.value = currentUser.bank_details.bank_name || '';
+            if (accountNameInput) accountNameInput.value = currentUser.bank_details.account_name || '';
+            if (accountNumberInput) accountNumberInput.value = currentUser.bank_details.account_number || '';
+            if (bankCodeInput) bankCodeInput.value = currentUser.bank_details.bank_code || '';
             
-            const response = await ApiService.getSupportTickets();
-            
-            if (response.success) {
-                const tickets = response.data.tickets || [];
-                this.renderSupportTickets(tickets);
-                Debug.info('Support', `Loaded ${tickets.length} support tickets`);
-            } else {
-                Debug.warn('Support', 'Failed to load support tickets:', response.message);
-                this.showSupportError('Failed to load support tickets');
-            }
-        } catch (error) {
-            Debug.error('Support', 'Failed to load support tickets:', error);
-            this.showSupportError('Failed to load support tickets');
-        } finally {
-            Utils.hideLoader();
-        }
-    }
-    
-    static renderSupportTickets(tickets) {
-        Debug.info('Support', 'Rendering support tickets...');
-        
-        const container = document.getElementById('ticketsList');
-        if (!container) return;
-        
-        try {
-            if (!tickets || tickets.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-4">
-                        <i class="fas fa-headset fa-2x text-muted mb-3"></i>
-                        <h4 class="text-muted">No support tickets</h4>
-                        <p class="text-muted">Create your first support ticket if you need assistance.</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            const ticketsHTML = tickets.map(ticket => {
-                const statusClass = this.getStatusClass(ticket.status);
-                const priorityClass = this.getPriorityClass(ticket.priority);
-                
-                return `
-                    <div class="ticket-item d-flex justify-between align-center p-3 border-bottom">
-                        <div class="flex-grow-1">
-                            <h6 class="mb-1">${ticket.subject || 'No subject'}</h6>
-                            <p class="text-muted small mb-1">${(ticket.message || '').substring(0, 100)}...</p>
-                            <div class="d-flex gap-3">
-                                <span class="badge ${statusClass}">${ticket.status || 'open'}</span>
-                                <span class="badge ${priorityClass}">${ticket.priority || 'medium'}</span>
-                                <span class="text-muted small">${Utils.formatDate(ticket.createdAt)}</span>
-                            </div>
-                        </div>
-                        <button class="btn btn-sm btn-secondary view-ticket" data-id="${ticket.ticket_id || ticket._id}">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                `;
-            }).join('');
-            
-            container.innerHTML = ticketsHTML;
-            
-            Debug.info('Support', `Rendered ${tickets.length} support tickets`);
-        } catch (error) {
-            Debug.error('Support', 'Failed to render support tickets:', error);
-            container.innerHTML = `
-                <div class="text-center py-4">
-                    <i class="fas fa-exclamation-triangle fa-2x text-warning mb-3"></i>
-                    <h4 class="text-warning">Failed to Load Tickets</h4>
-                    <p class="text-muted">Please try again later.</p>
-                </div>
-            `;
-        }
-    }
-    
-    static getStatusClass(status) {
-        const classes = {
-            open: 'badge-warning',
-            in_progress: 'badge-info',
-            resolved: 'badge-success',
-            closed: 'badge-secondary'
-        };
-        return classes[status] || 'badge-secondary';
-    }
-    
-    static getPriorityClass(priority) {
-        const classes = {
-            low: 'badge-success',
-            medium: 'badge-primary',
-            high: 'badge-warning',
-            urgent: 'badge-danger'
-        };
-        return classes[priority] || 'badge-secondary';
-    }
-    
-    static showSupportError(message) {
-        const container = document.getElementById('ticketsList');
-        if (container) {
-            container.innerHTML = `
-                <div class="text-center py-4">
-                    <i class="fas fa-exclamation-triangle fa-2x text-warning mb-3"></i>
-                    <h4 class="text-warning">Failed to Load Tickets</h4>
-                    <p class="text-muted">${message}</p>
-                    <button class="btn btn-primary mt-3" onclick="SupportManager.loadSupportTickets()">
-                        <i class="fas fa-redo"></i> Retry
-                    </button>
-                </div>
-            `;
-        }
-    }
-}
-
-// ===== ENHANCED REFERRAL MANAGER =====
-class ReferralManager {
-    static async loadReferralData() {
-        Debug.info('Referral', 'Loading referral data...');
-        
-        try {
-            Utils.showLoader('Loading referral data...');
-            
-            const response = await ApiService.getReferralStats();
-            
-            if (response.success) {
-                this.renderReferralStats(response.data);
-                
-                // Load referrals list
-                const referralsResponse = await ApiService.getReferrals();
-                if (referralsResponse.success) {
-                    const referrals = referralsResponse.data.referrals || [];
-                    this.renderReferralTable(referrals);
+            if (bankVerificationStatus) {
+                if (currentUser.bank_details.verified) {
+                    bankVerificationStatus.className = 'badge badge-success';
+                    bankVerificationStatus.textContent = 'Verified';
+                } else {
+                    bankVerificationStatus.className = 'badge badge-warning';
+                    bankVerificationStatus.textContent = 'Pending Verification';
                 }
-                
-                Debug.info('Referral', 'Referral data loaded successfully');
-            } else {
-                Debug.warn('Referral', 'Failed to load referral data:', response.message);
-                this.showReferralError('Failed to load referral data');
             }
-        } catch (error) {
-            Debug.error('Referral', 'Failed to load referral data:', error);
-            this.showReferralError('Failed to load referral data');
-        } finally {
-            Utils.hideLoader();
-        }
-    }
-    
-    static renderReferralStats(data) {
-        Debug.info('Referral', 'Rendering referral stats...', data);
-        
-        try {
-            const stats = data.stats || {};
-            
-            // Advanced referral stats
-            document.getElementById('totalReferralsCount').textContent = stats.total_referrals || 0;
-            document.getElementById('referralEarnings').textContent = Utils.formatCurrency(stats.referral_earnings || 0);
-            document.getElementById('commissionRate').textContent = `${stats.commission_rate || CONFIG.REFERRAL_COMMISSION_PERCENT}%`;
-            document.getElementById('pendingEarnings').textContent = Utils.formatCurrency(stats.pending_earnings || 0);
-            
-            // Update active referrals count
-            const activeReferralsElement = document.querySelector('.stat-card:nth-child(2) .stat-value');
-            if (activeReferralsElement) {
-                activeReferralsElement.textContent = stats.active_referrals || 0;
-            }
-            
-            // Update referral code and link
-            const referralCode = document.getElementById('referralCode');
-            const referralLink = document.getElementById('referralLink');
-            
-            if (referralCode && currentUser?.referral_code) {
-                referralCode.value = currentUser.referral_code;
-            }
-            
-            if (referralLink && currentUser?.referral_code) {
-                const link = `${window.location.origin}/#register?ref=${currentUser.referral_code}`;
-                referralLink.value = link;
-            }
-            
-            // Add copy functionality
-            const copyCodeBtn = document.getElementById('copyReferralCode');
-            const copyLinkBtn = document.getElementById('copyReferralLink');
-            
-            if (copyCodeBtn) {
-                copyCodeBtn.addEventListener('click', async () => {
-                    await Utils.copyToClipboard(currentUser?.referral_code || '');
-                });
-            }
-            
-            if (copyLinkBtn) {
-                copyLinkBtn.addEventListener('click', async () => {
-                    const link = `${window.location.origin}/#register?ref=${currentUser?.referral_code || ''}`;
-                    await Utils.copyToClipboard(link);
-                });
-            }
-            
-            Debug.info('Referral', 'Referral stats rendered successfully');
-        } catch (error) {
-            Debug.error('Referral', 'Failed to render referral stats:', error);
-        }
-    }
-    
-    static renderReferralTable(referrals) {
-        Debug.info('Referral', 'Rendering referral table...');
-        
-        const container = document.getElementById('referralsTable');
-        if (!container) return;
-        
-        try {
-            if (!referrals || referrals.length === 0) {
-                container.innerHTML = `
-                    <tr>
-                        <td colspan="5" class="text-center py-5">
-                            <i class="fas fa-users fa-2x text-muted mb-3"></i>
-                            <h4 class="text-muted">No referrals yet</h4>
-                            <p class="text-muted">Share your referral link to start earning!</p>
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            const referralsHTML = referrals.map(referral => {
-                const user = referral.referred_user || {};
-                const statusClass = this.getStatusClass(referral.status);
-                
-                return `
-                    <tr>
-                        <td>${user.full_name || 'N/A'}</td>
-                        <td>${user.email || 'N/A'}</td>
-                        <td>${Utils.formatDate(referral.createdAt)}</td>
-                        <td><span class="badge ${statusClass}">${referral.status || 'pending'}</span></td>
-                        <td class="text-success">${Utils.formatCurrency(referral.earnings || 0)}</td>
-                    </tr>
-                `;
-            }).join('');
-            
-            container.innerHTML = referralsHTML;
-            Debug.info('Referral', `Rendered ${referrals.length} referrals`);
-        } catch (error) {
-            Debug.error('Referral', 'Failed to render referral table:', error);
-            container.innerHTML = `
-                <tr>
-                    <td colspan="5" class="text-center py-5">
-                        <i class="fas fa-exclamation-triangle fa-2x text-warning mb-3"></i>
-                        <h4 class="text-warning">Failed to Load Referrals</h4>
-                        <p class="text-muted">Please try again later.</p>
-                    </td>
-                </tr>
-            `;
-        }
-    }
-    
-    static getStatusClass(status) {
-        const classes = {
-            pending: 'badge-warning',
-            active: 'badge-success',
-            completed: 'badge-primary',
-            expired: 'badge-secondary'
-        };
-        return classes[status] || 'badge-secondary';
-    }
-    
-    static showReferralError(message) {
-        const container = document.getElementById('referralsTable');
-        if (container) {
-            container.innerHTML = `
-                <tr>
-                    <td colspan="5" class="text-center py-5">
-                        <i class="fas fa-exclamation-triangle fa-2x text-warning mb-3"></i>
-                        <h4 class="text-warning">Failed to Load Referrals</h4>
-                        <p class="text-muted">${message}</p>
-                        <button class="btn btn-primary mt-3" onclick="ReferralManager.loadReferralData()">
-                            <i class="fas fa-redo"></i> Retry
-                        </button>
-                    </td>
-                </tr>
-            `;
         }
     }
 }
 
-// ===== ENHANCED EVENT HANDLERS =====
+// ===== ADMIN MANAGER =====
+class AdminManager {
+    static async loadAdminDashboard() {
+        Debug.info('Admin', 'Loading admin dashboard...');
+        
+        if (!isAdmin) {
+            Utils.showNotification('Admin access required', 'error');
+            return;
+        }
+        
+        try {
+            Utils.showLoader('Loading admin dashboard...');
+            
+            // This would load admin-specific data
+            Debug.info('Admin', 'Admin dashboard loaded');
+            
+        } catch (error) {
+            Debug.error('Admin', 'Failed to load admin dashboard:', error);
+            Utils.showError(error, 'Loading Admin Dashboard');
+        } finally {
+            Utils.hideLoader();
+        }
+    }
+}
+
+// ===== EVENT HANDLERS =====
 class EventHandlers {
     static init() {
         Debug.info('EventHandlers', 'Initializing event handlers...');
         
-        // Mobile menu
         this.setupMobileMenu();
-        
-        // Theme toggle
         this.setupThemeToggle();
-        
-        // Logout
         this.setupLogout();
-        
-        // Forms
         this.setupForms();
-        
-        // Refresh buttons
         this.setupRefreshButtons();
-        
-        // File preview handlers
         this.setupFilePreviews();
-        
-        // Withdrawal amount calculation
         this.setupWithdrawalCalculation();
+        this.setupReferralActions();
         
         Debug.info('EventHandlers', 'Event handlers initialized successfully');
     }
@@ -6431,11 +6574,9 @@ class EventHandlers {
         const themeToggle = document.getElementById('themeToggle');
         if (!themeToggle) return;
         
-        // Load saved theme
         const savedTheme = StateManager.get('theme', 'dark');
         document.documentElement.setAttribute('data-theme', savedTheme);
         
-        // Update icon
         const icon = themeToggle.querySelector('i');
         if (icon) {
             icon.className = savedTheme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
@@ -6448,7 +6589,6 @@ class EventHandlers {
             document.documentElement.setAttribute('data-theme', newTheme);
             StateManager.set('theme', newTheme);
             
-            // Update icon
             if (icon) {
                 icon.className = newTheme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
             }
@@ -6469,7 +6609,6 @@ class EventHandlers {
     }
     
     static setupForms() {
-        // Login form
         const loginForm = document.getElementById('loginForm');
         if (loginForm) {
             loginForm.addEventListener('submit', async (e) => {
@@ -6487,7 +6626,6 @@ class EventHandlers {
             });
         }
         
-        // Register form
         const registerForm = document.getElementById('registerForm');
         if (registerForm) {
             registerForm.addEventListener('submit', async (e) => {
@@ -6532,7 +6670,6 @@ class EventHandlers {
             });
         }
         
-        // Deposit form
         const depositForm = document.getElementById('depositForm');
         if (depositForm) {
             depositForm.addEventListener('submit', (e) => {
@@ -6540,7 +6677,6 @@ class EventHandlers {
             });
         }
         
-        // Withdrawal form
         const withdrawalForm = document.getElementById('withdrawalForm');
         if (withdrawalForm) {
             withdrawalForm.addEventListener('submit', (e) => {
@@ -6548,7 +6684,6 @@ class EventHandlers {
             });
         }
         
-        // Profile form
         const profileForm = document.getElementById('profileForm');
         if (profileForm) {
             profileForm.addEventListener('submit', async (e) => {
@@ -6587,7 +6722,6 @@ class EventHandlers {
             });
         }
         
-        // Bank details form
         const bankDetailsForm = document.getElementById('bankDetailsForm');
         if (bankDetailsForm) {
             bankDetailsForm.addEventListener('submit', async (e) => {
@@ -6606,8 +6740,16 @@ class EventHandlers {
                     const response = await ApiService.updateBankDetails(bankData);
                     
                     if (response.success) {
-                        Utils.showNotification('Bank details updated successfully!', 'success');
+                        Utils.showNotification('Bank details updated successfully! Withdrawals will use these details.', 'success');
                         await AuthManager.loadUserData();
+                        
+                        if (Router.currentSection === 'withdrawals') {
+                            WithdrawalManager.updateWithdrawalForm();
+                        }
+                        
+                        if (Router.currentSection === 'deposits') {
+                            DepositManager.updateBankDetailsSection();
+                        }
                     } else {
                         Utils.showNotification(response.message || 'Bank details update failed', 'error');
                     }
@@ -6620,15 +6762,53 @@ class EventHandlers {
             });
         }
         
-        // KYC form
         const kycForm = document.getElementById('kycForm');
         if (kycForm) {
-            kycForm.addEventListener('submit', (e) => {
-                KYCManager.submitKYC(e);
+            kycForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                try {
+                    Utils.showLoader('Submitting KYC documents...');
+                    
+                    const idType = document.getElementById('idType')?.value;
+                    const idNumber = document.getElementById('idNumber')?.value;
+                    const idFront = document.getElementById('idFront')?.files[0];
+                    const idBack = document.getElementById('idBack')?.files[0];
+                    const selfieWithId = document.getElementById('selfieWithId')?.files[0];
+                    const addressProof = document.getElementById('addressProof')?.files[0];
+                    
+                    if (!idType || !idNumber || !idFront || !selfieWithId) {
+                        Utils.showNotification('Please fill all required fields', 'error');
+                        return;
+                    }
+                    
+                    const kycData = {
+                        id_type: idType,
+                        id_number: idNumber,
+                        id_front: idFront,
+                        selfie_with_id: selfieWithId
+                    };
+                    
+                    if (idBack) kycData.id_back = idBack;
+                    if (addressProof) kycData.address_proof = addressProof;
+                    
+                    const response = await ApiService.submitKYC(kycData);
+                    
+                    if (response.success) {
+                        Utils.showNotification('KYC documents submitted successfully! They will be reviewed within 24-48 hours.', 'success');
+                        await KYCManager.loadKYCStatus();
+                    } else {
+                        Utils.showNotification(response.message || 'KYC submission failed', 'error');
+                    }
+                } catch (error) {
+                    Debug.error('KYC', 'Failed to submit KYC:', error);
+                    Utils.showError(error, 'KYC Submission');
+                } finally {
+                    Utils.hideLoader();
+                }
             });
         }
         
-        // Support form
         const supportForm = document.getElementById('supportForm');
         if (supportForm) {
             supportForm.addEventListener('submit', async (e) => {
@@ -6638,10 +6818,10 @@ class EventHandlers {
                     Utils.showLoader('Submitting support ticket...');
                     
                     const ticketData = {
+                        category: document.getElementById('ticketCategory')?.value || '',
+                        priority: document.getElementById('ticketPriority')?.value || 'medium',
                         subject: document.getElementById('ticketSubject')?.value || '',
-                        message: document.getElementById('ticketMessage')?.value || '',
-                        category: document.getElementById('ticketCategory')?.value || 'general',
-                        priority: document.getElementById('ticketPriority')?.value || 'medium'
+                        message: document.getElementById('ticketMessage')?.value || ''
                     };
                     
                     const attachmentsInput = document.getElementById('ticketAttachments');
@@ -6650,15 +6830,15 @@ class EventHandlers {
                     const response = await ApiService.createSupportTicket(ticketData, attachments);
                     
                     if (response.success) {
-                        Utils.showNotification('Support ticket submitted successfully!', 'success');
+                        Utils.showNotification('Support ticket created successfully! We will respond within 24 hours.', 'success');
                         supportForm.reset();
                         await SupportManager.loadSupportTickets();
                     } else {
-                        Utils.showNotification(response.message || 'Support ticket submission failed', 'error');
+                        Utils.showNotification(response.message || 'Ticket creation failed', 'error');
                     }
                 } catch (error) {
-                    Debug.error('Support', 'Failed to submit support ticket:', error);
-                    Utils.showError(error, 'Support Ticket Submission');
+                    Debug.error('Support', 'Failed to create support ticket:', error);
+                    Utils.showError(error, 'Support Ticket');
                 } finally {
                     Utils.hideLoader();
                 }
@@ -6667,7 +6847,6 @@ class EventHandlers {
     }
     
     static setupRefreshButtons() {
-        // Investments refresh
         const refreshInvestments = document.getElementById('refreshInvestments');
         if (refreshInvestments) {
             refreshInvestments.addEventListener('click', () => {
@@ -6675,7 +6854,6 @@ class EventHandlers {
             });
         }
         
-        // Deposits refresh
         const refreshDeposits = document.getElementById('refreshDeposits');
         if (refreshDeposits) {
             refreshDeposits.addEventListener('click', () => {
@@ -6683,7 +6861,6 @@ class EventHandlers {
             });
         }
         
-        // Withdrawals refresh
         const refreshWithdrawals = document.getElementById('refreshWithdrawals');
         if (refreshWithdrawals) {
             refreshWithdrawals.addEventListener('click', () => {
@@ -6691,7 +6868,6 @@ class EventHandlers {
             });
         }
         
-        // Transactions refresh
         const refreshTransactions = document.getElementById('refreshTransactions');
         if (refreshTransactions) {
             refreshTransactions.addEventListener('click', () => {
@@ -6699,7 +6875,20 @@ class EventHandlers {
             });
         }
         
-        // Mark all notifications as read
+        const refreshReferrals = document.getElementById('refreshReferrals');
+        if (refreshReferrals) {
+            refreshReferrals.addEventListener('click', () => {
+                ReferralManager.loadReferralData();
+            });
+        }
+        
+        const refreshTickets = document.getElementById('refreshTickets');
+        if (refreshTickets) {
+            refreshTickets.addEventListener('click', () => {
+                SupportManager.loadSupportTickets();
+            });
+        }
+        
         const markAllRead = document.getElementById('markAllRead');
         if (markAllRead) {
             markAllRead.addEventListener('click', async () => {
@@ -6716,13 +6905,12 @@ class EventHandlers {
     }
     
     static setupFilePreviews() {
-        // Payment proof preview
         this.setupFilePreview('paymentProof', 'paymentPreview');
+        this.setupFilePreview('modalPaymentProof', 'modalPaymentProofPreview');
         this.setupFilePreview('idFront', 'idFrontPreview');
         this.setupFilePreview('idBack', 'idBackPreview');
         this.setupFilePreview('selfieWithId', 'selfiePreview');
         this.setupFilePreview('addressProof', 'addressProofPreview');
-        this.setupFilePreview('modalPaymentProof', 'modalPaymentProofPreview');
     }
     
     static setupFilePreview(inputId, previewId) {
@@ -6758,7 +6946,6 @@ class EventHandlers {
         if (file.type.startsWith('image/')) {
             icon.className = 'fas fa-image text-primary';
             
-            // Create image preview
             const reader = new FileReader();
             reader.onload = (e) => {
                 const imgPreview = document.createElement('div');
@@ -6807,120 +6994,87 @@ class EventHandlers {
         const withdrawalAmount = document.getElementById('withdrawalAmount');
         if (withdrawalAmount) {
             withdrawalAmount.addEventListener('input', () => {
-                this.calculateWithdrawalFees();
+                WithdrawalManager.calculateWithdrawalFees();
             });
         }
     }
     
-    static calculateWithdrawalFees() {
-        const amountInput = document.getElementById('withdrawalAmount');
-        if (!amountInput) return;
+    static setupReferralActions() {
+        const copyReferralCode = document.getElementById('copyReferralCode');
+        if (copyReferralCode) {
+            copyReferralCode.addEventListener('click', async () => {
+                const code = document.getElementById('referralCode')?.value;
+                if (code) {
+                    await Utils.copyToClipboard(code);
+                }
+            });
+        }
         
-        const amount = parseFloat(amountInput.value) || 0;
-        const platformFee = amount * (CONFIG.PLATFORM_FEE_PERCENT / 100);
-        const netAmount = amount - platformFee;
+        const copyReferralLink = document.getElementById('copyReferralLink');
+        if (copyReferralLink) {
+            copyReferralLink.addEventListener('click', async () => {
+                const link = document.getElementById('referralLink')?.value;
+                if (link) {
+                    await Utils.copyToClipboard(link);
+                }
+            });
+        }
         
-        document.getElementById('platformFee').textContent = Utils.formatCurrency(platformFee);
-        document.getElementById('netAmount').textContent = Utils.formatCurrency(netAmount);
+        document.querySelectorAll('[data-share]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const platform = btn.getAttribute('data-share');
+                this.shareReferralLink(platform);
+            });
+        });
     }
-}
-
-// ===== ENHANCED ADMIN MANAGER =====
-class AdminManager {
-    static async loadAdminDashboard() {
-        Debug.info('Admin', 'Loading admin dashboard...');
+    
+    static shareReferralLink(platform) {
+        const referralLink = document.getElementById('referralLink')?.value;
+        const referralCode = document.getElementById('referralCode')?.value;
         
-        if (!isAdmin) {
-            Utils.showNotification('Admin access required', 'error');
-            Router.navigateTo('dashboard');
+        if (!referralLink || !referralCode) {
+            Utils.showNotification('Referral link not available', 'error');
             return;
         }
         
-        try {
-            Utils.showLoader('Loading admin dashboard...');
-            
-            // Load admin stats
-            const profileResponse = await ApiService.getProfile();
-            
-            if (profileResponse.success) {
-                this.updateAdminStats(profileResponse.data);
-                Debug.info('Admin', 'Admin dashboard loaded successfully');
-            } else {
-                Debug.warn('Admin', 'Failed to load admin dashboard:', profileResponse.message);
-                this.showAdminError('Failed to load admin dashboard');
-            }
-        } catch (error) {
-            Debug.error('Admin', 'Failed to load admin dashboard:', error);
-            this.showAdminError('Failed to load admin dashboard');
-        } finally {
-            Utils.hideLoader();
-        }
-    }
-    
-    static updateAdminStats(data) {
-        Debug.info('Admin', 'Updating admin stats...', data);
+        const shareText = `Join Raw Wealthy Investment Platform using my referral code ${referralCode} and start earning! ${referralLink}`;
         
-        try {
-            const user = data.user || {};
-            const stats = data.stats || {};
-            
-            // Update admin stats (sample data - in production, this would come from admin API)
-            document.getElementById('adminTotalUsers').textContent = '0'; // Placeholder
-            document.getElementById('adminTotalDeposits').textContent = Utils.formatCurrency(stats.total_deposits || 0);
-            document.getElementById('adminTotalWithdrawals').textContent = Utils.formatCurrency(stats.total_withdrawals || 0);
-            document.getElementById('adminTotalInvestments').textContent = Utils.formatCurrency(stats.active_investment_value || 0);
-            
-            Debug.info('Admin', 'Admin stats updated successfully');
-        } catch (error) {
-            Debug.error('Admin', 'Failed to update admin stats:', error);
+        switch(platform) {
+            case 'whatsapp':
+                window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, '_blank');
+                break;
+            case 'telegram':
+                window.open(`https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(shareText)}`, '_blank');
+                break;
+            case 'facebook':
+                window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralLink)}`, '_blank');
+                break;
+            case 'twitter':
+                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`, '_blank');
+                break;
+            case 'email':
+                window.location.href = `mailto:?subject=Join Raw Wealthy&body=${encodeURIComponent(shareText)}`;
+                break;
         }
-    }
-    
-    static showAdminError(message) {
-        const container = document.querySelector('.admin-content');
-        if (container) {
-            container.innerHTML = `
-                <div class="text-center py-5">
-                    <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
-                    <h4 class="text-warning">Failed to Load Admin Dashboard</h4>
-                    <p class="text-muted">${message}</p>
-                    <button class="btn btn-primary mt-3" onclick="AdminManager.loadAdminDashboard()">
-                        <i class="fas fa-redo"></i> Retry
-                    </button>
-                </div>
-            `;
-        }
-    }
-}
-
-// ===== HEALTH CHECK =====
-async function checkAPIHealth() {
-    try {
-        const isHealthy = await ApiService.healthCheck();
-        if (!isHealthy) {
-            Debug.warn('Health', 'API health check failed');
-            Utils.showNotification('Connection issues detected. Some features may not work properly.', 'warning');
-        }
-    } catch (error) {
-        Debug.error('Health', 'Health check failed:', error);
+        
+        Utils.showNotification(`Shared on ${platform}`, 'success');
     }
 }
 
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', () => {
-    Debug.info('App', 'Initializing Raw Wealthy v38.0 - Debugged Version...');
-    console.log('🚀 Raw Wealthy Frontend v38.0 - Debugged Version');
+    Debug.info('App', 'Initializing Raw Wealthy v38.0 - Production Ready...');
+    console.log('🚀 Raw Wealthy Premium v38.0 - Production Ready');
     console.log('📊 Debug Mode:', CONFIG.DEBUG_MODE);
     console.log('🔐 Auth Status:', authToken ? 'Logged In' : 'Logged Out');
     console.log('👤 Current User:', currentUser?.email || 'None');
     console.log('🌐 API Base URL:', CONFIG.API_BASE_URL);
+    console.log('🏦 Platform Bank:', CONFIG.PLATFORM_BANK_DETAILS.account_number);
     console.log('============================================');
     
-    // Initialize router and event handlers
     Router.init();
     EventHandlers.init();
     
-    // Check if user is already logged in
     if (authToken) {
         Debug.info('App', 'User already logged in, loading user data...');
         AuthManager.loadUserData();
@@ -6928,16 +7082,10 @@ document.addEventListener('DOMContentLoaded', () => {
         Debug.info('App', 'No user logged in, showing login page');
     }
     
-    // Check API health periodically
-    checkAPIHealth();
-    setInterval(checkAPIHealth, 300000); // Every 5 minutes
-    
-    // Handle offline/online status
     window.addEventListener('online', () => {
         Utils.showNotification('You are back online', 'success');
         Debug.info('Network', 'Connection restored');
         
-        // Sync any pending data
         if (authToken) {
             DashboardManager.loadDashboardData();
         }
@@ -6948,7 +7096,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Debug.warn('Network', 'Connection lost');
     });
     
-    Debug.info('App', '✅ Raw Wealthy Frontend v38.0 - Debugged Version Initialization Complete');
+    Debug.info('App', '✅ Raw Wealthy v38.0 Initialization Complete');
 });
 
 // ===== GLOBAL ERROR HANDLING =====
@@ -6962,17 +7110,14 @@ window.addEventListener('unhandledrejection', (event) => {
     Utils.showNotification('An unexpected error occurred.', 'error');
 });
 
-// ===== EXPORT FUNCTIONS FOR GLOBAL USE =====
+// ===== GLOBAL EXPORTS =====
 window.RawWealthy = {
-    // Core systems
     Debug,
     Utils,
     StateManager,
     ApiService,
     AuthManager,
     Router,
-    
-    // Managers
     DashboardManager,
     InvestmentManager,
     DepositManager,
@@ -6981,25 +7126,30 @@ window.RawWealthy = {
     KYCManager,
     SupportManager,
     ReferralManager,
+    ProfileManager,
     AdminManager,
     
-    // Helper functions for external use
     login: AuthManager.login,
     logout: AuthManager.logout,
     navigateTo: Router.navigateTo,
     showNotification: Utils.showNotification,
     formatCurrency: Utils.formatCurrency,
+    calculateTotalEarnings: Utils.calculateTotalEarnings,
+    calculateWithdrawableBalance: Utils.calculateWithdrawableBalance,
+    hasBankDetails: Utils.hasBankDetails,
     
-    // Current state
     getCurrentUser: () => currentUser,
     getAuthToken: () => authToken,
     isAdmin: () => isAdmin,
     
-    // Utility functions
     refreshDashboard: () => DashboardManager.loadDashboardData(),
     refreshInvestments: () => InvestmentManager.loadInvestments(),
     refreshDeposits: () => DepositManager.loadDeposits(),
-    refreshWithdrawals: () => WithdrawalManager.loadWithdrawals()
-};</script>
+    refreshWithdrawals: () => WithdrawalManager.loadWithdrawals(),
+    refreshTransactions: () => TransactionManager.loadTransactions(),
+    refreshKYC: () => KYCManager.loadKYCStatus(),
+    refreshReferrals: () => ReferralManager.loadReferralData()
+};
+</script>
 </body>
 </html>
