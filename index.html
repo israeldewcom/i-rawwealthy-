@@ -1593,7 +1593,7 @@
                                         <div class="form-check">
                                             <input type="checkbox" class="form-check-input" id="termsAgreement" required>
                                             <label class="form-check-label" for="termsAgreement">
-                                                I agree to the <a href="#" class="text-primary">Terms of Service</a> and <a href="#" class="text-primary">Privacy Policy</a>
+                                                I agree to the <a href="terms.html" class="text-primary">Terms of Service</a> and <a href="#" class="text-primary">Privacy Policy</a>
                                             </label>
                                         </div>
                                     </div>
@@ -1963,10 +1963,10 @@
                             <div class="card-body">
                                 <form id="withdrawalForm">
                                     <div class="form-group">
-                                        <label class="form-label">Amount (Minimum: ₦3,500)</label>
+                                        <label class="form-label">Amount (Minimum: ₦4, 000)</label>
                                         <div class="input-group">
                                             <i class="input-group-icon fas fa-money-bill"></i>
-                                            <input type="number" class="form-control" id="withdrawalAmount" min="3500" value="3500" required>
+                                            <input type="number" class="form-control" id="withdrawalAmount" min="4000" value="4000" required>
                                         </div>
                                         <small class="text-muted">Available Balance: <span id="availableBalance">₦ 0.00</span></small>
                                     </div>
@@ -3200,22 +3200,22 @@
                 <div>
                     <h4 class="footer-title">Company</h4>
                     <ul class="footer-links">
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Contact</a></li>
-                        <li><a href="#">Careers</a></li>
-                        <li><a href="#">Blog</a></li>
-                        <li><a href="#">Press</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="career.html">Careers</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="blog.html">Press</a></li>
                     </ul>
                 </div>
                 
                 <div>
                     <h4 class="footer-title">Legal</h4>
                     <ul class="footer-links">
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms of Service</a></li>
-                        <li><a href="#">Cookie Policy</a></li>
-                        <li><a href="#">Risk Disclosure</a></li>
-                        <li><a href="#">AML Policy</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="cookie.html">Cookie Policy</a></li>
+                        <li><a href="risk.html">Risk Disclosure</a></li>
+                        <li><a href="aml.html">AML Policy</a></li>
                     </ul>
                 </div>
                 
@@ -7051,6 +7051,7 @@ window.RawWealthy = {
     refreshTransactions: () => TransactionManager.loadTransactions(),
     refreshKYC: () => KYCManager.loadKYCStatus(),
     refreshReferrals: () => ReferralManager.loadReferralData()
-};</script>
+};
+</script>
 </body>
 </html>
