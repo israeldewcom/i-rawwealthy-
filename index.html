@@ -3328,9 +3328,9 @@
     <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>// ==============================================
-// RAW WEALTHY PREMIUM v38.0 - PRODUCTION READY
+// RAW WEALTHY PREMIUM v50.3 - PRODUCTION READY
 // Advanced Investment Platform with Complete Features
-// ENHANCED WITH CUSTOM AMOUNT INPUT AND 8 INVESTMENT PLANS
+// ENHANCED WITH FORGOT PASSWORD, DUPLICATE PREVENTION, AND ADMIN INTEGRATION
 // ==============================================
 
 // ===== ENHANCED CONFIGURATION =====
@@ -3340,7 +3340,7 @@ const CONFIG = {
         : 'https://real-wealthy-1.onrender.com',
     
     DEBUG_MODE: true,
-    VERSION: '38.0.0',
+    VERSION: '50.3.0',
     
     // Business Logic
     MIN_INVESTMENT: 3500,
@@ -3369,7 +3369,12 @@ const CONFIG = {
         account_number: "7072859483",
         note: "Use your registered name as depositor name",
         deposit_instructions: "After payment, upload your payment proof for verification"
-    }
+    },
+    
+    // Session Management
+    SESSION_TIMEOUT: 60 * 60 * 1000, // 1 hour
+    DUPLICATE_PREVENTION_DELAY: 30000, // 30 seconds
+    MAX_RETRY_ATTEMPTS: 3
 };
 
 // ===== ADVANCED DEBUGGING SYSTEM =====
@@ -3401,9 +3406,14 @@ const Debug = {
     debug(module, message, data) { this.log('debug', module, message, data); }
 };
 
-// ===== STATE MANAGEMENT =====
+// ===== ENHANCED STATE MANAGEMENT WITH DUPLICATE PREVENTION =====
 class StateManager {
     static KEY_PREFIX = 'rawwealthy_';
+    static TRANSACTION_KEYS = {
+        INVESTMENT: 'last_investment',
+        DEPOSIT: 'last_deposit',
+        WITHDRAWAL: 'last_withdrawal'
+    };
     
     static get(key, defaultValue = null) {
         try {
@@ -3434,24 +3444,119 @@ class StateManager {
             return false;
         }
     }
+    
+    // Duplicate transaction prevention
+    static checkDuplicateTransaction(type, amount, threshold = CONFIG.DUPLICATE_PREVENTION_DELAY) {
+        const key = this.TRANSACTION_KEYS[type] || type;
+        const lastTransaction = this.get(key);
+        
+        if (!lastTransaction) return false;
+        
+        const timeDiff = Date.now() - lastTransaction.timestamp;
+        const isDuplicate = timeDiff < threshold && lastTransaction.amount === amount;
+        
+        if (isDuplicate) {
+            Debug.warn('StateManager', `Possible duplicate ${type} detected:`, {
+                timeDiff,
+                amount,
+                threshold
+            });
+        }
+        
+        return isDuplicate;
+    }
+    
+    static recordTransaction(type, amount, data = {}) {
+        const key = this.TRANSACTION_KEYS[type] || type;
+        this.set(key, {
+            type,
+            amount,
+            timestamp: Date.now(),
+            data,
+            id: Date.now() + Math.random().toString(36).substr(2, 9)
+        });
+    }
+    
+    static clearTransaction(type) {
+        const key = this.TRANSACTION_KEYS[type] || type;
+        this.remove(key);
+    }
 }
 
-// ===== GLOBAL STATE =====
+// ===== ENHANCED GLOBAL STATE WITH RETRY MECHANISM =====
 let authToken = StateManager.get('authToken');
 let currentUser = StateManager.get('currentUser');
 let isAdmin = StateManager.get('isAdmin', false);
-let appState = StateManager.get('appState', {
-    investments: [],
-    deposits: [],
-    withdrawals: [],
-    transactions: [],
-    notifications: [],
-    referrals: [],
-    plans: [],
-    lastUpdated: null
-});
+let pendingTransactions = StateManager.get('pendingTransactions', {});
+let retryCounts = StateManager.get('retryCounts', {});
+let sessionStartTime = StateManager.get('sessionStartTime', Date.now());
 
-// ===== ENHANCED UTILITIES =====
+// Session Management
+const SessionManager = {
+    init() {
+        this.checkSessionTimeout();
+        setInterval(() => this.checkSessionTimeout(), 60000); // Check every minute
+    },
+    
+    checkSessionTimeout() {
+        if (!authToken) return;
+        
+        const sessionDuration = Date.now() - sessionStartTime;
+        if (sessionDuration > CONFIG.SESSION_TIMEOUT) {
+            Debug.warn('SessionManager', 'Session expired due to timeout');
+            this.showSessionTimeoutWarning();
+        }
+    },
+    
+    showSessionTimeoutWarning() {
+        if (document.getElementById('sessionTimeoutModal')) return;
+        
+        const modalHTML = `
+            <div class="modal active" id="sessionTimeoutModal">
+                <div class="modal-backdrop"></div>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Session Timeout</h3>
+                    </div>
+                    <div class="modal-body text-center">
+                        <i class="fas fa-clock fa-3x text-warning mb-3"></i>
+                        <h4 class="mb-3">Your Session is About to Expire</h4>
+                        <p class="text-muted mb-4">For security reasons, you'll be logged out soon. Would you like to stay logged in?</p>
+                        <div class="d-flex gap-2 justify-center">
+                            <button class="btn btn-primary" id="extendSession">Stay Logged In</button>
+                            <button class="btn btn-secondary" id="logoutNow">Logout Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        document.getElementById('extendSession').addEventListener('click', () => {
+            this.extendSession();
+            document.getElementById('sessionTimeoutModal').remove();
+        });
+        
+        document.getElementById('logoutNow').addEventListener('click', () => {
+            AuthManager.logout();
+            document.getElementById('sessionTimeoutModal').remove();
+        });
+    },
+    
+    extendSession() {
+        sessionStartTime = Date.now();
+        StateManager.set('sessionStartTime', sessionStartTime);
+        Debug.info('SessionManager', 'Session extended');
+    },
+    
+    resetSession() {
+        sessionStartTime = Date.now();
+        StateManager.set('sessionStartTime', sessionStartTime);
+    }
+};
+
+// ===== ENHANCED UTILITIES WITH RETRY LOGIC =====
 class Utils {
     static formatCurrency(amount, currency = '₦') {
         try {
@@ -3620,11 +3725,91 @@ class Utils {
     static hasBankDetails(user) {
         return user && user.bank_details && user.bank_details.account_number && user.bank_details.account_number.trim() !== '';
     }
+    
+    // Retry mechanism for failed requests
+    static async retryOperation(operation, maxRetries = CONFIG.MAX_RETRY_ATTEMPTS, delay = 1000) {
+        let lastError;
+        
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                Debug.debug('Retry', `Attempt ${attempt} of ${maxRetries}`);
+                return await operation();
+            } catch (error) {
+                lastError = error;
+                
+                if (attempt < maxRetries) {
+                    Debug.warn('Retry', `Operation failed, retrying in ${delay}ms:`, error);
+                    await this.sleep(delay);
+                    delay *= 2; // Exponential backoff
+                }
+            }
+        }
+        
+        throw lastError;
+    }
+    
+    static sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    
+    // Duplicate transaction confirmation
+    static async confirmDuplicateTransaction(type, amount) {
+        return new Promise((resolve) => {
+            const modalHTML = `
+                <div class="modal active" id="duplicateModal">
+                    <div class="modal-backdrop"></div>
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Confirm ${type}</h3>
+                            <button class="modal-close">&times;</button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                            <h4 class="mb-3">${type} Already Submitted</h4>
+                            <p class="text-muted mb-3">
+                                You recently submitted a ${type.toLowerCase()} for ${this.formatCurrency(amount)}.
+                                Are you sure you want to submit another one?
+                            </p>
+                            <div class="d-flex gap-2 justify-center">
+                                <button class="btn btn-primary" id="confirmDuplicate">Yes, Submit Another</button>
+                                <button class="btn btn-secondary" id="cancelDuplicate">No, Go Back</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            
+            const modal = document.getElementById('duplicateModal');
+            const closeModal = () => modal.remove();
+            
+            document.getElementById('confirmDuplicate').addEventListener('click', () => {
+                closeModal();
+                resolve(true);
+            });
+            
+            document.getElementById('cancelDuplicate').addEventListener('click', () => {
+                closeModal();
+                resolve(false);
+            });
+            
+            modal.querySelector('.modal-close').addEventListener('click', () => {
+                closeModal();
+                resolve(false);
+            });
+            
+            modal.querySelector('.modal-backdrop').addEventListener('click', () => {
+                closeModal();
+                resolve(false);
+            });
+        });
+    }
 }
 
-// ===== ADVANCED API SERVICE =====
+// ===== ENHANCED API SERVICE WITH RETRY AND DUPLICATE PREVENTION =====
 class ApiService {
-    static async request(endpoint, options = {}) {
+    static async request(endpoint, options = {}, retryConfig = { maxRetries: 3 }) {
         const url = `${CONFIG.API_BASE_URL}${endpoint}`;
         const requestId = Utils.generateId('req');
         
@@ -3639,39 +3824,43 @@ class ApiService {
         }
         
         try {
-            const response = await fetch(url, {
-                ...options,
-                headers,
-                credentials: 'include'
-            });
+            const response = await Utils.retryOperation(async () => {
+                const response = await fetch(url, {
+                    ...options,
+                    headers,
+                    credentials: 'include'
+                });
+                
+                let data;
+                const contentType = response.headers.get('content-type');
+                
+                if (contentType && contentType.includes('application/json')) {
+                    data = await response.json();
+                } else {
+                    const text = await response.text();
+                    data = { text };
+                }
+                
+                Debug.debug('API', `[${requestId}] Response:`, { 
+                    status: response.status,
+                    success: data.success 
+                });
+                
+                if (!response.ok) {
+                    throw {
+                        response: { data },
+                        message: data.message || `Request failed with status ${response.status}`,
+                        status: response.status
+                    };
+                }
+                
+                return data;
+            }, retryConfig.maxRetries);
             
-            let data;
-            const contentType = response.headers.get('content-type');
-            
-            if (contentType && contentType.includes('application/json')) {
-                data = await response.json();
-            } else {
-                const text = await response.text();
-                data = { text };
-            }
-            
-            Debug.debug('API', `[${requestId}] Response:`, { 
-                status: response.status,
-                success: data.success 
-            });
-            
-            if (!response.ok) {
-                throw {
-                    response: { data },
-                    message: data.message || `Request failed with status ${response.status}`,
-                    status: response.status
-                };
-            }
-            
-            return data;
+            return response;
             
         } catch (error) {
-            Debug.error('API', `[${requestId}] Request failed:`, error);
+            Debug.error('API', `[${requestId}] Request failed after retries:`, error);
             throw error;
         }
     }
@@ -3688,6 +3877,21 @@ class ApiService {
         return this.request('/api/auth/register', {
             method: 'POST',
             body: JSON.stringify(userData)
+        });
+    }
+    
+    // Forgot Password endpoints
+    static async forgotPassword(email) {
+        return this.request('/api/auth/forgot-password', {
+            method: 'POST',
+            body: JSON.stringify({ email })
+        });
+    }
+    
+    static async resetPassword(token, password) {
+        return this.request(`/api/auth/reset-password/${token}`, {
+            method: 'POST',
+            body: JSON.stringify({ password })
         });
     }
     
@@ -3721,6 +3925,14 @@ class ApiService {
     }
     
     static async createInvestment(investmentData) {
+        // Check for duplicate
+        if (StateManager.checkDuplicateTransaction('INVESTMENT', investmentData.amount)) {
+            const confirmed = await Utils.confirmDuplicateTransaction('Investment', investmentData.amount);
+            if (!confirmed) {
+                throw new Error('Duplicate investment cancelled by user');
+            }
+        }
+        
         if (investmentData.payment_proof) {
             const formData = new FormData();
             
@@ -3732,15 +3944,21 @@ class ApiService {
             
             formData.append('payment_proof', investmentData.payment_proof);
             
-            return this.request('/api/investments', {
+            const result = await this.request('/api/investments', {
                 method: 'POST',
                 body: formData
             });
+            
+            StateManager.recordTransaction('INVESTMENT', investmentData.amount, investmentData);
+            return result;
         } else {
-            return this.request('/api/investments', {
+            const result = await this.request('/api/investments', {
                 method: 'POST',
                 body: JSON.stringify(investmentData)
             });
+            
+            StateManager.recordTransaction('INVESTMENT', investmentData.amount, investmentData);
+            return result;
         }
     }
     
@@ -3751,6 +3969,14 @@ class ApiService {
     }
     
     static async createDeposit(depositData) {
+        // Check for duplicate
+        if (StateManager.checkDuplicateTransaction('DEPOSIT', depositData.amount)) {
+            const confirmed = await Utils.confirmDuplicateTransaction('Deposit', depositData.amount);
+            if (!confirmed) {
+                throw new Error('Duplicate deposit cancelled by user');
+            }
+        }
+        
         if (depositData.payment_proof) {
             const formData = new FormData();
             
@@ -3762,15 +3988,21 @@ class ApiService {
             
             formData.append('payment_proof', depositData.payment_proof);
             
-            return this.request('/api/deposits', {
+            const result = await this.request('/api/deposits', {
                 method: 'POST',
                 body: formData
             });
+            
+            StateManager.recordTransaction('DEPOSIT', depositData.amount, depositData);
+            return result;
         } else {
-            return this.request('/api/deposits', {
+            const result = await this.request('/api/deposits', {
                 method: 'POST',
                 body: JSON.stringify(depositData)
             });
+            
+            StateManager.recordTransaction('DEPOSIT', depositData.amount, depositData);
+            return result;
         }
     }
     
@@ -3781,10 +4013,21 @@ class ApiService {
     }
     
     static async createWithdrawal(amount, payment_method = 'bank_transfer') {
-        return this.request('/api/withdrawals', {
+        // Check for duplicate
+        if (StateManager.checkDuplicateTransaction('WITHDRAWAL', amount)) {
+            const confirmed = await Utils.confirmDuplicateTransaction('Withdrawal', amount);
+            if (!confirmed) {
+                throw new Error('Duplicate withdrawal cancelled by user');
+            }
+        }
+        
+        const result = await this.request('/api/withdrawals', {
             method: 'POST',
             body: JSON.stringify({ amount, payment_method })
         });
+        
+        StateManager.recordTransaction('WITHDRAWAL', amount, { payment_method });
+        return result;
     }
     
     // Transaction endpoints
@@ -3887,9 +4130,20 @@ class ApiService {
             body: formData
         });
     }
+    
+    // Debug endpoints
+    static async debugEarningsStatus(userId) {
+        return this.request(`/api/debug/earnings-status/${userId}`);
+    }
+    
+    static async fixUserEarnings(userId) {
+        return this.request(`/api/debug/fix-user-earnings/${userId}`, {
+            method: 'POST'
+        });
+    }
 }
 
-// ===== AUTH MANAGER =====
+// ===== ENHANCED AUTH MANAGER WITH FORGOT PASSWORD =====
 class AuthManager {
     static async login(email, password) {
         try {
@@ -3906,6 +4160,9 @@ class AuthManager {
                 StateManager.set('authToken', authToken);
                 StateManager.set('currentUser', currentUser);
                 StateManager.set('isAdmin', isAdmin);
+                StateManager.set('sessionStartTime', Date.now());
+                
+                SessionManager.resetSession();
                 
                 this.updateUI();
                 
@@ -3958,8 +4215,193 @@ class AuthManager {
         }
     }
     
+    static async forgotPassword(email) {
+        try {
+            Utils.showLoader('Sending reset instructions...');
+            Debug.info('Auth', 'Forgot password attempt:', { email });
+            
+            if (!Utils.validateEmail(email)) {
+                Utils.showNotification('Please enter a valid email address', 'error');
+                return false;
+            }
+            
+            const response = await ApiService.forgotPassword(email);
+            
+            if (response.success) {
+                Utils.showNotification('Password reset instructions sent to your email', 'success');
+                
+                // Show success modal
+                this.showForgotPasswordSuccess();
+                Debug.info('Auth', 'Forgot password email sent:', { email });
+                return true;
+            } else {
+                Utils.showNotification(response.message || 'Password reset failed', 'error');
+                Debug.warn('Auth', 'Forgot password failed:', response.message);
+                return false;
+            }
+        } catch (error) {
+            Utils.showError(error, 'Forgot Password');
+            return false;
+        } finally {
+            Utils.hideLoader();
+        }
+    }
+    
+    static async resetPassword(token, password) {
+        try {
+            Utils.showLoader('Resetting password...');
+            Debug.info('Auth', 'Reset password attempt');
+            
+            if (password.length < 6) {
+                Utils.showNotification('Password must be at least 6 characters', 'error');
+                return false;
+            }
+            
+            const response = await ApiService.resetPassword(token, password);
+            
+            if (response.success) {
+                Utils.showNotification('Password reset successful! You can now login with your new password.', 'success');
+                Router.navigateTo('login');
+                Debug.info('Auth', 'Password reset successful');
+                return true;
+            } else {
+                Utils.showNotification(response.message || 'Password reset failed', 'error');
+                Debug.warn('Auth', 'Password reset failed:', response.message);
+                return false;
+            }
+        } catch (error) {
+            Utils.showError(error, 'Reset Password');
+            return false;
+        } finally {
+            Utils.hideLoader();
+        }
+    }
+    
+    static showForgotPasswordSuccess() {
+        const modalHTML = `
+            <div class="modal active" id="forgotPasswordSuccessModal">
+                <div class="modal-backdrop"></div>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Check Your Email</h3>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <i class="fas fa-envelope fa-3x text-primary mb-3"></i>
+                        <h4 class="mb-3">Password Reset Email Sent</h4>
+                        <p class="text-muted mb-4">
+                            We've sent password reset instructions to your email address.
+                            Please check your inbox and follow the link to reset your password.
+                        </p>
+                        <div class="alert alert-info text-left">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            <strong>Note:</strong> The reset link will expire in 10 minutes.
+                            If you don't see the email, check your spam folder.
+                        </div>
+                        <button class="btn btn-primary mt-3" id="closeForgotPasswordSuccess">Back to Login</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        const modal = document.getElementById('forgotPasswordSuccessModal');
+        
+        document.getElementById('closeForgotPasswordSuccess').addEventListener('click', () => {
+            modal.remove();
+            Router.navigateTo('login');
+        });
+        
+        modal.querySelector('.modal-close').addEventListener('click', () => {
+            modal.remove();
+            Router.navigateTo('login');
+        });
+        
+        modal.querySelector('.modal-backdrop').addEventListener('click', () => {
+            modal.remove();
+            Router.navigateTo('login');
+        });
+    }
+    
+    static showResetPasswordModal(token) {
+        const modalHTML = `
+            <div class="modal active" id="resetPasswordModal">
+                <div class="modal-backdrop"></div>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Reset Your Password</h3>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="resetPasswordForm">
+                            <div class="form-group">
+                                <label class="form-label">New Password</label>
+                                <div class="input-group">
+                                    <i class="input-group-icon fas fa-lock"></i>
+                                    <input type="password" class="form-control" id="newPassword" 
+                                           placeholder="Enter new password" required minlength="6">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Confirm New Password</label>
+                                <div class="input-group">
+                                    <i class="input-group-icon fas fa-lock"></i>
+                                    <input type="password" class="form-control" id="confirmNewPassword" 
+                                           placeholder="Confirm new password" required minlength="6">
+                                </div>
+                            </div>
+                            <div class="alert alert-info mb-4">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                Password must be at least 6 characters long
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block btn-lg">
+                                <i class="fas fa-key"></i> Reset Password
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        const modal = document.getElementById('resetPasswordModal');
+        const form = document.getElementById('resetPasswordForm');
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmNewPassword').value;
+            
+            if (newPassword !== confirmPassword) {
+                Utils.showNotification('Passwords do not match', 'error');
+                return;
+            }
+            
+            await this.resetPassword(token, newPassword);
+            modal.remove();
+        });
+        
+        modal.querySelector('.modal-close').addEventListener('click', () => {
+            modal.remove();
+            Router.navigateTo('login');
+        });
+        
+        modal.querySelector('.modal-backdrop').addEventListener('click', () => {
+            modal.remove();
+            Router.navigateTo('login');
+        });
+    }
+    
     static logout() {
         Debug.info('Auth', 'Logout initiated');
+        
+        // Clear all transaction records
+        StateManager.clearTransaction('INVESTMENT');
+        StateManager.clearTransaction('DEPOSIT');
+        StateManager.clearTransaction('WITHDRAWAL');
         
         authToken = null;
         currentUser = null;
@@ -3968,7 +4410,7 @@ class AuthManager {
         StateManager.remove('authToken');
         StateManager.remove('currentUser');
         StateManager.remove('isAdmin');
-        StateManager.remove('appState');
+        StateManager.remove('sessionStartTime');
         
         appState = {
             investments: [],
@@ -4067,13 +4509,16 @@ class AuthManager {
     }
 }
 
-// ===== ROUTER =====
+// ===== ENHANCED ROUTER WITH PASSWORD RESET HANDLING =====
 class Router {
     static currentSection = 'login';
     static previousSection = null;
     
     static init() {
         Debug.info('Router', 'Initializing...');
+        
+        // Check for password reset token in URL
+        this.checkPasswordResetToken();
         
         if (authToken) {
             AuthManager.loadUserData();
@@ -4083,6 +4528,19 @@ class Router {
         }
         
         this.setupNavigation();
+    }
+    
+    static checkPasswordResetToken() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const resetToken = urlParams.get('resetToken') || urlParams.get('token');
+        
+        if (resetToken) {
+            Debug.info('Router', 'Password reset token detected');
+            AuthManager.showResetPasswordModal(resetToken);
+            
+            // Clean URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
     }
     
     static setupNavigation() {
@@ -4267,7 +4725,7 @@ class Router {
     }
 }
 
-// ===== DASHBOARD MANAGER =====
+// ===== ENHANCED DASHBOARD MANAGER =====
 class DashboardManager {
     static chartInstance = null;
     
@@ -4576,7 +5034,7 @@ class DashboardManager {
     }
 }
 
-// ===== INVESTMENT MANAGER =====
+// ===== ENHANCED INVESTMENT MANAGER WITH DUPLICATE PREVENTION =====
 class InvestmentManager {
     static currentPlan = null;
     
@@ -4903,6 +5361,24 @@ class InvestmentManager {
             const showProof = e.target.value !== 'wallet';
             if (paymentProofSection) {
                 paymentProofSection.classList.toggle('d-none', !showProof);
+                
+                // If wallet is selected, hide proof requirement message
+                if (e.target.value === 'wallet') {
+                    const proofMessage = document.getElementById('proofRequirementMessage');
+                    if (proofMessage) proofMessage.remove();
+                } else {
+                    // Show proof requirement message
+                    if (!document.getElementById('proofRequirementMessage')) {
+                        const messageHTML = `
+                            <div class="alert alert-info mt-3" id="proofRequirementMessage">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                <strong>Important:</strong> Upload payment proof for admin verification. 
+                                If you forgot to add proof, your investment will still be submitted to admin for review.
+                            </div>
+                        `;
+                        paymentProofSection.insertAdjacentHTML('beforeend', messageHTML);
+                    }
+                }
             }
         });
         
@@ -5010,6 +5486,7 @@ class InvestmentManager {
                 auto_renew: autoRenew
             };
             
+            // Allow investment without proof - will be submitted to admin for review
             if (paymentProof) {
                 investmentData.payment_proof = paymentProof;
             }
@@ -5019,7 +5496,11 @@ class InvestmentManager {
             const response = await ApiService.createInvestment(investmentData);
             
             if (response.success) {
-                Utils.showNotification('Investment created successfully!', 'success');
+                if (paymentProof) {
+                    Utils.showNotification('Investment created successfully! Awaiting admin approval.', 'success');
+                } else {
+                    Utils.showNotification('Investment created successfully! First interest will be added in 24 hours.', 'success');
+                }
                 
                 if (paymentMethod === 'wallet' && currentUser) {
                     currentUser.balance -= amount;
@@ -5040,6 +5521,10 @@ class InvestmentManager {
                 Utils.showNotification(response.message || 'Investment failed', 'error');
             }
         } catch (error) {
+            if (error.message === 'Duplicate investment cancelled by user') {
+                Debug.info('Investment', 'User cancelled duplicate investment');
+                return;
+            }
             Debug.error('Investment', 'Failed to submit investment:', error);
             Utils.showError(error, 'Investment Submission');
         } finally {
@@ -5085,7 +5570,8 @@ class InvestmentManager {
             active: 'badge-success',
             completed: 'badge-primary',
             cancelled: 'badge-secondary',
-            failed: 'badge-danger'
+            failed: 'badge-danger',
+            rejected: 'badge-danger'
         };
         return classes[status] || 'badge-secondary';
     }
@@ -5096,7 +5582,8 @@ class InvestmentManager {
             active: 'Active',
             completed: 'Completed',
             cancelled: 'Cancelled',
-            failed: 'Failed'
+            failed: 'Failed',
+            rejected: 'Rejected'
         };
         return texts[status] || status;
     }
@@ -5135,7 +5622,7 @@ class InvestmentManager {
     }
 }
 
-// ===== DEPOSIT MANAGER =====
+// ===== ENHANCED DEPOSIT MANAGER WITH DUPLICATE PREVENTION =====
 class DepositManager {
     static async loadDeposits() {
         Debug.info('Deposit', 'Loading deposits...');
@@ -5249,7 +5736,6 @@ class DepositManager {
         }
     }
     
-    // ENHANCED: Add bank details section with platform details
     static updateBankDetailsSection() {
         const bankDetailsInfo = document.getElementById('bankDetailsInfo');
         if (!bankDetailsInfo) return;
@@ -5260,7 +5746,6 @@ class DepositManager {
         bankDetailsInfo.innerHTML = '';
         
         if (hasUserBankDetails) {
-            // Show user's bank details for withdrawals
             bankDetailsInfo.innerHTML = `
                 <div class="bank-details-card p-3 border rounded">
                     <h6 class="mb-3">Your Bank Details</h6>
@@ -5283,7 +5768,6 @@ class DepositManager {
             `;
         }
         
-        // Always show platform bank details for deposits
         const platformDetailsHTML = `
             <div class="card mb-4">
                 <div class="card-header">
@@ -5359,15 +5843,12 @@ class DepositManager {
             </div>
         `;
         
-        // Insert platform bank details before user bank details
         bankDetailsInfo.insertAdjacentHTML('beforeend', platformDetailsHTML);
         
-        // Add event listeners for copy and share buttons
         this.setupBankDetailsEvents();
     }
     
     static setupBankDetailsEvents() {
-        // Copy bank details button
         const copyBtn = document.getElementById('copyBankDetails');
         if (copyBtn) {
             copyBtn.addEventListener('click', async () => {
@@ -5376,7 +5857,6 @@ class DepositManager {
             });
         }
         
-        // Share bank details button
         const shareBtn = document.getElementById('shareBankDetails');
         if (shareBtn) {
             shareBtn.addEventListener('click', () => {
@@ -5391,13 +5871,11 @@ class DepositManager {
                         console.log('Error sharing:', err);
                     });
                 } else {
-                    // Fallback: copy to clipboard
                     Utils.copyToClipboard(shareText);
                 }
             });
         }
         
-        // Save bank details button
         const saveBtn = document.querySelector('[data-action="save-bank-details"]');
         if (saveBtn) {
             saveBtn.addEventListener('click', () => {
@@ -5408,13 +5886,11 @@ class DepositManager {
                     note: CONFIG.PLATFORM_BANK_DETAILS.note
                 };
                 
-                // Save to localStorage
                 StateManager.set('platformBankDetails', bankDetails);
                 Utils.showNotification('Bank details saved for quick access!', 'success');
             });
         }
         
-        // Print bank details button
         const printBtn = document.querySelector('[data-action="print-bank-details"]');
         if (printBtn) {
             printBtn.addEventListener('click', () => {
@@ -5482,6 +5958,7 @@ class DepositManager {
                 payment_method: paymentMethod
             };
             
+            // Allow deposit without proof - will be submitted to admin for review
             if (paymentProof) {
                 depositData.payment_proof = paymentProof;
             }
@@ -5491,7 +5968,11 @@ class DepositManager {
             const response = await ApiService.createDeposit(depositData);
             
             if (response.success) {
-                Utils.showNotification('Deposit request submitted successfully!', 'success');
+                if (paymentProof) {
+                    Utils.showNotification('Deposit request submitted successfully! Awaiting admin approval.', 'success');
+                } else {
+                    Utils.showNotification('Deposit request submitted! Please upload payment proof when available.', 'warning');
+                }
                 
                 const form = document.getElementById('depositForm');
                 if (form) form.reset();
@@ -5505,6 +5986,10 @@ class DepositManager {
                 Utils.showNotification(response.message || 'Deposit failed', 'error');
             }
         } catch (error) {
+            if (error.message === 'Duplicate deposit cancelled by user') {
+                Debug.info('Deposit', 'User cancelled duplicate deposit');
+                return;
+            }
             Debug.error('Deposit', 'Failed to submit deposit:', error);
             Utils.showError(error, 'Deposit Submission');
         } finally {
@@ -5563,7 +6048,7 @@ class DepositManager {
     }
 }
 
-// ===== WITHDRAWAL MANAGER =====
+// ===== ENHANCED WITHDRAWAL MANAGER WITH DUPLICATE PREVENTION =====
 class WithdrawalManager {
     static async loadWithdrawals() {
         Debug.info('Withdrawal', 'Loading withdrawals...');
@@ -5720,6 +6205,10 @@ class WithdrawalManager {
                 Utils.showNotification(response.message || 'Withdrawal failed', 'error');
             }
         } catch (error) {
+            if (error.message === 'Duplicate withdrawal cancelled by user') {
+                Debug.info('Withdrawal', 'User cancelled duplicate withdrawal');
+                return;
+            }
             Debug.error('Withdrawal', 'Failed to submit withdrawal:', error);
             Utils.showError(error, 'Withdrawal Submission');
         } finally {
@@ -5855,674 +6344,7 @@ class WithdrawalManager {
     }
 }
 
-// ===== TRANSACTION MANAGER =====
-class TransactionManager {
-    static async loadTransactions() {
-        Debug.info('Transaction', 'Loading transactions...');
-        
-        try {
-            Utils.showLoader('Loading transactions...');
-            
-            const response = await ApiService.getTransactions();
-            
-            if (response.success) {
-                const transactions = response.data.transactions || [];
-                this.renderTransactionsTable(transactions);
-                this.updateTransactionStats(transactions);
-                Debug.info('Transaction', `Loaded ${transactions.length} transactions`);
-            } else {
-                Debug.warn('Transaction', 'Failed to load transactions:', response.message);
-                this.showTransactionError('Failed to load transactions');
-            }
-        } catch (error) {
-            Debug.error('Transaction', 'Failed to load transactions:', error);
-            this.showTransactionError('Failed to load transactions');
-        } finally {
-            Utils.hideLoader();
-        }
-    }
-    
-    static renderTransactionsTable(transactions) {
-        Debug.info('Transaction', 'Rendering transactions table...');
-        
-        const container = document.getElementById('transactionsTable');
-        if (!container) return;
-        
-        try {
-            if (!transactions || transactions.length === 0) {
-                container.innerHTML = `
-                    <tr>
-                        <td colspan="7" class="text-center py-5">
-                            <i class="fas fa-exchange-alt fa-2x text-muted mb-3"></i>
-                            <h4 class="text-muted">No transactions yet</h4>
-                            <p class="text-muted">Your transaction history will appear here.</p>
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            const transactionsHTML = transactions.map(transaction => {
-                const amount = parseFloat(transaction.amount) || 0;
-                const isPositive = amount >= 0;
-                const typeIcon = this.getTypeIcon(transaction.type);
-                const statusClass = this.getStatusClass(transaction.status);
-                
-                return `
-                    <tr>
-                        <td>${Utils.formatDateTime(transaction.createdAt)}</td>
-                        <td>
-                            <i class="fas ${typeIcon} mr-2"></i>
-                            ${this.getTypeText(transaction.type)}
-                        </td>
-                        <td>${transaction.description || 'No description'}</td>
-                        <td class="${isPositive ? 'text-success' : 'text-danger'}">
-                            ${isPositive ? '+' : ''}${Utils.formatCurrency(amount)}
-                        </td>
-                        <td><span class="badge ${statusClass}">${this.getStatusText(transaction.status)}</span></td>
-                        <td>${transaction.reference || 'N/A'}</td>
-                        <td>
-                            ${transaction.payment_proof_url ?
-                                `<button class="btn btn-sm btn-secondary view-proof" data-url="${transaction.payment_proof_url}">
-                                    <i class="fas fa-eye"></i>
-                                </button>` :
-                                '<span class="text-muted">-</span>'
-                            }
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-            
-            container.innerHTML = transactionsHTML;
-            
-            Debug.info('Transaction', `Rendered ${transactions.length} transactions`);
-        } catch (error) {
-            Debug.error('Transaction', 'Failed to render transactions table:', error);
-            container.innerHTML = `
-                <tr>
-                    <td colspan="7" class="text-center py-5">
-                        <i class="fas fa-exclamation-triangle fa-2x text-warning mb-3"></i>
-                        <h4 class="text-warning">Failed to Load Transactions</h4>
-                        <p class="text-muted">Please try again later.</p>
-                    </td>
-                </tr>
-            `;
-        }
-    }
-    
-    static updateTransactionStats(transactions) {
-        Debug.info('Transaction', 'Updating transaction stats...');
-        
-        try {
-            const totalIncome = transactions
-                .filter(t => (parseFloat(t.amount) || 0) > 0)
-                .reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
-            
-            const totalExpenses = transactions
-                .filter(t => (parseFloat(t.amount) || 0) < 0)
-                .reduce((sum, t) => sum + Math.abs(parseFloat(t.amount) || 0), 0);
-            
-            const netFlow = totalIncome - totalExpenses;
-            const totalCount = transactions.length;
-            
-            document.getElementById('totalIncome').textContent = Utils.formatCurrency(totalIncome);
-            document.getElementById('totalExpenses').textContent = Utils.formatCurrency(totalExpenses);
-            document.getElementById('netFlow').textContent = Utils.formatCurrency(netFlow);
-            document.getElementById('totalTransactions').textContent = totalCount;
-            
-            Debug.debug('Transaction', 'Transaction stats updated', {
-                totalIncome,
-                totalExpenses,
-                netFlow,
-                totalCount
-            });
-        } catch (error) {
-            Debug.error('Transaction', 'Failed to update transaction stats:', error);
-        }
-    }
-    
-    static getTypeIcon(type) {
-        const icons = {
-            deposit: 'fa-money-bill-wave',
-            withdrawal: 'fa-wallet',
-            investment: 'fa-chart-line',
-            earning: 'fa-coins',
-            referral: 'fa-users',
-            bonus: 'fa-gift',
-            fee: 'fa-percentage',
-            refund: 'fa-undo',
-            transfer: 'fa-exchange-alt'
-        };
-        return icons[type] || 'fa-exchange-alt';
-    }
-    
-    static getTypeText(type) {
-        const texts = {
-            deposit: 'Deposit',
-            withdrawal: 'Withdrawal',
-            investment: 'Investment',
-            earning: 'Earning',
-            referral: 'Referral',
-            bonus: 'Bonus',
-            fee: 'Fee',
-            refund: 'Refund',
-            transfer: 'Transfer'
-        };
-        return texts[type] || type;
-    }
-    
-    static getStatusClass(status) {
-        const classes = {
-            pending: 'badge-warning',
-            completed: 'badge-success',
-            failed: 'badge-danger',
-            cancelled: 'badge-secondary'
-        };
-        return classes[status] || 'badge-secondary';
-    }
-    
-    static getStatusText(status) {
-        const texts = {
-            pending: 'Pending',
-            completed: 'Completed',
-            failed: 'Failed',
-            cancelled: 'Cancelled'
-        };
-        return texts[status] || status;
-    }
-    
-    static showTransactionError(message) {
-        const container = document.getElementById('transactionsTable');
-        if (container) {
-            container.innerHTML = `
-                <tr>
-                    <td colspan="7" class="text-center py-5">
-                        <i class="fas fa-exclamation-triangle fa-2x text-warning mb-3"></i>
-                        <h4 class="text-warning">Failed to Load Transactions</h4>
-                        <p class="text-muted">${message}</p>
-                        <button class="btn btn-primary mt-3" onclick="TransactionManager.loadTransactions()">
-                            <i class="fas fa-redo"></i> Retry
-                        </button>
-                    </td>
-                </tr>
-            `;
-        }
-    }
-}
-
-// ===== KYC MANAGER =====
-class KYCManager {
-    static async loadKYCStatus() {
-        Debug.info('KYC', 'Loading KYC status...');
-        
-        try {
-            Utils.showLoader('Loading KYC status...');
-            
-            const response = await ApiService.getKYCStatus();
-            
-            if (response.success) {
-                this.renderKYCStatus(response.data);
-                Debug.info('KYC', 'KYC status loaded successfully');
-                return response.data;
-            } else {
-                Debug.warn('KYC', 'Failed to load KYC status:', response.message);
-                Utils.showNotification(response.message, 'error');
-                return null;
-            }
-        } catch (error) {
-            Debug.error('KYC', 'Failed to load KYC status:', error);
-            Utils.showError(error, 'Loading KYC Status');
-            return null;
-        } finally {
-            Utils.hideLoader();
-        }
-    }
-    
-    static renderKYCStatus(data) {
-        Debug.info('KYC', 'Rendering KYC status:', data);
-        
-        const container = document.getElementById('kycStatus');
-        if (!container) {
-            Debug.error('KYC', 'KYC status container not found');
-            return;
-        }
-        
-        const status = data.status || 'not_submitted';
-        const isVerified = status === 'verified';
-        const isPending = status === 'pending';
-        const isRejected = status === 'rejected';
-        const isNotSubmitted = status === 'not_submitted';
-        
-        let statusHTML = '';
-        let statusColor = '';
-        let statusIcon = '';
-        let statusText = '';
-        let description = '';
-        
-        if (isVerified) {
-            statusColor = 'success';
-            statusIcon = 'fa-check-circle';
-            statusText = 'Verified';
-            description = 'Your identity has been successfully verified. You now have full access to all platform features.';
-        } else if (isPending) {
-            statusColor = 'warning';
-            statusIcon = 'fa-clock';
-            statusText = 'Under Review';
-            description = 'Your documents are being reviewed by our team. This usually takes 24-48 hours.';
-        } else if (isRejected) {
-            statusColor = 'danger';
-            statusIcon = 'fa-times-circle';
-            statusText = 'Rejected';
-            description = data.reason || 'Your verification was rejected. Please submit new documents.';
-        } else {
-            statusColor = 'secondary';
-            statusIcon = 'fa-id-card';
-            statusText = 'Not Verified';
-            description = 'Please submit your KYC documents to verify your identity and unlock full platform features.';
-        }
-        
-        statusHTML = `
-            <div class="kyc-status-card p-4 border rounded">
-                <div class="d-flex align-center justify-between mb-3">
-                    <div>
-                        <h4 class="mb-1">KYC Verification Status</h4>
-                        <p class="text-muted mb-0">Identity verification status</p>
-                    </div>
-                    <span class="badge badge-${statusColor} px-3 py-2">
-                        <i class="fas ${statusIcon} mr-2"></i>${statusText}
-                    </span>
-                </div>
-                
-                <div class="alert alert-${statusColor} mb-4">
-                    <i class="fas ${statusIcon} mr-2"></i>${description}
-                </div>
-                
-                ${isRejected && data.reason ? `
-                    <div class="alert alert-danger">
-                        <h6><i class="fas fa-exclamation-triangle mr-2"></i>Rejection Reason:</h6>
-                        <p class="mb-0">${data.reason}</p>
-                    </div>
-                ` : ''}
-                
-                ${data.submitted_at ? `
-                    <div class="kyc-details">
-                        <h6 class="mb-3">Verification Details</h6>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-2">
-                                    <small class="text-muted">Submitted On</small>
-                                    <div>${Utils.formatDateTime(data.submitted_at)}</div>
-                                </div>
-                            </div>
-                            ${data.reviewed_at ? `
-                                <div class="col-md-6">
-                                    <div class="mb-2">
-                                        <small class="text-muted">Reviewed On</small>
-                                        <div>${Utils.formatDateTime(data.reviewed_at)}</div>
-                                    </div>
-                                </div>
-                            ` : ''}
-                        </div>
-                    </div>
-                ` : ''}
-                
-                ${!isVerified ? `
-                    <div class="mt-4">
-                        <button class="btn btn-primary" onclick="Router.navigateTo('kyc')">
-                            <i class="fas fa-id-card mr-2"></i>${isRejected ? 'Resubmit Documents' : 'Submit Documents'}
-                        </button>
-                    </div>
-                ` : ''}
-            </div>
-        `;
-        
-        container.innerHTML = statusHTML;
-        Debug.info('KYC', 'KYC status rendered successfully');
-    }
-}
-
-// ===== SUPPORT MANAGER =====
-class SupportManager {
-    static async loadSupportTickets() {
-        Debug.info('Support', 'Loading support tickets...');
-        
-        try {
-            const response = await ApiService.getSupportTickets();
-            
-            if (response.success) {
-                this.renderSupportTickets(response.data.tickets || []);
-                Debug.info('Support', `Loaded ${response.data.tickets?.length || 0} support tickets`);
-            } else {
-                Debug.warn('Support', 'Failed to load support tickets:', response.message);
-            }
-        } catch (error) {
-            Debug.error('Support', 'Failed to load support tickets:', error);
-        }
-    }
-    
-    static renderSupportTickets(tickets) {
-        Debug.info('Support', 'Rendering support tickets...');
-        
-        const container = document.getElementById('ticketsList');
-        if (!container) return;
-        
-        try {
-            if (!tickets || tickets.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-4">
-                        <i class="fas fa-ticket-alt fa-2x text-muted mb-3"></i>
-                        <p class="text-muted">No support tickets yet</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            const ticketsHTML = tickets.map(ticket => {
-                const status = ticket.status || 'open';
-                const priority = ticket.priority || 'medium';
-                const statusClass = this.getStatusClass(status);
-                const priorityClass = this.getPriorityClass(priority);
-                
-                return `
-                    <div class="ticket-item d-flex justify-between align-center p-3 border-bottom">
-                        <div class="flex-grow-1">
-                            <h6 class="mb-1">${ticket.subject || 'No subject'}</h6>
-                            <p class="text-muted small mb-1">${ticket.category || 'General'} • ${Utils.formatDate(ticket.createdAt)}</p>
-                            <div class="d-flex gap-2">
-                                <span class="badge ${statusClass}">${status}</span>
-                                <span class="badge ${priorityClass}">${priority}</span>
-                            </div>
-                        </div>
-                        <button class="btn btn-sm btn-secondary view-ticket" data-id="${ticket._id}">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                `;
-            }).join('');
-            
-            container.innerHTML = ticketsHTML;
-            
-            Debug.info('Support', `Rendered ${tickets.length} support tickets`);
-        } catch (error) {
-            Debug.error('Support', 'Failed to render support tickets:', error);
-            container.innerHTML = `
-                <div class="text-center py-4">
-                    <i class="fas fa-exclamation-triangle fa-2x text-warning mb-3"></i>
-                    <p class="text-warning">Failed to load tickets</p>
-                </div>
-            `;
-        }
-    }
-    
-    static getStatusClass(status) {
-        const classes = {
-            open: 'badge-warning',
-            in_progress: 'badge-primary',
-            resolved: 'badge-success',
-            closed: 'badge-secondary'
-        };
-        return classes[status] || 'badge-secondary';
-    }
-    
-    static getPriorityClass(priority) {
-        const classes = {
-            low: 'badge-success',
-            medium: 'badge-warning',
-            high: 'badge-danger',
-            urgent: 'badge-danger'
-        };
-        return classes[priority] || 'badge-secondary';
-    }
-}
-
-// ===== REFERRAL MANAGER =====
-class ReferralManager {
-    static async loadReferralData() {
-        Debug.info('Referral', 'Loading referral data...');
-        
-        try {
-            Utils.showLoader('Loading referral data...');
-            
-            const response = await ApiService.getReferralStats();
-            
-            if (response.success) {
-                this.renderReferralStats(response.data);
-                
-                const referralsResponse = await ApiService.getReferrals();
-                if (referralsResponse.success) {
-                    this.renderReferralsTable(referralsResponse.data.referrals || []);
-                }
-                
-                Debug.info('Referral', 'Referral data loaded successfully');
-            } else {
-                Debug.warn('Referral', 'Failed to load referral data:', response.message);
-                Utils.showNotification(response.message, 'error');
-            }
-        } catch (error) {
-            Debug.error('Referral', 'Failed to load referral data:', error);
-            Utils.showError(error, 'Loading Referral Data');
-        } finally {
-            Utils.hideLoader();
-        }
-    }
-    
-    static renderReferralStats(data) {
-        Debug.info('Referral', 'Rendering referral stats:', data);
-        
-        const stats = data.stats || {};
-        
-        document.getElementById('totalReferralsCount').textContent = stats.total_referrals || 0;
-        document.getElementById('referralEarnings').textContent = Utils.formatCurrency(stats.referral_earnings || 0);
-        document.getElementById('pendingEarnings').textContent = Utils.formatCurrency(stats.pending_earnings || 0);
-        
-        if (stats.referral_code) {
-            document.getElementById('referralCode').value = stats.referral_code;
-            const referralLink = `${window.location.origin}${window.location.pathname}#register?ref=${stats.referral_code}`;
-            document.getElementById('referralLink').value = referralLink;
-        }
-        
-        Debug.info('Referral', 'Referral stats rendered successfully');
-    }
-    
-    static renderReferralsTable(referrals) {
-        Debug.info('Referral', 'Rendering referrals table...');
-        
-        const container = document.getElementById('referralsTable');
-        if (!container) return;
-        
-        try {
-            if (!referrals || referrals.length === 0) {
-                container.innerHTML = `
-                    <tr>
-                        <td colspan="5" class="text-center py-5">
-                            <i class="fas fa-users fa-2x text-muted mb-3"></i>
-                            <h4 class="text-muted">No referrals yet</h4>
-                            <p class="text-muted">Share your referral link to start earning!</p>
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            const referralsHTML = referrals.map(referral => {
-                const user = referral.user || {};
-                const status = user.is_active ? 'Active' : 'Inactive';
-                const statusClass = user.is_active ? 'badge-success' : 'badge-secondary';
-                const earnings = referral.earnings || 0;
-                
-                return `
-                    <tr>
-                        <td>${user.full_name || 'N/A'}</td>
-                        <td>${user.email || 'N/A'}</td>
-                        <td>${Utils.formatDate(referral.createdAt)}</td>
-                        <td><span class="badge ${statusClass}">${status}</span></td>
-                        <td class="text-success">${Utils.formatCurrency(earnings)}</td>
-                    </tr>
-                `;
-            }).join('');
-            
-            container.innerHTML = referralsHTML;
-            
-            Debug.info('Referral', `Rendered ${referrals.length} referrals`);
-        } catch (error) {
-            Debug.error('Referral', 'Failed to render referrals table:', error);
-            container.innerHTML = `
-                <tr>
-                    <td colspan="5" class="text-center py-5">
-                        <i class="fas fa-exclamation-triangle fa-2x text-warning mb-3"></i>
-                        <h4 class="text-warning">Failed to Load Referrals</h4>
-                        <p class="text-muted">Please try again later.</p>
-                    </td>
-                </tr>
-            `;
-        }
-    }
-}
-
-// ===== PROFILE MANAGER =====
-class ProfileManager {
-    static updateProfilePage() {
-        Debug.info('Profile', 'Updating profile page...');
-        
-        if (!currentUser) return;
-        
-        try {
-            const profileName = document.getElementById('profileName');
-            if (profileName) profileName.textContent = currentUser.full_name || 'User';
-            
-            const profileEmail = document.getElementById('profileEmail');
-            if (profileEmail) profileEmail.textContent = currentUser.email || 'N/A';
-            
-            const fullNameInput = document.getElementById('fullName');
-            if (fullNameInput) fullNameInput.value = currentUser.full_name || '';
-            
-            const profileEmailInput = document.getElementById('profileEmailInput');
-            if (profileEmailInput) profileEmailInput.value = currentUser.email || '';
-            
-            const profilePhone = document.getElementById('profilePhone');
-            if (profilePhone) profilePhone.value = currentUser.phone || '';
-            
-            const memberSinceDate = document.getElementById('memberSinceDate');
-            if (memberSinceDate) {
-                memberSinceDate.textContent = Utils.formatDate(currentUser.createdAt);
-            }
-            
-            const lastLoginDate = document.getElementById('lastLoginDate');
-            if (lastLoginDate) {
-                lastLoginDate.textContent = currentUser.last_login 
-                    ? Utils.formatDateTime(currentUser.last_login)
-                    : 'Never';
-            }
-            
-            const kycBadge = document.getElementById('kycBadge');
-            if (kycBadge) {
-                const kycStatus = currentUser.kyc_status || 'not_submitted';
-                const kycVerified = currentUser.kyc_verified;
-                
-                let badgeClass = 'badge-warning';
-                let badgeText = 'Pending';
-                
-                if (kycVerified) {
-                    badgeClass = 'badge-success';
-                    badgeText = 'Verified';
-                } else if (kycStatus === 'rejected') {
-                    badgeClass = 'badge-danger';
-                    badgeText = 'Rejected';
-                } else if (kycStatus === 'not_submitted') {
-                    badgeClass = 'badge-secondary';
-                    badgeText = 'Not Submitted';
-                }
-                
-                kycBadge.className = `badge ${badgeClass}`;
-                kycBadge.textContent = badgeText;
-            }
-            
-            const accountStatus = document.getElementById('accountStatus');
-            if (accountStatus) {
-                accountStatus.textContent = currentUser.is_active ? 'Active' : 'Inactive';
-                accountStatus.className = `badge ${currentUser.is_active ? 'badge-success' : 'badge-danger'}`;
-            }
-            
-            const profileAvatar = document.getElementById('profileAvatar');
-            if (profileAvatar && currentUser.full_name) {
-                const initials = currentUser.full_name
-                    .split(' ')
-                    .map(name => name[0])
-                    .join('')
-                    .toUpperCase();
-                
-                if (initials.length > 0) {
-                    profileAvatar.innerHTML = initials;
-                    profileAvatar.style.background = 'var(--gradient-primary)';
-                    profileAvatar.style.color = 'white';
-                    profileAvatar.style.fontWeight = '600';
-                    profileAvatar.style.display = 'flex';
-                    profileAvatar.style.alignItems = 'center';
-                    profileAvatar.style.justifyContent = 'center';
-                    profileAvatar.style.fontSize = '1.5rem';
-                }
-            }
-
-            this.updateBankDetailsForm();
-            
-            Debug.info('Profile', 'Profile page updated');
-        } catch (error) {
-            Debug.error('Profile', 'Failed to update profile page:', error);
-        }
-    }
-
-    static updateBankDetailsForm() {
-        const bankNameInput = document.getElementById('bankName');
-        const accountNameInput = document.getElementById('accountName');
-        const accountNumberInput = document.getElementById('accountNumber');
-        const bankCodeInput = document.getElementById('bankCode');
-        const bankVerificationStatus = document.getElementById('bankVerificationStatus');
-
-        if (currentUser.bank_details) {
-            if (bankNameInput) bankNameInput.value = currentUser.bank_details.bank_name || '';
-            if (accountNameInput) accountNameInput.value = currentUser.bank_details.account_name || '';
-            if (accountNumberInput) accountNumberInput.value = currentUser.bank_details.account_number || '';
-            if (bankCodeInput) bankCodeInput.value = currentUser.bank_details.bank_code || '';
-            
-            if (bankVerificationStatus) {
-                if (currentUser.bank_details.verified) {
-                    bankVerificationStatus.className = 'badge badge-success';
-                    bankVerificationStatus.textContent = 'Verified';
-                } else {
-                    bankVerificationStatus.className = 'badge badge-warning';
-                    bankVerificationStatus.textContent = 'Pending Verification';
-                }
-            }
-        }
-    }
-}
-
-// ===== ADMIN MANAGER =====
-class AdminManager {
-    static async loadAdminDashboard() {
-        Debug.info('Admin', 'Loading admin dashboard...');
-        
-        if (!isAdmin) {
-            Utils.showNotification('Admin access required', 'error');
-            return;
-        }
-        
-        try {
-            Utils.showLoader('Loading admin dashboard...');
-            
-            // This would load admin-specific data
-            Debug.info('Admin', 'Admin dashboard loaded');
-            
-        } catch (error) {
-            Debug.error('Admin', 'Failed to load admin dashboard:', error);
-            Utils.showError(error, 'Loading Admin Dashboard');
-        } finally {
-            Utils.hideLoader();
-        }
-    }
-}
-
-// ===== EVENT HANDLERS =====
+// ===== ENHANCED EVENT HANDLERS WITH FORGOT PASSWORD =====
 class EventHandlers {
     static init() {
         Debug.info('EventHandlers', 'Initializing event handlers...');
@@ -6535,6 +6357,7 @@ class EventHandlers {
         this.setupFilePreviews();
         this.setupWithdrawalCalculation();
         this.setupReferralActions();
+        this.setupForgotPassword();
         
         Debug.info('EventHandlers', 'Event handlers initialized successfully');
     }
@@ -6606,6 +6429,79 @@ class EventHandlers {
                 AuthManager.logout();
             });
         }
+    }
+    
+    static setupForgotPassword() {
+        const forgotPasswordLink = document.querySelector('a[href="#forgot-password"]');
+        if (forgotPasswordLink) {
+            forgotPasswordLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.showForgotPasswordModal();
+            });
+        }
+    }
+    
+    static showForgotPasswordModal() {
+        const modalHTML = `
+            <div class="modal active" id="forgotPasswordModal">
+                <div class="modal-backdrop"></div>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Reset Your Password</h3>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="forgotPasswordForm">
+                            <div class="form-group">
+                                <label class="form-label">Email Address</label>
+                                <div class="input-group">
+                                    <i class="input-group-icon fas fa-envelope"></i>
+                                    <input type="email" class="form-control" id="forgotPasswordEmail" 
+                                           placeholder="Enter your email address" required>
+                                </div>
+                            </div>
+                            <div class="alert alert-info mb-4">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                We'll send a password reset link to your email address.
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block btn-lg">
+                                <i class="fas fa-paper-plane"></i> Send Reset Link
+                            </button>
+                            <div class="text-center mt-3">
+                                <a href="#login" class="text-primary">Back to Login</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        const modal = document.getElementById('forgotPasswordModal');
+        const form = document.getElementById('forgotPasswordForm');
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('forgotPasswordEmail').value;
+            
+            if (!Utils.validateEmail(email)) {
+                Utils.showNotification('Please enter a valid email address', 'error');
+                return;
+            }
+            
+            await AuthManager.forgotPassword(email);
+            modal.remove();
+        });
+        
+        modal.querySelector('.modal-close').addEventListener('click', () => {
+            modal.remove();
+        });
+        
+        modal.querySelector('.modal-backdrop').addEventListener('click', () => {
+            modal.remove();
+        });
     }
     
     static setupForms() {
@@ -7063,14 +6959,19 @@ class EventHandlers {
 
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', () => {
-    Debug.info('App', 'Initializing Raw Wealthy v38.0 - Production Ready...');
-    console.log('🚀 Raw Wealthy Premium v38.0 - Production Ready');
+    Debug.info('App', 'Initializing Raw Wealthy v50.3 - Production Ready...');
+    console.log('🚀 Raw Wealthy Premium v50.3 - Production Ready');
     console.log('📊 Debug Mode:', CONFIG.DEBUG_MODE);
     console.log('🔐 Auth Status:', authToken ? 'Logged In' : 'Logged Out');
     console.log('👤 Current User:', currentUser?.email || 'None');
     console.log('🌐 API Base URL:', CONFIG.API_BASE_URL);
     console.log('🏦 Platform Bank:', CONFIG.PLATFORM_BANK_DETAILS.account_number);
+    console.log('🔒 Session Timeout:', CONFIG.SESSION_TIMEOUT / 60000, 'minutes');
+    console.log('🔄 Duplicate Prevention:', CONFIG.DUPLICATE_PREVENTION_DELAY / 1000, 'seconds');
     console.log('============================================');
+    
+    // Initialize session manager
+    SessionManager.init();
     
     Router.init();
     EventHandlers.init();
@@ -7096,7 +6997,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Debug.warn('Network', 'Connection lost');
     });
     
-    Debug.info('App', '✅ Raw Wealthy v38.0 Initialization Complete');
+    Debug.info('App', '✅ Raw Wealthy v50.3 Initialization Complete');
 });
 
 // ===== GLOBAL ERROR HANDLING =====
@@ -7122,7 +7023,6 @@ window.RawWealthy = {
     InvestmentManager,
     DepositManager,
     WithdrawalManager,
-    TransactionManager,
     KYCManager,
     SupportManager,
     ReferralManager,
@@ -7131,6 +7031,8 @@ window.RawWealthy = {
     
     login: AuthManager.login,
     logout: AuthManager.logout,
+    forgotPassword: AuthManager.forgotPassword,
+    resetPassword: AuthManager.resetPassword,
     navigateTo: Router.navigateTo,
     showNotification: Utils.showNotification,
     formatCurrency: Utils.formatCurrency,
@@ -7149,7 +7051,6 @@ window.RawWealthy = {
     refreshTransactions: () => TransactionManager.loadTransactions(),
     refreshKYC: () => KYCManager.loadKYCStatus(),
     refreshReferrals: () => ReferralManager.loadReferralData()
-};
-</script>
+};</script>
 </body>
 </html>
