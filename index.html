@@ -15,8 +15,8 @@
     <!-- CSS Variables & Base Styles -->
     <style>
         /* ==============================================
-         * DESIGN SYSTEM v4.0
-         * Modern, Mobile-First, Professional Design
+         * DESIGN SYSTEM v5.0
+         * Ultra-Modern, Mobile-First, Professional Design
          * ============================================== */
         
         :root {
@@ -139,6 +139,7 @@
         html {
             scroll-behavior: smooth;
             font-size: 16px;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -207,7 +208,7 @@
         }
 
         .display-1 {
-            font-size: 3.5rem;
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
             font-weight: 800;
             background: var(--gradient-primary);
             -webkit-background-clip: text;
@@ -217,7 +218,7 @@
         }
 
         .display-2 {
-            font-size: 2.5rem;
+            font-size: clamp(2rem, 4vw, 2.5rem);
             font-weight: 700;
             margin-bottom: var(--space-md);
         }
@@ -242,7 +243,7 @@
         }
 
         .section {
-            padding: var(--space-4xl) 0;
+            padding: clamp(var(--space-2xl), 8vw, var(--space-4xl)) 0;
         }
 
         .section-sm {
@@ -358,6 +359,11 @@
             50% { transform: translateY(-10px); }
         }
 
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
         .animate-fade-in {
             animation: fadeIn 0.6s ease-out forwards;
         }
@@ -380,6 +386,10 @@
 
         .animate-bounce {
             animation: bounce 2s ease-in-out infinite;
+        }
+
+        .animate-slide-up {
+            animation: slideUp 0.5s ease-out forwards;
         }
 
         /* Modern Navigation */
@@ -415,6 +425,7 @@
             align-items: center;
             gap: var(--space-sm);
             text-decoration: none;
+            z-index: var(--z-fixed) + 1;
         }
 
         .logo-icon {
@@ -474,7 +485,7 @@
             display: flex;
             align-items: center;
             gap: var(--space-xs);
-            padding: var(--space-sm) var(--space-lg);
+            padding: var(--space-sm) var(--space-md);
             border-radius: var(--radius-full);
             font-weight: 500;
             color: var(--text-secondary);
@@ -482,6 +493,7 @@
             transition: var(--transition-fast);
             position: relative;
             overflow: hidden;
+            font-size: 0.875rem;
         }
 
         .nav-link::before {
@@ -544,6 +556,7 @@
             font-size: 1.25rem;
             cursor: pointer;
             transition: var(--transition-fast);
+            z-index: var(--z-fixed) + 1;
         }
 
         .mobile-menu-btn:hover {
@@ -595,6 +608,51 @@
         .user-tier {
             font-size: 0.75rem;
             color: var(--text-secondary);
+        }
+
+        /* New Navigation Elements */
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--dark-2);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-sm);
+            min-width: 200px;
+            box-shadow: var(--shadow-xl);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: var(--z-dropdown);
+        }
+
+        .nav-dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(5px);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+
+        .dropdown-item:hover {
+            background: var(--dark-3);
+            color: white;
+            transform: translateX(5px);
         }
 
         /* Hero Cards */
@@ -1020,6 +1078,7 @@
             overflow: hidden;
             letter-spacing: 0.5px;
             text-transform: uppercase;
+            touch-action: manipulation;
         }
 
         .btn::before {
@@ -1131,6 +1190,7 @@
             transition: var(--transition-fast);
             z-index: 1;
             border: 1px solid var(--glass-border);
+            cursor: pointer;
         }
 
         .modal-close:hover {
@@ -1195,7 +1255,268 @@
             font-size: 0.875rem;
         }
 
+        /* New Pages Styles */
+        .page-content {
+            min-height: calc(100vh - 80px);
+            padding-top: 80px;
+        }
+
+        /* Investments Page */
+        .investments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--space-xl);
+        }
+
+        .investment-card {
+            background: var(--dark-2);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            border: 1px solid var(--glass-border);
+            transition: var(--transition-normal);
+        }
+
+        .investment-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .investment-status {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-active {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(46, 204, 113, 0.2);
+        }
+
+        .status-pending {
+            background: rgba(241, 196, 15, 0.1);
+            color: var(--warning);
+            border: 1px solid rgba(241, 196, 15, 0.2);
+        }
+
+        .status-completed {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--info);
+            border: 1px solid rgba(52, 152, 219, 0.2);
+        }
+
+        /* Transactions Page */
+        .transaction-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-lg);
+            background: var(--dark-2);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-sm);
+            border: 1px solid var(--glass-border);
+            transition: var(--transition-fast);
+        }
+
+        .transaction-item:hover {
+            background: var(--dark-3);
+            transform: translateX(5px);
+        }
+
+        .transaction-amount.positive {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .transaction-amount.negative {
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        /* Support Page */
+        .support-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--space-xl);
+        }
+
+        .support-card {
+            background: var(--dark-2);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            text-align: center;
+            border: 1px solid var(--glass-border);
+            transition: var(--transition-normal);
+        }
+
+        .support-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .support-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-full);
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin: 0 auto var(--space-lg);
+        }
+
+        /* FAQ Page */
+        .faq-item {
+            background: var(--dark-2);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-sm);
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: var(--space-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .faq-question:hover {
+            background: var(--dark-3);
+        }
+
+        .faq-answer {
+            padding: 0 var(--space-lg);
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: var(--space-lg);
+            max-height: 500px;
+        }
+
+        .faq-toggle {
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-toggle {
+            transform: rotate(45deg);
+        }
+
+        /* Withdrawal Page */
+        .withdrawal-form {
+            background: var(--dark-2);
+            border-radius: var(--radius-xl);
+            padding: var(--space-2xl);
+            border: 1px solid var(--glass-border);
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--space-md);
+            margin-bottom: var(--space-xl);
+        }
+
+        .payment-method {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-md);
+            background: var(--dark-3);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            border: 2px solid transparent;
+        }
+
+        .payment-method:hover {
+            background: var(--dark-4);
+        }
+
+        .payment-method.selected {
+            border-color: var(--primary);
+            background: rgba(108, 99, 255, 0.1);
+        }
+
+        /* Mobile-First Enhancements */
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--dark-2);
+            border-top: 1px solid var(--glass-border);
+            padding: var(--space-sm) var(--space-md);
+            z-index: var(--z-fixed);
+            backdrop-filter: blur(20px);
+        }
+
+        .mobile-nav-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: var(--space-sm);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--text-secondary);
+            transition: var(--transition-fast);
+            font-size: 0.75rem;
+        }
+
+        .mobile-nav-item.active {
+            color: var(--primary);
+            background: var(--dark-3);
+        }
+
+        .mobile-nav-item i {
+            font-size: 1.25rem;
+        }
+
+        /* Touch-friendly enhancements */
+        .touch-target {
+            min-height: 44px;
+            min-width: 44px;
+        }
+
+        /* Swipe gestures area */
+        .swipe-indicator {
+            width: 40px;
+            height: 4px;
+            background: var(--text-muted);
+            border-radius: var(--radius-full);
+            margin: var(--space-md) auto;
+            opacity: 0.5;
+        }
+
         /* Responsive Design */
+        @media (max-width: 1200px) {
+            .container {
+                max-width: 1140px;
+            }
+        }
+
         @media (max-width: 1024px) {
             .display-1 {
                 font-size: 2.75rem;
@@ -1229,6 +1550,7 @@
                 z-index: var(--z-modal);
                 backdrop-filter: blur(20px);
                 border-top: 1px solid var(--glass-border);
+                overflow-y: auto;
             }
             
             .nav-menu.active {
@@ -1251,6 +1573,7 @@
             
             .stats-grid {
                 grid-template-columns: 1fr;
+                gap: var(--space-lg);
             }
             
             .rewards-grid {
@@ -1260,32 +1583,117 @@
             .hero-card {
                 padding: var(--space-xl);
             }
+            
+            .mobile-bottom-nav {
+                display: block;
+            }
+            
+            .page-content {
+                padding-bottom: 80px;
+            }
+            
+            /* Mobile-specific adjustments */
+            .btn {
+                padding: var(--space-md) var(--space-lg);
+                min-height: 44px;
+            }
+            
+            .form-control {
+                min-height: 44px;
+            }
+            
+            /* Hide desktop-only elements */
+            .d-desktop {
+                display: none !important;
+            }
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 576px) {
             .container {
                 padding: 0 var(--space-md);
             }
             
             .display-1 {
                 font-size: 2rem;
+                margin-bottom: var(--space-md);
             }
             
-            .btn {
-                padding: var(--space-sm) var(--space-lg);
-                font-size: 0.75rem;
+            .display-2 {
+                font-size: 1.5rem;
+            }
+            
+            .hero-card {
+                padding: var(--space-lg);
+                border-radius: var(--radius-xl);
+            }
+            
+            .stat-card {
+                padding: var(--space-lg);
+            }
+            
+            .stat-value {
+                font-size: 2rem;
+            }
+            
+            .rewards-grid {
+                gap: var(--space-lg);
+            }
+            
+            .reward-content {
+                padding: var(--space-lg);
             }
             
             .modal {
                 margin: var(--space-sm);
                 border-radius: var(--radius-xl);
             }
+            
+            /* Stack grid layouts on mobile */
+            .d-grid[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important;
+            }
+            
+            /* Adjust spacing for mobile */
+            .gap-6, .gap-5 {
+                gap: var(--space-xl);
+            }
+        }
+
+        @media (max-width: 375px) {
+            .container {
+                padding: 0 var(--space-sm);
+            }
+            
+            .hero-card {
+                padding: var(--space-md);
+            }
+            
+            .stat-value {
+                font-size: 1.75rem;
+            }
+            
+            .btn {
+                padding: var(--space-sm) var(--space-md);
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Landscape mode adjustments */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .nav-menu {
+                height: calc(100vh - 70px);
+                overflow-y: auto;
+            }
+            
+            .hero-card {
+                padding: var(--space-lg);
+            }
         }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
         }
 
         ::-webkit-scrollbar-track {
@@ -1392,11 +1800,170 @@
             align-items: center;
             justify-content: center;
             transition: var(--transition-fast);
+            cursor: pointer;
         }
 
         .notification-close:hover {
             background: var(--dark-3);
             color: var(--text-primary);
+        }
+
+        /* Badge Styles */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-primary {
+            background: rgba(108, 99, 255, 0.1);
+            color: var(--primary);
+            border: 1px solid rgba(108, 99, 255, 0.2);
+        }
+
+        .badge-success {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(46, 204, 113, 0.2);
+        }
+
+        .badge-warning {
+            background: rgba(241, 196, 15, 0.1);
+            color: var(--warning);
+            border: 1px solid rgba(241, 196, 15, 0.2);
+        }
+
+        .badge-danger {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(231, 76, 60, 0.2);
+        }
+
+        .badge-info {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--info);
+            border: 1px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .badge-secondary {
+            background: rgba(148, 163, 184, 0.1);
+            color: var(--text-secondary);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+        }
+
+        /* Text Utilities */
+        .text-lg {
+            font-size: 1.125rem;
+            line-height: 1.6;
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+        }
+
+        .text-xs {
+            font-size: 0.75rem;
+        }
+
+        .font-semibold {
+            font-weight: 600;
+        }
+
+        .font-bold {
+            font-weight: 700;
+        }
+
+        .font-extrabold {
+            font-weight: 800;
+        }
+
+        /* Margin Utilities */
+        .mb-2 { margin-bottom: var(--space-sm); }
+        .mb-3 { margin-bottom: var(--space-md); }
+        .mb-4 { margin-bottom: var(--space-lg); }
+        .mb-5 { margin-bottom: var(--space-xl); }
+        .mb-6 { margin-bottom: var(--space-2xl); }
+
+        .mt-2 { margin-top: var(--space-sm); }
+        .mt-3 { margin-top: var(--space-md); }
+        .mt-4 { margin-top: var(--space-lg); }
+        .mt-5 { margin-top: var(--space-xl); }
+        .mt-6 { margin-top: var(--space-2xl); }
+
+        .ml-2 { margin-left: var(--space-sm); }
+        .mr-2 { margin-right: var(--space-sm); }
+
+        /* Padding Utilities */
+        .p-3 { padding: var(--space-md); }
+        .p-4 { padding: var(--space-lg); }
+        .p-5 { padding: var(--space-xl); }
+        .p-6 { padding: var(--space-2xl); }
+
+        /* Card Utilities */
+        .card-header {
+            padding-bottom: var(--space-lg);
+            border-bottom: 1px solid var(--glass-border);
+            margin-bottom: var(--space-lg);
+        }
+
+        .card-body {
+            padding: var(--space-lg) 0;
+        }
+
+        /* Section Header */
+        .section-header {
+            margin-bottom: var(--space-3xl);
+            text-align: center;
+        }
+
+        /* Responsive Images */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Focus States for Accessibility */
+        *:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        *:focus:not(.focus-visible) {
+            outline: none;
+        }
+
+        /* Print Styles */
+        @media print {
+            .navbar,
+            .footer,
+            .mobile-bottom-nav,
+            .modal-overlay,
+            .notification-container,
+            #themeToggle {
+                display: none !important;
+            }
+            
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            
+            .page {
+                display: block !important;
+                opacity: 1 !important;
+                transform: none !important;
+            }
+            
+            .hero-card {
+                box-shadow: none !important;
+                border: 1px solid #ddd !important;
+            }
         }
     </style>
 </head>
@@ -1409,7 +1976,7 @@
     </div>
 
     <!-- Theme Toggle -->
-    <button id="themeToggle" class="position-fixed btn btn-primary animate-bounce" style="bottom: 30px; right: 30px; z-index: var(--z-fixed); width: 56px; height: 56px; border-radius: var(--radius-full); box-shadow: var(--shadow-glow);">
+    <button id="themeToggle" class="position-fixed btn btn-primary animate-bounce" style="bottom: 30px; right: 30px; z-index: var(--z-fixed); width: 56px; height: 56px; border-radius: var(--radius-full); box-shadow: var(--shadow-glow);" aria-label="Toggle theme">
         <i class="fas fa-moon"></i>
     </button>
 
@@ -1426,7 +1993,7 @@
                 </div>
             </a>
             
-            <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
                 <i class="fas fa-bars"></i>
             </button>
             
@@ -1435,6 +2002,13 @@
                     <a href="#dashboard" class="nav-link active" data-page="dashboard">
                         <i class="fas fa-home"></i>
                         <span>Dashboard</span>
+                        <div class="nav-indicator"></div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#investments" class="nav-link" data-page="investments">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Investments</span>
                         <div class="nav-indicator"></div>
                     </a>
                 </li>
@@ -1453,22 +2027,36 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#profile" class="nav-link" data-page="profile">
-                        <i class="fas fa-user"></i>
-                        <span>Profile</span>
+                    <a href="#transactions" class="nav-link" data-page="transactions">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>Transactions</span>
                         <div class="nav-indicator"></div>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="#logout" class="nav-link" id="logoutBtn">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Logout</span>
+                <li class="nav-item nav-dropdown">
+                    <a href="#more" class="nav-link">
+                        <i class="fas fa-ellipsis-h"></i>
+                        <span>More</span>
                         <div class="nav-indicator"></div>
                     </a>
+                    <div class="dropdown-menu">
+                        <a href="#withdrawals" class="dropdown-item" data-page="withdrawals">
+                            <i class="fas fa-wallet"></i> Withdrawals
+                        </a>
+                        <a href="#support" class="dropdown-item" data-page="support">
+                            <i class="fas fa-headset"></i> Support
+                        </a>
+                        <a href="#faq" class="dropdown-item" data-page="faq">
+                            <i class="fas fa-question-circle"></i> FAQ
+                        </a>
+                        <a href="#profile" class="dropdown-item" data-page="profile">
+                            <i class="fas fa-user"></i> Profile
+                        </a>
+                    </div>
                 </li>
             </ul>
             
-            <div class="nav-user d-none" id="navUser">
+            <div class="nav-user d-desktop" id="navUser">
                 <div class="user-avatar" id="userAvatar">U</div>
                 <div class="user-info">
                     <div class="user-name" id="userName">User</div>
@@ -1478,13 +2066,69 @@
         </div>
     </nav>
 
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav" id="mobileBottomNav">
+        <div class="mobile-nav-items">
+            <a href="#dashboard" class="mobile-nav-item active" data-page="dashboard">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="#investments" class="mobile-nav-item" data-page="investments">
+                <i class="fas fa-chart-line"></i>
+                <span>Invest</span>
+            </a>
+            <a href="#rewards" class="mobile-nav-item" data-page="rewards">
+                <i class="fas fa-gift"></i>
+                <span>Rewards</span>
+            </a>
+            <a href="#leaderboard" class="mobile-nav-item" data-page="leaderboard">
+                <i class="fas fa-trophy"></i>
+                <span>Top</span>
+            </a>
+            <a href="#more" class="mobile-nav-item" id="mobileMoreBtn">
+                <i class="fas fa-ellipsis-h"></i>
+                <span>More</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Mobile More Menu -->
+    <div class="modal-overlay" id="mobileMoreMenu">
+        <div class="modal">
+            <button class="modal-close">&times;</button>
+            <div class="p-6">
+                <h2 class="display-2 mb-6" style="font-size: 1.5rem;">Menu</h2>
+                <div class="d-flex flex-column gap-3">
+                    <a href="#transactions" class="dropdown-item" data-page="transactions">
+                        <i class="fas fa-exchange-alt"></i> Transactions
+                    </a>
+                    <a href="#withdrawals" class="dropdown-item" data-page="withdrawals">
+                        <i class="fas fa-wallet"></i> Withdrawals
+                    </a>
+                    <a href="#support" class="dropdown-item" data-page="support">
+                        <i class="fas fa-headset"></i> Support
+                    </a>
+                    <a href="#faq" class="dropdown-item" data-page="faq">
+                        <i class="fas fa-question-circle"></i> FAQ
+                    </a>
+                    <a href="#profile" class="dropdown-item" data-page="profile">
+                        <i class="fas fa-user"></i> Profile
+                    </a>
+                    <a href="#logout" class="dropdown-item text-danger" id="mobileLogoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Main Content -->
-    <main style="margin-top: 80px; min-height: calc(100vh - 80px);">
+    <main class="page-content">
         <!-- Login Page -->
         <div class="page active" id="loginPage">
             <section class="section">
                 <div class="container container-narrow">
-                    <div class="d-flex justify-center align-center" style="min-height: 80vh;">
+                    <div class="d-flex justify-center align-center" style="min-height: calc(100vh - 160px);">
                         <div class="hero-card" style="max-width: 480px; width: 100%;">
                             <div class="text-center mb-5">
                                 <div class="logo-icon" style="width: 80px; height: 80px; margin: 0 auto var(--space-lg);">
@@ -1505,7 +2149,7 @@
                                     <input type="password" class="form-control" id="loginPassword" placeholder="Enter your password" required>
                                 </div>
                                 
-                                <button type="submit" class="btn btn-primary btn-block" style="margin-top: var(--space-xl);">
+                                <button type="submit" class="btn btn-primary w-100" style="margin-top: var(--space-xl);">
                                     <i class="fas fa-sign-in-alt"></i> Sign In
                                 </button>
                                 
@@ -1523,7 +2167,7 @@
         <div class="page" id="registerPage">
             <section class="section">
                 <div class="container container-narrow">
-                    <div class="d-flex justify-center align-center" style="min-height: 80vh;">
+                    <div class="d-flex justify-center align-center" style="min-height: calc(100vh - 160px);">
                         <div class="hero-card" style="max-width: 520px; width: 100%;">
                             <div class="text-center mb-5">
                                 <div class="logo-icon" style="width: 80px; height: 80px; margin: 0 auto var(--space-lg);">
@@ -1559,7 +2203,7 @@
                                     <input type="text" class="form-control" id="registerReferralCode" placeholder="Enter referral code for bonus">
                                 </div>
                                 
-                                <button type="submit" class="btn btn-primary btn-block" style="margin-top: var(--space-xl);">
+                                <button type="submit" class="btn btn-primary w-100" style="margin-top: var(--space-xl);">
                                     <i class="fas fa-user-plus"></i> Create Account
                                 </button>
                                 
@@ -1731,6 +2375,60 @@
             </section>
         </div>
 
+        <!-- Investments Page -->
+        <div class="page" id="investmentsPage">
+            <section class="section">
+                <div class="container">
+                    <div class="section-header mb-6">
+                        <h1 class="display-1">Investment Portfolio</h1>
+                        <p class="text-muted">Manage and track your investments</p>
+                    </div>
+
+                    <div class="hero-card mb-6">
+                        <div class="d-flex justify-between align-center mb-6">
+                            <div>
+                                <h2 class="display-2" style="font-size: 1.5rem;">Active Investments</h2>
+                                <p class="text-muted">Total value: <span class="font-semibold text-success" id="totalInvestmentValue">₦0.00</span></p>
+                            </div>
+                            <button class="btn btn-primary" id="newInvestmentBtn">
+                                <i class="fas fa-plus"></i> New Investment
+                            </button>
+                        </div>
+
+                        <div class="investments-grid" id="investmentsContainer">
+                            <!-- Investments will be loaded dynamically -->
+                        </div>
+                    </div>
+
+                    <div class="hero-card">
+                        <div class="card-header mb-4">
+                            <h2 class="display-2" style="font-size: 1.5rem;">Investment Statistics</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-xl);">
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold text-primary" id="activeInvestments">0</div>
+                                    <div class="text-sm text-muted">Active</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold text-success" id="totalReturns">₦0.00</div>
+                                    <div class="text-sm text-muted">Total Returns</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold text-warning" id="pendingReturns">₦0.00</div>
+                                    <div class="text-sm text-muted">Pending Returns</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold text-info" id="avgROI">0%</div>
+                                    <div class="text-sm text-muted">Average ROI</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
         <!-- Rewards Page -->
         <div class="page" id="rewardsPage">
             <section class="section">
@@ -1747,6 +2445,7 @@
                             <button class="btn btn-sm btn-outline" data-filter="available">Available</button>
                             <button class="btn btn-sm btn-outline" data-filter="achieved">Achieved</button>
                             <button class="btn btn-sm btn-outline" data-filter="locked">Locked</button>
+                            <button class="btn btn-sm btn-outline" data-filter="claimed">Claimed</button>
                         </div>
                     </div>
 
@@ -1810,6 +2509,313 @@
                         <div class="card-body" id="yourPosition">
                             <!-- Your position will be loaded dynamically -->
                         </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Transactions Page -->
+        <div class="page" id="transactionsPage">
+            <section class="section">
+                <div class="container">
+                    <div class="section-header mb-6">
+                        <h1 class="display-1">Transaction History</h1>
+                        <p class="text-muted">Track all your financial activities</p>
+                    </div>
+
+                    <div class="hero-card mb-6">
+                        <div class="card-header d-flex justify-between align-center mb-4">
+                            <div>
+                                <h2 class="display-2" style="font-size: 1.5rem;">Recent Transactions</h2>
+                                <p class="text-muted">Showing last 30 days</p>
+                            </div>
+                            <div class="d-flex gap-3">
+                                <select class="form-control" style="width: auto; min-width: 120px;" id="transactionTypeFilter">
+                                    <option value="all">All Types</option>
+                                    <option value="deposit">Deposits</option>
+                                    <option value="withdrawal">Withdrawals</option>
+                                    <option value="referral">Referrals</option>
+                                    <option value="investment">Investments</option>
+                                </select>
+                                <button class="btn btn-primary" id="exportTransactions">
+                                    <i class="fas fa-download"></i> Export
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <div id="transactionsList">
+                                <!-- Transactions will be loaded dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-xl);">
+                        <div class="hero-card">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-success" id="totalDeposits">₦0.00</div>
+                                <div class="text-sm text-muted">Total Deposits</div>
+                            </div>
+                        </div>
+                        <div class="hero-card">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-danger" id="totalWithdrawals">₦0.00</div>
+                                <div class="text-sm text-muted">Total Withdrawals</div>
+                            </div>
+                        </div>
+                        <div class="hero-card">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-primary" id="totalReferralBonus">₦0.00</div>
+                                <div class="text-sm text-muted">Referral Bonuses</div>
+                            </div>
+                        </div>
+                        <div class="hero-card">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-warning" id="netBalance">₦0.00</div>
+                                <div class="text-sm text-muted">Net Balance</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Withdrawals Page -->
+        <div class="page" id="withdrawalsPage">
+            <section class="section">
+                <div class="container container-narrow">
+                    <div class="section-header mb-6">
+                        <h1 class="display-1">Withdraw Funds</h1>
+                        <p class="text-muted">Withdraw your earnings to your preferred payment method</p>
+                    </div>
+
+                    <div class="withdrawal-form">
+                        <div class="mb-6">
+                            <h2 class="display-2 mb-4" style="font-size: 1.5rem;">Available Balance</h2>
+                            <div class="text-center">
+                                <div class="text-5xl font-bold text-success mb-2" id="withdrawalBalance">₦0.00</div>
+                                <p class="text-muted">Minimum withdrawal: ₦1,000</p>
+                            </div>
+                        </div>
+
+                        <form id="withdrawalForm">
+                            <div class="form-group">
+                                <label class="form-label">Amount to Withdraw</label>
+                                <input type="number" class="form-control" id="withdrawalAmount" min="1000" step="100" placeholder="Enter amount" required>
+                                <div class="text-sm text-muted mt-2">Available: <span id="availableWithdrawalBalance">₦0.00</span></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Payment Method</label>
+                                <div class="payment-methods" id="paymentMethods">
+                                    <div class="payment-method" data-method="bank">
+                                        <i class="fas fa-university"></i>
+                                        <span>Bank Transfer</span>
+                                    </div>
+                                    <div class="payment-method" data-method="paypal">
+                                        <i class="fab fa-paypal"></i>
+                                        <span>PayPal</span>
+                                    </div>
+                                    <div class="payment-method" data-method="airtime">
+                                        <i class="fas fa-mobile-alt"></i>
+                                        <span>Airtime</span>
+                                    </div>
+                                    <div class="payment-method" data-method="crypto">
+                                        <i class="fab fa-bitcoin"></i>
+                                        <span>Crypto</span>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="selectedPaymentMethod" required>
+                            </div>
+
+                            <div class="form-group" id="bankDetailsSection" style="display: none;">
+                                <label class="form-label">Bank Account Details</label>
+                                <input type="text" class="form-control mb-3" id="bankName" placeholder="Bank Name">
+                                <input type="text" class="form-control mb-3" id="accountNumber" placeholder="Account Number">
+                                <input type="text" class="form-control" id="accountName" placeholder="Account Name">
+                            </div>
+
+                            <button type="submit" class="btn btn-success w-100" style="margin-top: var(--space-xl);">
+                                <i class="fas fa-paper-plane"></i> Request Withdrawal
+                            </button>
+                        </form>
+
+                        <div class="mt-6">
+                            <h3 class="font-semibold mb-3">Withdrawal History</h3>
+                            <div id="withdrawalHistory">
+                                <!-- Withdrawal history will be loaded dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Support Page -->
+        <div class="page" id="supportPage">
+            <section class="section">
+                <div class="container">
+                    <div class="section-header mb-6">
+                        <h1 class="display-1">Support Center</h1>
+                        <p class="text-muted">We're here to help you succeed</p>
+                    </div>
+
+                    <div class="support-cards mb-6">
+                        <div class="support-card">
+                            <div class="support-icon">
+                                <i class="fas fa-headset"></i>
+                            </div>
+                            <h3 class="font-semibold mb-3">Live Chat</h3>
+                            <p class="text-muted mb-4">Chat with our support team in real-time</p>
+                            <button class="btn btn-primary" id="startChatBtn">
+                                Start Chat
+                            </button>
+                        </div>
+
+                        <div class="support-card">
+                            <div class="support-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <h3 class="font-semibold mb-3">Email Support</h3>
+                            <p class="text-muted mb-4">Send us an email and we'll respond within 24 hours</p>
+                            <a href="mailto:support@rawwealthy.com" class="btn btn-outline">
+                                Send Email
+                            </a>
+                        </div>
+
+                        <div class="support-card">
+                            <div class="support-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <h3 class="font-semibold mb-3">Phone Support</h3>
+                            <p class="text-muted mb-4">Call us directly for urgent assistance</p>
+                            <a href="tel:+2349161806424" class="btn btn-outline">
+                                Call Now
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="hero-card">
+                        <div class="card-header mb-4">
+                            <h2 class="display-2" style="font-size: 1.5rem;">Frequently Asked Questions</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    <span>How do I start earning with referrals?</span>
+                                    <i class="fas fa-plus faq-toggle"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Simply share your unique referral link with friends and family. When they sign up using your link and make their first investment, you earn a commission.</p>
+                                </div>
+                            </div>
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    <span>When can I withdraw my earnings?</span>
+                                    <i class="fas fa-plus faq-toggle"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>You can withdraw your earnings anytime your balance is above ₦1,000. Withdrawals are processed within 24-48 hours.</p>
+                                </div>
+                            </div>
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    <span>How are rewards calculated?</span>
+                                    <i class="fas fa-plus faq-toggle"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Rewards are based on the number of successful referrals. Each reward tier requires a specific number of referrals to unlock.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- FAQ Page -->
+        <div class="page" id="faqPage">
+            <section class="section">
+                <div class="container container-narrow">
+                    <div class="section-header mb-6">
+                        <h1 class="display-1">Frequently Asked Questions</h1>
+                        <p class="text-muted">Find answers to common questions</p>
+                    </div>
+
+                    <div class="hero-card">
+                        <div class="faq-item active">
+                            <div class="faq-question">
+                                <span>How does the referral system work?</span>
+                                <i class="fas fa-plus faq-toggle"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Our referral system allows you to earn commissions by inviting others to join RawWealthy. You get a unique referral link to share, and when someone signs up using your link and makes an investment, you earn a percentage of their investment as commission.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <span>What are the withdrawal fees?</span>
+                                <i class="fas fa-plus faq-toggle"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Withdrawal fees vary by payment method:
+                                <ul>
+                                    <li>Bank Transfer: ₦100 flat fee</li>
+                                    <li>PayPal: 2.5% of withdrawal amount</li>
+                                    <li>Airtime: No fees</li>
+                                    <li>Crypto: Network fees apply</li>
+                                </ul>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <span>How long does it take to receive rewards?</span>
+                                <i class="fas fa-plus faq-toggle"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Digital rewards (airtime, wallet credits) are delivered instantly. Physical rewards require 7-14 business days for processing and delivery after claim submission.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <span>Can I refer someone who already has an account?</span>
+                                <i class="fas fa-plus faq-toggle"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>No, referrals only count for new users who sign up using your referral link and make their first investment. Existing users cannot be referred.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <span>What happens if my referral refunds their investment?</span>
+                                <i class="fas fa-plus faq-toggle"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>If a referral requests and receives a refund, any commissions earned from that referral will be deducted from your account.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <span>How do I track my referral progress?</span>
+                                <i class="fas fa-plus faq-toggle"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>You can track your referral progress in real-time on your dashboard. The dashboard shows total referrals, earnings, and progress towards your next reward.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-6">
+                        <p class="text-muted">Still have questions?</p>
+                        <a href="#support" data-page="support" class="btn btn-primary">
+                            <i class="fas fa-headset"></i> Contact Support
+                        </a>
                     </div>
                 </div>
             </section>
@@ -1887,8 +2893,42 @@
 
                         <!-- Main Content -->
                         <div>
-                            <!-- Referral History -->
+                            <!-- Account Settings -->
                             <div class="hero-card mb-6">
+                                <div class="card-header mb-4">
+                                    <h3 class="display-2" style="font-size: 1.25rem; margin: 0;">Account Settings</h3>
+                                </div>
+                                <div class="card-body">
+                                    <form id="profileForm">
+                                        <div class="form-group">
+                                            <label class="form-label">Full Name</label>
+                                            <input type="text" class="form-control" id="profileNameInput" required>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">Email Address</label>
+                                            <input type="email" class="form-control" id="profileEmailInput" required>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">Phone Number</label>
+                                            <input type="tel" class="form-control" id="profilePhoneInput" required>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">Change Password</label>
+                                            <input type="password" class="form-control" id="profilePassword" placeholder="Leave blank to keep current">
+                                        </div>
+                                        
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save"></i> Update Profile
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Referral History -->
+                            <div class="hero-card">
                                 <div class="card-header d-flex justify-between align-center mb-4">
                                     <h3 class="display-2" style="font-size: 1.25rem; margin: 0;">Recent Referrals</h3>
                                     <button class="btn btn-primary" id="refreshReferrals">
@@ -1898,18 +2938,6 @@
                                 <div class="card-body">
                                     <div id="referralsList">
                                         <!-- Referrals will be loaded dynamically -->
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Achievement Progress -->
-                            <div class="hero-card">
-                                <div class="card-header mb-4">
-                                    <h3 class="display-2" style="font-size: 1.25rem; margin: 0;">Achievement Progress</h3>
-                                </div>
-                                <div class="card-body">
-                                    <div id="achievementProgress">
-                                        <!-- Progress bars will be loaded dynamically -->
                                     </div>
                                 </div>
                             </div>
@@ -1943,18 +2971,19 @@
                     <h4 class="font-semibold mb-4 text-uppercase">Platform</h4>
                     <ul class="footer-links">
                         <li><a href="#dashboard" data-page="dashboard"><i class="fas fa-chevron-right"></i> Dashboard</a></li>
+                        <li><a href="#investments" data-page="investments"><i class="fas fa-chevron-right"></i> Investments</a></li>
                         <li><a href="#rewards" data-page="rewards"><i class="fas fa-chevron-right"></i> Rewards</a></li>
                         <li><a href="#leaderboard" data-page="leaderboard"><i class="fas fa-chevron-right"></i> Leaderboard</a></li>
-                        <li><a href="#profile" data-page="profile"><i class="fas fa-chevron-right"></i> Profile</a></li>
                     </ul>
                 </div>
                 
                 <div>
                     <h4 class="font-semibold mb-4 text-uppercase">Support</h4>
                     <ul class="footer-links">
-                        <li><a href="#" id="contactSupport"><i class="fas fa-chevron-right"></i> Contact Support</a></li>
+                        <li><a href="#support" data-page="support"><i class="fas fa-chevron-right"></i> Contact Support</a></li>
                         <li><a href="#" id="termsConditions"><i class="fas fa-chevron-right"></i> Terms & Conditions</a></li>
                         <li><a href="#" id="privacyPolicy"><i class="fas fa-chevron-right"></i> Privacy Policy</a></li>
+                        <li><a href="#faq" data-page="faq"><i class="fas fa-chevron-right"></i> FAQ</a></li>
                     </ul>
                 </div>
                 
@@ -2023,7 +3052,7 @@
                                 <textarea class="form-control" id="claimAddress" rows="3" required></textarea>
                             </div>
                             
-                            <button type="submit" class="btn btn-success btn-block" style="margin-top: var(--space-lg);">
+                            <button type="submit" class="btn btn-success w-100" style="margin-top: var(--space-lg);">
                                 <i class="fas fa-paper-plane"></i> Submit Claim Request
                             </button>
                         </div>
@@ -2072,14 +3101,66 @@
         </div>
     </div>
 
+    <!-- New Investment Modal -->
+    <div class="modal-overlay" id="newInvestmentModal">
+        <div class="modal">
+            <button class="modal-close">&times;</button>
+            <div class="p-6">
+                <div class="text-center mb-6">
+                    <div class="stat-icon mb-4" style="background: var(--gradient-primary); width: 80px; height: 80px; margin: 0 auto; font-size: 2rem;">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h2 class="display-2" style="font-size: 2rem;">New Investment</h2>
+                    <p class="text-muted">Start growing your wealth today</p>
+                </div>
+                
+                <form id="newInvestmentForm">
+                    <div class="form-group">
+                        <label class="form-label">Investment Amount</label>
+                        <div class="d-flex gap-2">
+                            <input type="number" class="form-control" id="investmentAmount" min="1000" step="100" placeholder="Enter amount" required>
+                            <select class="form-control" style="width: auto;" id="investmentCurrency">
+                                <option value="NGN">₦</option>
+                                <option value="USD">$</option>
+                            </select>
+                        </div>
+                        <div class="text-sm text-muted mt-2">Minimum investment: ₦1,000</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Investment Plan</label>
+                        <select class="form-control" id="investmentPlan" required>
+                            <option value="basic">Basic Plan (10% ROI in 30 days)</option>
+                            <option value="premium">Premium Plan (25% ROI in 60 days)</option>
+                            <option value="elite">Elite Plan (50% ROI in 90 days)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Payment Method</label>
+                        <select class="form-control" id="investmentPaymentMethod" required>
+                            <option value="bank">Bank Transfer</option>
+                            <option value="card">Debit/Credit Card</option>
+                            <option value="wallet">Wallet Balance</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100" style="margin-top: var(--space-lg);">
+                        <i class="fas fa-check-circle"></i> Confirm Investment
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Notification Container -->
     <div class="notification-container" id="notificationContainer"></div>
 
     <!-- JavaScript -->
     <script>
         // ==============================================
-        // RAWWEALTHY ELITE v4.0
-        // World-Class Modern Design with Full Functionality
+        // RAWWEALTHY ELITE v5.0
+        // Ultra-Modern, Mobile-First, Complete Platform
         // ==============================================
 
         // Enhanced Configuration
@@ -2281,7 +3362,12 @@
                     tier: "God-Tier",
                     image: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 }
-            ]
+            ],
+            INVESTMENT_PLANS: {
+                basic: { name: "Basic Plan", roi: 10, duration: 30, minAmount: 1000 },
+                premium: { name: "Premium Plan", roi: 25, duration: 60, minAmount: 5000 },
+                elite: { name: "Elite Plan", roi: 50, duration: 90, minAmount: 20000 }
+            }
         };
 
         // Enhanced State Management
@@ -2296,6 +3382,11 @@
                 this.leaderboard = [];
                 this.theme = localStorage.getItem('theme') || 'dark';
                 this.lastDataUpdate = null;
+                this.investments = [];
+                this.transactions = [];
+                this.withdrawals = [];
+                this.userInvestments = [];
+                this.totalBalance = 0;
             }
 
             saveUser(user) {
@@ -2334,6 +3425,30 @@
             updateReferralStats(referrals, earnings) {
                 this.userReferrals = referrals;
                 this.referralEarnings = earnings;
+            }
+
+            updateInvestments(investments) {
+                this.userInvestments = investments;
+            }
+
+            updateTransactions(transactions) {
+                this.transactions = transactions;
+            }
+
+            updateWithdrawals(withdrawals) {
+                this.withdrawals = withdrawals;
+            }
+
+            getTotalInvestmentValue() {
+                return this.userInvestments.reduce((total, inv) => total + (inv.amount || 0), 0);
+            }
+
+            getActiveInvestments() {
+                return this.userInvestments.filter(inv => inv.status === 'active');
+            }
+
+            getTotalReturns() {
+                return this.userInvestments.reduce((total, inv) => total + (inv.returns || 0), 0);
             }
         }
 
@@ -2452,12 +3567,85 @@
                 }
             }
 
+            async getInvestments() {
+                try {
+                    const data = await this.request(CONFIG.ENDPOINTS.INVESTMENTS);
+                    if (data.success) {
+                        this.state.updateInvestments(data.data.investments || []);
+                        return data.data;
+                    }
+                    throw new Error('Failed to fetch investments');
+                } catch (error) {
+                    // Mock data for demo
+                    const mockInvestments = [
+                        {
+                            id: 1,
+                            name: "Basic Investment",
+                            amount: 50000,
+                            returns: 5000,
+                            status: "active",
+                            start_date: "2024-01-15",
+                            end_date: "2024-02-15",
+                            roi: 10
+                        },
+                        {
+                            id: 2,
+                            name: "Premium Investment",
+                            amount: 150000,
+                            returns: 37500,
+                            status: "active",
+                            start_date: "2024-01-01",
+                            end_date: "2024-03-01",
+                            roi: 25
+                        },
+                        {
+                            id: 3,
+                            name: "Elite Investment",
+                            amount: 500000,
+                            returns: 250000,
+                            status: "completed",
+                            start_date: "2023-10-01",
+                            end_date: "2023-12-30",
+                            roi: 50
+                        }
+                    ];
+                    this.state.updateInvestments(mockInvestments);
+                    return { investments: mockInvestments };
+                }
+            }
+
             async getTransactions() {
                 try {
                     const data = await this.request(CONFIG.ENDPOINTS.TRANSACTIONS);
-                    return data.success ? data.data : { transactions: [] };
+                    if (data.success) {
+                        this.state.updateTransactions(data.data.transactions || []);
+                        return data.data;
+                    }
+                    throw new Error('Failed to fetch transactions');
                 } catch (error) {
-                    return { transactions: [] };
+                    // Mock data for demo
+                    const mockTransactions = [
+                        { id: 1, type: 'deposit', amount: 50000, description: 'Bank Deposit', status: 'completed', date: '2024-01-15' },
+                        { id: 2, type: 'investment', amount: -20000, description: 'Basic Investment', status: 'completed', date: '2024-01-16' },
+                        { id: 3, type: 'referral', amount: 5000, description: 'Referral Bonus - John Doe', status: 'completed', date: '2024-01-17' },
+                        { id: 4, type: 'withdrawal', amount: -10000, description: 'Bank Withdrawal', status: 'pending', date: '2024-01-18' },
+                        { id: 5, type: 'investment_return', amount: 2200, description: 'Investment Returns', status: 'completed', date: '2024-01-19' }
+                    ];
+                    this.state.updateTransactions(mockTransactions);
+                    return { transactions: mockTransactions };
+                }
+            }
+
+            async getWithdrawals() {
+                try {
+                    const data = await this.request(CONFIG.ENDPOINTS.WITHDRAWALS);
+                    if (data.success) {
+                        this.state.updateWithdrawals(data.data.withdrawals || []);
+                        return data.data;
+                    }
+                    throw new Error('Failed to fetch withdrawals');
+                } catch (error) {
+                    return { withdrawals: [] };
                 }
             }
 
@@ -2476,7 +3664,7 @@
                                 tier: this.getTier(user.referral_count || 0),
                                 isCurrentUser: user._id === this.state.currentUser?._id
                             }))
-                            .sort((a, b) => b.referrals - a.referrals)
+                            .sort((a, b) => b.referrals - b.referrals)
                             .slice(0, 50);
                         
                         this.state.leaderboard = leaderboard;
@@ -2545,25 +3733,31 @@
             }
         }
 
-        // Enhanced UI Manager
+        // Ultra-Modern UI Manager with Mobile-First Design
         class UIManager {
             constructor(state, api) {
                 this.state = state;
                 this.api = api;
                 this.currentPage = 'login';
                 this.rewardsFilter = 'all';
+                this.isMobile = window.innerWidth <= 768;
+                this.touchStartX = 0;
+                this.touchEndX = 0;
             }
 
             init() {
                 this.setupEventListeners();
                 this.setupTheme();
                 this.setupScrollEffects();
+                this.setupTouchGestures();
+                this.setupMobileNavigation();
                 this.checkAuth();
+                this.setupSwipeGestures();
             }
 
             setupEventListeners() {
                 // Navigation
-                document.querySelectorAll('.nav-link').forEach(link => {
+                document.querySelectorAll('.nav-link, .dropdown-item, [data-page]').forEach(link => {
                     link.addEventListener('click', (e) => {
                         e.preventDefault();
                         const page = link.getAttribute('data-page');
@@ -2582,6 +3776,38 @@
                         mobileBtn.innerHTML = navMenu.classList.contains('active') 
                             ? '<i class="fas fa-times"></i>' 
                             : '<i class="fas fa-bars"></i>';
+                    });
+                }
+
+                // Mobile bottom nav
+                document.querySelectorAll('.mobile-nav-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const page = item.getAttribute('data-page');
+                        if (page === 'more') {
+                            this.showMobileMoreMenu();
+                        } else if (page) {
+                            this.navigateTo(page);
+                            this.updateMobileNavActive(page);
+                        }
+                    });
+                });
+
+                // Mobile more button
+                const mobileMoreBtn = document.getElementById('mobileMoreBtn');
+                if (mobileMoreBtn) {
+                    mobileMoreBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.showMobileMoreMenu();
+                    });
+                }
+
+                // Mobile logout
+                const mobileLogoutBtn = document.getElementById('mobileLogoutBtn');
+                if (mobileLogoutBtn) {
+                    mobileLogoutBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.handleLogout();
                     });
                 }
 
@@ -2709,6 +3935,118 @@
                         });
                     }
                 });
+
+                // New investment button
+                const newInvestmentBtn = document.getElementById('newInvestmentBtn');
+                if (newInvestmentBtn) {
+                    newInvestmentBtn.addEventListener('click', () => {
+                        this.showNewInvestmentModal();
+                    });
+                }
+
+                // Payment method selection
+                document.querySelectorAll('.payment-method').forEach(method => {
+                    method.addEventListener('click', (e) => {
+                        this.selectPaymentMethod(e.target.closest('.payment-method'));
+                    });
+                });
+
+                // FAQ toggle
+                document.querySelectorAll('.faq-question').forEach(question => {
+                    question.addEventListener('click', (e) => {
+                        this.toggleFAQ(e.target.closest('.faq-item'));
+                    });
+                });
+
+                // Withdrawal form
+                const withdrawalForm = document.getElementById('withdrawalForm');
+                if (withdrawalForm) {
+                    withdrawalForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.handleWithdrawal();
+                    });
+                }
+
+                // Profile form
+                const profileForm = document.getElementById('profileForm');
+                if (profileForm) {
+                    profileForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.updateProfile();
+                    });
+                }
+
+                // Mobile more menu close
+                const mobileMoreClose = document.querySelector('#mobileMoreMenu .modal-close');
+                if (mobileMoreClose) {
+                    mobileMoreClose.addEventListener('click', () => {
+                        this.closeAllModals();
+                    });
+                }
+
+                // Start chat button
+                const startChatBtn = document.getElementById('startChatBtn');
+                if (startChatBtn) {
+                    startChatBtn.addEventListener('click', () => {
+                        this.startLiveChat();
+                    });
+                }
+
+                // Export transactions
+                const exportBtn = document.getElementById('exportTransactions');
+                if (exportBtn) {
+                    exportBtn.addEventListener('click', () => {
+                        this.exportTransactions();
+                    });
+                }
+
+                // Share platform buttons
+                document.querySelectorAll('[data-share-platform]').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const platform = e.target.closest('[data-share-platform]').getAttribute('data-share-platform');
+                        this.shareToPlatform(platform);
+                    });
+                });
+
+                // Copy share link
+                const copyShareBtn = document.getElementById('copyShareLink');
+                if (copyShareBtn) {
+                    copyShareBtn.addEventListener('click', () => {
+                        this.copyToClipboard('shareLinkInput', 'Link copied to clipboard!');
+                    });
+                }
+
+                // New investment form
+                const newInvestmentForm = document.getElementById('newInvestmentForm');
+                if (newInvestmentForm) {
+                    newInvestmentForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.createNewInvestment();
+                    });
+                }
+
+                // Claim form
+                const claimForm = document.getElementById('claimForm');
+                if (claimForm) {
+                    claimForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        const rewardId = parseInt(document.querySelector('.modal-overlay.active').dataset.rewardId);
+                        const reward = CONFIG.REWARDS.find(r => r.id === rewardId);
+                        if (reward) this.submitClaim(reward);
+                    });
+                }
+
+                // Terms and privacy
+                const termsBtn = document.getElementById('termsConditions');
+                const privacyBtn = document.getElementById('privacyPolicy');
+                if (termsBtn) termsBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.showNotification('Terms & Conditions page coming soon!', 'info');
+                });
+                if (privacyBtn) privacyBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.showNotification('Privacy Policy page coming soon!', 'info');
+                });
             }
 
             setupTheme() {
@@ -2721,16 +4059,33 @@
 
             setupScrollEffects() {
                 // Navbar scroll effect
+                let lastScroll = 0;
                 window.addEventListener('scroll', () => {
                     const navbar = document.querySelector('.navbar');
-                    if (window.scrollY > 50) {
+                    const currentScroll = window.pageYOffset;
+                    
+                    if (currentScroll > 50) {
                         navbar.classList.add('scrolled');
                     } else {
                         navbar.classList.remove('scrolled');
                     }
+                    
+                    // Hide/show mobile bottom nav on scroll
+                    if (this.isMobile) {
+                        const mobileNav = document.getElementById('mobileBottomNav');
+                        if (mobileNav) {
+                            if (currentScroll > lastScroll && currentScroll > 100) {
+                                mobileNav.style.transform = 'translateY(100%)';
+                            } else {
+                                mobileNav.style.transform = 'translateY(0)';
+                            }
+                        }
+                    }
+                    
+                    lastScroll = currentScroll;
                 });
 
-                // Fade in animations
+                // Fade in animations with Intersection Observer
                 const observerOptions = {
                     threshold: 0.1,
                     rootMargin: '0px 0px -50px 0px'
@@ -2739,14 +4094,79 @@
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
-                            entry.target.classList.add('animate-fade-in');
+                            entry.target.classList.add('animate-slide-up');
                         }
                     });
                 }, observerOptions);
 
-                // Observe all cards and stats
-                document.querySelectorAll('.stat-card, .reward-card, .hero-card').forEach(el => {
+                // Observe all interactive elements
+                document.querySelectorAll('.stat-card, .reward-card, .hero-card, .investment-card, .support-card').forEach(el => {
                     observer.observe(el);
+                });
+            }
+
+            setupTouchGestures() {
+                // Make buttons more touch-friendly
+                document.querySelectorAll('.btn, .nav-link, .dropdown-item').forEach(el => {
+                    el.classList.add('touch-target');
+                });
+
+                // Prevent zoom on double tap
+                let lastTouchEnd = 0;
+                document.addEventListener('touchend', (e) => {
+                    const now = Date.now();
+                    if (now - lastTouchEnd <= 300) {
+                        e.preventDefault();
+                    }
+                    lastTouchEnd = now;
+                }, false);
+            }
+
+            setupSwipeGestures() {
+                if (!this.isMobile) return;
+
+                const mainContent = document.querySelector('main');
+                if (!mainContent) return;
+
+                mainContent.addEventListener('touchstart', (e) => {
+                    this.touchStartX = e.changedTouches[0].screenX;
+                }, false);
+
+                mainContent.addEventListener('touchend', (e) => {
+                    this.touchEndX = e.changedTouches[0].screenX;
+                    this.handleSwipe();
+                }, false);
+            }
+
+            handleSwipe() {
+                const swipeThreshold = 50;
+                const swipeDistance = this.touchEndX - this.touchStartX;
+
+                if (Math.abs(swipeDistance) < swipeThreshold) return;
+
+                const pages = ['dashboard', 'investments', 'rewards', 'leaderboard', 'transactions', 'withdrawals', 'support', 'faq', 'profile'];
+                const currentIndex = pages.indexOf(this.currentPage);
+                
+                if (swipeDistance > 0 && currentIndex > 0) {
+                    // Swipe right - go to previous page
+                    this.navigateTo(pages[currentIndex - 1]);
+                } else if (swipeDistance < 0 && currentIndex < pages.length - 1) {
+                    // Swipe left - go to next page
+                    this.navigateTo(pages[currentIndex + 1]);
+                }
+            }
+
+            setupMobileNavigation() {
+                // Update mobile nav active state
+                this.updateMobileNavActive('dashboard');
+            }
+
+            updateMobileNavActive(page) {
+                document.querySelectorAll('.mobile-nav-item').forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('data-page') === page) {
+                        item.classList.add('active');
+                    }
                 });
             }
 
@@ -2755,6 +4175,13 @@
                 localStorage.setItem('theme', this.state.theme);
                 this.setupTheme();
                 this.showNotification(`Switched to ${this.state.theme} theme`, 'info');
+            }
+
+            showMobileMoreMenu() {
+                const modal = document.getElementById('mobileMoreMenu');
+                if (modal) {
+                    modal.classList.add('active');
+                }
             }
 
             async checkAuth() {
@@ -2781,7 +4208,10 @@
                     if (mobileBtn) mobileBtn.innerHTML = '<i class="fas fa-bars"></i>';
                 }
 
-                // Update navigation
+                // Close mobile more menu
+                this.closeAllModals();
+
+                // Update desktop navigation
                 document.querySelectorAll('.nav-link').forEach(link => {
                     link.classList.remove('active');
                     const indicator = link.querySelector('.nav-indicator');
@@ -2793,6 +4223,9 @@
                         if (indicator) indicator.style.opacity = '1';
                     }
                 });
+
+                // Update mobile navigation
+                this.updateMobileNavActive(page);
 
                 // Hide all pages
                 document.querySelectorAll('.page').forEach(p => {
@@ -2806,6 +4239,9 @@
                     this.currentPage = page;
                     window.location.hash = page;
 
+                    // Scroll to top
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+
                     // Load page data
                     this.loadPageData(page);
                 }
@@ -2816,11 +4252,26 @@
                     case 'dashboard':
                         await this.loadDashboardData();
                         break;
+                    case 'investments':
+                        await this.loadInvestmentsData();
+                        break;
                     case 'rewards':
                         await this.loadRewardsData();
                         break;
                     case 'leaderboard':
                         await this.loadLeaderboardData();
+                        break;
+                    case 'transactions':
+                        await this.loadTransactionsData();
+                        break;
+                    case 'withdrawals':
+                        await this.loadWithdrawalsData();
+                        break;
+                    case 'support':
+                        await this.loadSupportData();
+                        break;
+                    case 'faq':
+                        await this.loadFAQData();
                         break;
                     case 'profile':
                         await this.loadProfileData();
@@ -2861,9 +4312,13 @@
                     this.updateNextRewardProgress(referralStats.stats.total_referrals);
                     
                     // Update financial stats
-                    this.animateCounter('availableBalance', this.state.currentUser.balance || 0, true);
-                    this.animateCounter('totalEarnings', this.state.currentUser.total_earnings || 0, true);
-                    this.animateCounter('pendingInvestments', this.state.currentUser.pending_investment_amount || 0, true);
+                    const balance = this.state.currentUser.balance || 0;
+                    const totalEarnings = this.state.currentUser.total_earnings || 0;
+                    const pending = this.state.currentUser.pending_investment_amount || 0;
+                    
+                    this.animateCounter('availableBalance', balance, true);
+                    this.animateCounter('totalEarnings', totalEarnings, true);
+                    this.animateCounter('pendingInvestments', pending, true);
 
                     // Update referral link
                     const referralLink = referralStats.stats.referral_link || 
@@ -2881,6 +4336,86 @@
                 }
             }
 
+            async loadInvestmentsData() {
+                try {
+                    const investmentsData = await this.api.getInvestments();
+                    const investments = investmentsData.investments || [];
+                    
+                    // Update investment stats
+                    const totalValue = this.state.getTotalInvestmentValue();
+                    const activeInvestments = this.state.getActiveInvestments().length;
+                    const totalReturns = this.state.getTotalReturns();
+                    const avgROI = investments.length > 0 ? 
+                        investments.reduce((sum, inv) => sum + (inv.roi || 0), 0) / investments.length : 0;
+                    
+                    this.updateElement('totalInvestmentValue', this.formatCurrency(totalValue));
+                    this.updateElement('activeInvestments', activeInvestments);
+                    this.updateElement('totalReturns', this.formatCurrency(totalReturns));
+                    this.updateElement('avgROI', avgROI.toFixed(1) + '%');
+                    
+                    // Render investments
+                    const container = document.getElementById('investmentsContainer');
+                    if (container) {
+                        if (investments.length === 0) {
+                            container.innerHTML = `
+                                <div class="text-center p-6 col-span-full">
+                                    <i class="fas fa-chart-line text-4xl text-muted mb-3"></i>
+                                    <h3 class="font-semibold mb-2">No Investments Yet</h3>
+                                    <p class="text-muted mb-4">Start your first investment to grow your wealth</p>
+                                    <button class="btn btn-primary" id="newInvestmentBtn">
+                                        <i class="fas fa-plus"></i> Start Investing
+                                    </button>
+                                </div>
+                            `;
+                            return;
+                        }
+                        
+                        container.innerHTML = investments.map(inv => `
+                            <div class="investment-card">
+                                <div class="d-flex justify-between align-center mb-4">
+                                    <h3 class="font-semibold">${inv.name}</h3>
+                                    <span class="investment-status ${inv.status === 'active' ? 'status-active' : inv.status === 'pending' ? 'status-pending' : 'status-completed'}">
+                                        ${inv.status}
+                                    </span>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <div class="text-sm text-muted mb-1">Investment Amount</div>
+                                    <div class="text-2xl font-bold">${this.formatCurrency(inv.amount)}</div>
+                                </div>
+                                
+                                <div class="d-flex justify-between mb-4">
+                                    <div>
+                                        <div class="text-sm text-muted">ROI</div>
+                                        <div class="font-semibold text-success">${inv.roi}%</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm text-muted">Returns</div>
+                                        <div class="font-semibold">${this.formatCurrency(inv.returns)}</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm text-muted">Duration</div>
+                                        <div class="font-semibold">${inv.duration || 30} days</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="progress-bar mb-4">
+                                    <div class="progress-fill" style="width: ${inv.progress || 50}%"></div>
+                                </div>
+                                
+                                <div class="text-sm text-muted">
+                                    ${inv.status === 'active' ? 'Ends' : 'Ended'} on ${inv.end_date || 'N/A'}
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+                    
+                } catch (error) {
+                    console.error('Error loading investments:', error);
+                    this.showNotification('Error loading investments', 'error');
+                }
+            }
+
             async loadRewardsData() {
                 try {
                     const referralStats = await this.api.getReferralStats();
@@ -2891,7 +4426,36 @@
 
                     container.innerHTML = '';
 
-                    CONFIG.REWARDS.forEach(reward => {
+                    const filteredRewards = CONFIG.REWARDS.filter(reward => {
+                        if (this.rewardsFilter === 'all') return true;
+                        if (this.rewardsFilter === 'available') {
+                            return totalReferrals >= reward.requiredReferrals && 
+                                   !this.state.claimedRewards.includes(reward.id);
+                        }
+                        if (this.rewardsFilter === 'achieved') {
+                            return totalReferrals >= reward.requiredReferrals;
+                        }
+                        if (this.rewardsFilter === 'claimed') {
+                            return this.state.claimedRewards.includes(reward.id);
+                        }
+                        if (this.rewardsFilter === 'locked') {
+                            return totalReferrals < reward.requiredReferrals;
+                        }
+                        return true;
+                    });
+
+                    if (filteredRewards.length === 0) {
+                        container.innerHTML = `
+                            <div class="text-center p-6 col-span-full">
+                                <i class="fas fa-gift text-4xl text-muted mb-3"></i>
+                                <h3 class="font-semibold mb-2">No rewards found</h3>
+                                <p class="text-muted">Try a different filter or refer more friends to unlock rewards</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    filteredRewards.forEach(reward => {
                         const isAchieved = totalReferrals >= reward.requiredReferrals;
                         const isClaimed = this.state.claimedRewards.includes(reward.id);
                         const canClaim = isAchieved && !isClaimed;
@@ -2945,11 +4509,11 @@
                                 ` : ''}
                                 
                                 ${canClaim ? `
-                                    <button class="btn btn-success btn-block claim-btn" data-reward-id="${reward.id}">
+                                    <button class="btn btn-success w-100 claim-btn" data-reward-id="${reward.id}">
                                         <i class="fas fa-gift mr-2"></i> Claim Now
                                     </button>
                                 ` : `
-                                    <button class="btn btn-secondary btn-block" disabled>
+                                    <button class="btn btn-secondary w-100" disabled>
                                         <i class="fas ${isClaimed ? 'fa-check' : 'fa-lock'} mr-2"></i>
                                         ${isClaimed ? 'Already Claimed' : 'Locked'}
                                     </button>
@@ -3022,7 +4586,7 @@
                                 <div class="text-sm text-muted">referrals</div>
                             </td>
                             <td>
-                                <div class="font-semibold">₦${this.formatNumber(user.earnings)}</div>
+                                <div class="font-semibold">${this.formatCurrency(user.earnings)}</div>
                                 <div class="text-sm text-muted">earnings</div>
                             </td>
                             <td>
@@ -3048,7 +4612,7 @@
                                     </div>
                                     <div class="d-flex justify-between mb-2">
                                         <span class="text-muted">Earnings:</span>
-                                        <span class="font-semibold">₦${this.formatNumber(userData.earnings)}</span>
+                                        <span class="font-semibold">${this.formatCurrency(userData.earnings)}</span>
                                     </div>
                                     <div class="d-flex justify-between">
                                         <span class="text-muted">Tier:</span>
@@ -3071,6 +4635,127 @@
                 }
             }
 
+            async loadTransactionsData() {
+                try {
+                    const transactionsData = await this.api.getTransactions();
+                    const transactions = transactionsData.transactions || [];
+                    
+                    const container = document.getElementById('transactionsList');
+                    if (!container) return;
+
+                    if (transactions.length === 0) {
+                        container.innerHTML = `
+                            <div class="text-center p-6">
+                                <i class="fas fa-exchange-alt text-4xl text-muted mb-3"></i>
+                                <h3 class="font-semibold mb-2">No Transactions Yet</h3>
+                                <p class="text-muted">Your transaction history will appear here</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    // Calculate totals
+                    const totals = {
+                        deposits: 0,
+                        withdrawals: 0,
+                        referral: 0,
+                        investment: 0
+                    };
+
+                    transactions.forEach(t => {
+                        const amount = Math.abs(t.amount);
+                        if (t.type === 'deposit') totals.deposits += amount;
+                        if (t.type === 'withdrawal') totals.withdrawals += amount;
+                        if (t.type === 'referral') totals.referral += amount;
+                        if (t.type === 'investment') totals.investment += amount;
+                    });
+
+                    const netBalance = totals.deposits + totals.referral - totals.withdrawals - totals.investment;
+
+                    // Update totals
+                    this.updateElement('totalDeposits', this.formatCurrency(totals.deposits));
+                    this.updateElement('totalWithdrawals', this.formatCurrency(totals.withdrawals));
+                    this.updateElement('totalReferralBonus', this.formatCurrency(totals.referral));
+                    this.updateElement('netBalance', this.formatCurrency(netBalance));
+
+                    // Render transactions
+                    container.innerHTML = transactions.map(t => `
+                        <div class="transaction-item">
+                            <div>
+                                <div class="font-semibold">${t.description}</div>
+                                <div class="text-sm text-muted">${new Date(t.date).toLocaleDateString()} • ${t.status}</div>
+                            </div>
+                            <div class="transaction-amount ${t.amount > 0 ? 'positive' : 'negative'}">
+                                ${t.amount > 0 ? '+' : ''}${this.formatCurrency(t.amount)}
+                            </div>
+                        </div>
+                    `).join('');
+
+                } catch (error) {
+                    console.error('Error loading transactions:', error);
+                    this.showNotification('Error loading transactions', 'error');
+                }
+            }
+
+            async loadWithdrawalsData() {
+                try {
+                    const withdrawalsData = await this.api.getWithdrawals();
+                    const withdrawals = withdrawalsData.withdrawals || [];
+                    
+                    const balance = this.state.currentUser?.balance || 0;
+                    
+                    // Update balance
+                    this.updateElement('withdrawalBalance', this.formatCurrency(balance));
+                    this.updateElement('availableWithdrawalBalance', this.formatCurrency(balance));
+                    
+                    // Render withdrawal history
+                    const container = document.getElementById('withdrawalHistory');
+                    if (container) {
+                        if (withdrawals.length === 0) {
+                            container.innerHTML = `
+                                <div class="text-center p-4 rounded-lg" style="background: var(--dark-3);">
+                                    <i class="fas fa-history text-muted mb-2"></i>
+                                    <p class="text-muted">No withdrawal history</p>
+                                </div>
+                            `;
+                            return;
+                        }
+                        
+                        container.innerHTML = withdrawals.map(w => `
+                            <div class="transaction-item mb-2">
+                                <div>
+                                    <div class="font-semibold">${w.method || 'Bank Transfer'}</div>
+                                    <div class="text-sm text-muted">${new Date(w.createdAt).toLocaleDateString()} • ${w.status}</div>
+                                </div>
+                                <div class="font-semibold ${w.status === 'completed' ? 'text-success' : w.status === 'pending' ? 'text-warning' : 'text-danger'}">
+                                    ${this.formatCurrency(w.amount)}
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+                    
+                } catch (error) {
+                    console.error('Error loading withdrawals:', error);
+                    this.showNotification('Error loading withdrawals', 'error');
+                }
+            }
+
+            async loadSupportData() {
+                // FAQ functionality is handled by event listeners
+                // This method can be expanded for live chat initialization
+            }
+
+            async loadFAQData() {
+                // FAQ items are already in HTML, just need to activate them
+                document.querySelectorAll('.faq-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        if (e.target.closest('.faq-question')) {
+                            this.toggleFAQ(item);
+                        }
+                    });
+                });
+            }
+
             async loadProfileData() {
                 if (!this.state.currentUser) return;
 
@@ -3079,6 +4764,11 @@
                     document.getElementById('profileName').textContent = this.state.currentUser.full_name;
                     document.getElementById('profileEmail').textContent = this.state.currentUser.email;
                     document.getElementById('profileAvatar').textContent = this.getInitials(this.state.currentUser.full_name);
+                    
+                    // Pre-fill form
+                    document.getElementById('profileNameInput').value = this.state.currentUser.full_name;
+                    document.getElementById('profileEmailInput').value = this.state.currentUser.email;
+                    document.getElementById('profilePhoneInput').value = this.state.currentUser.phone || '';
                     
                     // Format dates
                     const joinDate = new Date(this.state.currentUser.createdAt || Date.now());
@@ -3099,9 +4789,6 @@
 
                     // Load referral history
                     await this.loadReferralHistory();
-
-                    // Load achievement progress
-                    this.loadAchievementProgress(referralStats.stats.total_referrals || 0);
 
                 } catch (error) {
                     console.error('Error loading profile:', error);
@@ -3151,7 +4838,7 @@
                                 <td class="p-3">${date}</td>
                                 <td class="p-3">${transaction.description}</td>
                                 <td class="p-3 font-semibold ${transaction.amount > 0 ? 'text-success' : 'text-danger'}">
-                                    ${transaction.amount > 0 ? '+' : ''}₦${this.formatNumber(Math.abs(transaction.amount))}
+                                    ${transaction.amount > 0 ? '+' : ''}${this.formatCurrency(Math.abs(transaction.amount))}
                                 </td>
                             </tr>
                         `;
@@ -3168,51 +4855,6 @@
                 } catch (error) {
                     console.error('Error loading referral history:', error);
                 }
-            }
-
-            loadAchievementProgress(totalReferrals) {
-                const container = document.getElementById('achievementProgress');
-                if (!container) return;
-
-                // Get next 5 rewards
-                const upcomingRewards = CONFIG.REWARDS
-                    .filter(reward => totalReferrals < reward.requiredReferrals)
-                    .slice(0, 5);
-
-                if (upcomingRewards.length === 0) {
-                    container.innerHTML = `
-                        <div class="text-center p-6">
-                            <i class="fas fa-trophy text-4xl text-warning mb-3"></i>
-                            <p class="font-semibold">All rewards achieved!</p>
-                            <p class="text-muted">You've unlocked all available rewards</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                let html = '';
-                upcomingRewards.forEach(reward => {
-                    const progress = Math.min((totalReferrals / reward.requiredReferrals) * 100, 100);
-                    const needed = reward.requiredReferrals - totalReferrals;
-                    
-                    html += `
-                        <div class="mb-5">
-                            <div class="d-flex justify-between align-center mb-2">
-                                <span class="font-semibold">${reward.name}</span>
-                                <span class="font-semibold text-primary">${Math.round(progress)}%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: ${progress}%"></div>
-                            </div>
-                            <div class="d-flex justify-between mt-2 text-sm text-muted">
-                                <span>${this.formatNumber(totalReferrals)}/${this.formatNumber(reward.requiredReferrals)}</span>
-                                <span>${this.formatNumber(needed)} more needed</span>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                container.innerHTML = html;
             }
 
             updateNextRewardProgress(totalReferrals) {
@@ -3334,6 +4976,8 @@
                 const modal = document.getElementById('claimModal');
                 if (!modal) return;
 
+                modal.dataset.rewardId = rewardId;
+
                 // Update modal content
                 document.getElementById('claimRewardName').textContent = reward.name;
                 document.getElementById('claimRewardDesc').textContent = reward.description;
@@ -3346,13 +4990,6 @@
                     document.getElementById('claimEmail').value = this.state.currentUser.email;
                     document.getElementById('claimPhone').value = this.state.currentUser.phone || '';
                 }
-
-                // Setup form submission
-                const form = document.getElementById('claimForm');
-                form.onsubmit = (e) => {
-                    e.preventDefault();
-                    this.submitClaim(reward);
-                };
 
                 // Show modal
                 modal.classList.add('active');
@@ -3388,22 +5025,6 @@
                 if (!modal) return;
 
                 modal.classList.add('active');
-
-                // Setup share buttons
-                document.querySelectorAll('[data-share-platform]').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const platform = e.target.closest('[data-share-platform]').getAttribute('data-share-platform');
-                        this.shareToPlatform(platform);
-                    });
-                });
-
-                // Copy share link
-                const copyBtn = document.getElementById('copyShareLink');
-                if (copyBtn) {
-                    copyBtn.onclick = () => {
-                        this.copyToClipboard('shareLinkInput', 'Link copied to clipboard!');
-                    };
-                }
             }
 
             shareToPlatform(platform) {
@@ -3432,15 +5053,215 @@
                 this.showNotification(`Sharing to ${platform}...`, 'info');
             }
 
+            showNewInvestmentModal() {
+                const modal = document.getElementById('newInvestmentModal');
+                if (!modal) return;
+
+                modal.classList.add('active');
+            }
+
+            async createNewInvestment() {
+                const amount = parseFloat(document.getElementById('investmentAmount').value);
+                const plan = document.getElementById('investmentPlan').value;
+                const paymentMethod = document.getElementById('investmentPaymentMethod').value;
+                const currency = document.getElementById('investmentCurrency').value;
+
+                if (!amount || amount < 1000) {
+                    this.showNotification('Minimum investment is ₦1,000', 'error');
+                    return;
+                }
+
+                const planConfig = CONFIG.INVESTMENT_PLANS[plan];
+                if (!planConfig) {
+                    this.showNotification('Invalid investment plan', 'error');
+                    return;
+                }
+
+                try {
+                    this.showLoading(true);
+                    
+                    // Simulate API call
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    
+                    this.showNotification(`Investment of ${this.formatCurrency(amount)} created successfully!`, 'success');
+                    this.closeAllModals();
+                    
+                    // Refresh investments data
+                    await this.loadInvestmentsData();
+                    
+                } catch (error) {
+                    this.showNotification('Failed to create investment', 'error');
+                } finally {
+                    this.showLoading(false);
+                }
+            }
+
+            selectPaymentMethod(element) {
+                // Remove selected class from all methods
+                document.querySelectorAll('.payment-method').forEach(method => {
+                    method.classList.remove('selected');
+                });
+                
+                // Add selected class to clicked method
+                element.classList.add('selected');
+                
+                // Update hidden input
+                const method = element.dataset.method;
+                document.getElementById('selectedPaymentMethod').value = method;
+                
+                // Show/hide bank details section
+                const bankSection = document.getElementById('bankDetailsSection');
+                if (bankSection) {
+                    bankSection.style.display = method === 'bank' ? 'block' : 'none';
+                }
+            }
+
+            async handleWithdrawal() {
+                const amount = parseFloat(document.getElementById('withdrawalAmount').value);
+                const method = document.getElementById('selectedPaymentMethod').value;
+                const balance = this.state.currentUser?.balance || 0;
+
+                if (!amount || amount < 1000) {
+                    this.showNotification('Minimum withdrawal is ₦1,000', 'error');
+                    return;
+                }
+
+                if (amount > balance) {
+                    this.showNotification('Insufficient balance', 'error');
+                    return;
+                }
+
+                if (!method) {
+                    this.showNotification('Please select a payment method', 'error');
+                    return;
+                }
+
+                try {
+                    this.showLoading(true);
+                    
+                    // Simulate API call
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    
+                    this.showNotification(`Withdrawal request of ${this.formatCurrency(amount)} submitted! Processing time: 24-48 hours.`, 'success');
+                    
+                    // Reset form
+                    document.getElementById('withdrawalForm').reset();
+                    document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+                    document.getElementById('bankDetailsSection').style.display = 'none';
+                    
+                    // Refresh withdrawals data
+                    await this.loadWithdrawalsData();
+                    
+                } catch (error) {
+                    this.showNotification('Failed to process withdrawal', 'error');
+                } finally {
+                    this.showLoading(false);
+                }
+            }
+
+            toggleFAQ(item) {
+                const isActive = item.classList.contains('active');
+                
+                // Close all FAQs
+                document.querySelectorAll('.faq-item').forEach(faq => {
+                    faq.classList.remove('active');
+                });
+                
+                // Open clicked FAQ if it wasn't active
+                if (!isActive) {
+                    item.classList.add('active');
+                }
+            }
+
+            async updateProfile() {
+                const name = document.getElementById('profileNameInput').value;
+                const email = document.getElementById('profileEmailInput').value;
+                const phone = document.getElementById('profilePhoneInput').value;
+                const password = document.getElementById('profilePassword').value;
+
+                if (!name || !email || !phone) {
+                    this.showNotification('Please fill in all required fields', 'error');
+                    return;
+                }
+
+                try {
+                    this.showLoading(true);
+                    
+                    // Simulate API call
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    // Update local state
+                    this.state.currentUser.full_name = name;
+                    this.state.currentUser.email = email;
+                    this.state.currentUser.phone = phone;
+                    this.state.saveUser(this.state.currentUser);
+                    
+                    this.showNotification('Profile updated successfully!', 'success');
+                    
+                    // Refresh profile display
+                    await this.loadProfileData();
+                    
+                } catch (error) {
+                    this.showNotification('Failed to update profile', 'error');
+                } finally {
+                    this.showLoading(false);
+                }
+            }
+
+            startLiveChat() {
+                this.showNotification('Live chat feature coming soon!', 'info');
+                // In production, integrate with a live chat service like Intercom, Zendesk, etc.
+            }
+
+            exportTransactions() {
+                // Create CSV content
+                const transactions = this.state.transactions;
+                if (transactions.length === 0) {
+                    this.showNotification('No transactions to export', 'warning');
+                    return;
+                }
+
+                let csv = 'Date,Description,Amount,Status\n';
+                transactions.forEach(t => {
+                    const date = new Date(t.date).toLocaleDateString();
+                    csv += `${date},"${t.description}",${t.amount},${t.status}\n`;
+                });
+
+                // Create download link
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `transactions-${new Date().toISOString().split('T')[0]}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+
+                this.showNotification('Transactions exported successfully!', 'success');
+            }
+
             copyToClipboard(inputId, message) {
                 const input = document.getElementById(inputId);
                 if (!input) return;
 
                 input.select();
                 input.setSelectionRange(0, 99999);
-                document.execCommand('copy');
                 
-                this.showNotification(message, 'success');
+                // Use modern clipboard API if available
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(input.value).then(() => {
+                        this.showNotification(message, 'success');
+                    }).catch(() => {
+                        // Fallback for older browsers
+                        document.execCommand('copy');
+                        this.showNotification(message, 'success');
+                    });
+                } else {
+                    // Fallback for older browsers
+                    document.execCommand('copy');
+                    this.showNotification(message, 'success');
+                }
             }
 
             closeAllModals() {
@@ -3450,11 +5271,33 @@
             }
 
             showLoading(show) {
-                // You can implement a loading overlay here
                 if (show) {
                     document.body.style.cursor = 'wait';
+                    // Show loading overlay for mobile
+                    if (this.isMobile) {
+                        const loading = document.createElement('div');
+                        loading.id = 'loadingOverlay';
+                        loading.style.cssText = `
+                            position: fixed;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            background: rgba(0,0,0,0.7);
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            z-index: 9999;
+                        `;
+                        loading.innerHTML = `
+                            <div class="spinner" style="width: 50px; height: 50px;"></div>
+                        `;
+                        document.body.appendChild(loading);
+                    }
                 } else {
                     document.body.style.cursor = 'default';
+                    const loading = document.getElementById('loadingOverlay');
+                    if (loading) loading.remove();
                 }
             }
 
@@ -3544,6 +5387,10 @@
                 return new Intl.NumberFormat('en-NG').format(num);
             }
 
+            formatCurrency(amount) {
+                return '₦' + this.formatNumber(amount);
+            }
+
             refreshPage() {
                 this.loadPageData(this.currentPage);
                 this.showNotification('Page refreshed successfully', 'success');
@@ -3576,6 +5423,32 @@
             } else if (state.isLoggedIn()) {
                 ui.navigateTo('dashboard');
             }
+
+            // Handle window resize for mobile detection
+            window.addEventListener('resize', () => {
+                ui.isMobile = window.innerWidth <= 768;
+            });
+
+            // Prevent pull-to-refresh on mobile
+            document.body.addEventListener('touchmove', (e) => {
+                if (window.scrollY === 0) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                // Ctrl/Cmd + K for search (placeholder)
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    ui.showNotification('Search feature coming soon!', 'info');
+                }
+                
+                // Escape to close modals
+                if (e.key === 'Escape') {
+                    ui.closeAllModals();
+                }
+            });
         });
     </script>
 </body>
