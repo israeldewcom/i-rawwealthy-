@@ -8,36 +8,53 @@
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     
     <!-- CSS Variables & Base Styles -->
     <style>
+        /* ==============================================
+         * DESIGN SYSTEM v4.0
+         * Modern, Mobile-First, Professional Design
+         * ============================================== */
+        
         :root {
-            /* Primary Colors */
-            --primary: #4361EE;
-            --primary-dark: #3A56D4;
-            --primary-light: #4895EF;
-            --secondary: #4CC9F0;
-            --accent: #F72585;
-            --success: #43AA8B;
-            --warning: #F9C74F;
-            --danger: #EF476F;
-            --info: #118AB2;
+            /* Enhanced Color Palette */
+            --primary: #6C63FF;
+            --primary-dark: #5A52D5;
+            --primary-light: #8B85FF;
+            --secondary: #36D1DC;
+            --secondary-dark: #2AB7C1;
+            --accent: #FF6584;
+            --accent-dark: #E64C6D;
+            --success: #2Ecc71;
+            --success-dark: #27ae60;
+            --warning: #F1C40F;
+            --warning-dark: #F39C12;
+            --danger: #E74C3C;
+            --danger-dark: #C0392B;
+            --info: #3498DB;
             
-            /* Gradient Themes */
-            --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            /* Gradient Themes - Enhanced */
+            --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             --gradient-secondary: linear-gradient(135deg, var(--secondary) 0%, var(--primary-light) 100%);
-            --gradient-accent: linear-gradient(135deg, var(--accent) 0%, #B5179E 100%);
-            --gradient-success: linear-gradient(135deg, var(--success) 0%, #38B2AC 100%);
-            --gradient-warning: linear-gradient(135deg, var(--warning) 0%, #FB8500 100%);
-            --gradient-danger: linear-gradient(135deg, var(--danger) 0%, #FF6B8B 100%);
+            --gradient-accent: linear-gradient(135deg, var(--accent) 0%, #FF8E53 100%);
+            --gradient-success: linear-gradient(135deg, var(--success) 0%, #1ABC9C 100%);
+            --gradient-warning: linear-gradient(135deg, var(--warning) 0%, #E67E22 100%);
+            --gradient-danger: linear-gradient(135deg, var(--danger) 0%, #E84393 100%);
+            --gradient-dark: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            
+            /* Glass Morphism Colors */
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
             
             /* Dark Theme */
-            --dark-1: #0F172A;
-            --dark-2: #1E293B;
-            --dark-3: #334155;
-            --dark-4: #475569;
+            --dark-1: #0A0F1E;
+            --dark-2: #121828;
+            --dark-3: #1A2238;
+            --dark-4: #2D3748;
             
             /* Light Theme */
             --light-1: #F8FAFC;
@@ -46,38 +63,42 @@
             --light-4: #CBD5E1;
             
             /* Text Colors */
-            --text-primary: #F8FAFC;
+            --text-primary: #F1F5F9;
             --text-secondary: #94A3B8;
             --text-muted: #64748B;
             
-            /* Spacing */
-            --space-xs: 0.5rem;
-            --space-sm: 1rem;
-            --space-md: 1.5rem;
-            --space-lg: 2rem;
-            --space-xl: 3rem;
-            --space-2xl: 4rem;
-            --space-3xl: 6rem;
+            /* Spacing Scale */
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            --space-3xl: 4rem;
+            --space-4xl: 6rem;
             
             /* Border Radius */
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 16px;
-            --radius-xl: 20px;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+            --radius-xl: 18px;
             --radius-2xl: 24px;
+            --radius-3xl: 32px;
             --radius-full: 9999px;
             
-            /* Shadows */
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
-            --shadow-md: 0 4px 6px rgba(0,0,0,0.15);
-            --shadow-lg: 0 10px 25px rgba(0,0,0,0.2);
-            --shadow-xl: 0 20px 40px rgba(0,0,0,0.25);
-            --shadow-inner: inset 0 2px 4px rgba(0,0,0,0.06);
+            /* Shadows - Enhanced */
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.1);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.15);
+            --shadow-lg: 0 16px 48px rgba(0,0,0,0.2);
+            --shadow-xl: 0 24px 64px rgba(0,0,0,0.25);
+            --shadow-inner: inset 0 2px 8px rgba(0,0,0,0.06);
+            --shadow-glow: 0 0 30px rgba(108, 99, 255, 0.3);
             
             /* Transitions */
-            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 400ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
             
             /* Z-index */
             --z-dropdown: 1000;
@@ -103,8 +124,12 @@
             --text-primary: #1E293B;
             --text-secondary: #475569;
             --text-muted: #64748B;
+            
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(226, 232, 240, 0.6);
         }
 
+        /* Reset & Base Styles */
         * {
             margin: 0;
             padding: 0;
@@ -124,56 +149,113 @@
             overflow-x: hidden;
             min-height: 100vh;
             position: relative;
+            background: linear-gradient(135deg, var(--dark-1) 0%, var(--dark-2) 100%);
         }
 
-        body::before {
-            content: '';
+        /* Animated Background Elements */
+        .background-elements {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(67, 97, 238, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(247, 37, 133, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 40% 60%, rgba(67, 170, 139, 0.03) 0%, transparent 50%);
-            z-index: -1;
+            z-index: -2;
+            overflow: hidden;
             pointer-events: none;
         }
 
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.15;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .circle-1 {
+            width: 600px;
+            height: 600px;
+            background: var(--primary);
+            top: -200px;
+            left: -200px;
+            animation-delay: 0s;
+        }
+
+        .circle-2 {
+            width: 500px;
+            height: 500px;
+            background: var(--secondary);
+            bottom: -150px;
+            right: -150px;
+            animation-delay: -5s;
+        }
+
+        .circle-3 {
+            width: 400px;
+            height: 400px;
+            background: var(--accent);
+            top: 50%;
+            left: 70%;
+            animation-delay: -10s;
+        }
+
+        /* Typography */
         h1, h2, h3, h4, h5, h6 {
             font-family: 'Poppins', sans-serif;
             font-weight: 700;
             line-height: 1.2;
         }
 
-        a {
-            text-decoration: none;
-            color: inherit;
+        .display-1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: var(--space-lg);
         }
 
-        button {
-            font-family: inherit;
-            cursor: pointer;
-            border: none;
-            outline: none;
+        .display-2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: var(--space-md);
         }
 
-        input, textarea, select {
-            font-family: inherit;
+        .text-gradient {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        /* Utility Classes */
+        /* Layout */
         .container {
             width: 100%;
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0 var(--space-md);
+            padding: 0 var(--space-lg);
         }
 
+        .container-narrow {
+            max-width: 800px;
+        }
+
+        .section {
+            padding: var(--space-4xl) 0;
+        }
+
+        .section-sm {
+            padding: var(--space-2xl) 0;
+        }
+
+        /* Utility Classes */
         .text-center { text-align: center; }
         .text-left { text-align: left; }
         .text-right { text-align: right; }
+        .text-uppercase { text-transform: uppercase; }
+        .text-lowercase { text-transform: lowercase; }
+        .text-capitalize { text-transform: capitalize; }
 
         .d-none { display: none !important; }
         .d-block { display: block !important; }
@@ -185,15 +267,18 @@
         .justify-between { justify-content: space-between; }
         .justify-center { justify-content: center; }
         .justify-end { justify-content: flex-end; }
+        .justify-start { justify-content: flex-start; }
         .align-center { align-items: center; }
         .align-start { align-items: flex-start; }
         .align-end { align-items: flex-end; }
+        .align-stretch { align-items: stretch; }
 
         .gap-1 { gap: var(--space-xs); }
         .gap-2 { gap: var(--space-sm); }
         .gap-3 { gap: var(--space-md); }
         .gap-4 { gap: var(--space-lg); }
         .gap-5 { gap: var(--space-xl); }
+        .gap-6 { gap: var(--space-2xl); }
 
         .w-100 { width: 100%; }
         .h-100 { height: 100%; }
@@ -205,9 +290,10 @@
         .rounded-full { border-radius: var(--radius-full); }
 
         .shadow-sm { box-shadow: var(--shadow-sm); }
-        .shadow { box-shadow: var(--shadow-md); }
+        .shadow-md { box-shadow: var(--shadow-md); }
         .shadow-lg { box-shadow: var(--shadow-lg); }
         .shadow-xl { box-shadow: var(--shadow-xl); }
+        .shadow-glow { box-shadow: var(--shadow-glow); }
 
         .position-relative { position: relative; }
         .position-absolute { position: absolute; }
@@ -217,9 +303,17 @@
         .overflow-hidden { overflow: hidden; }
         .overflow-auto { overflow: auto; }
 
+        .glass-effect {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+        }
+
         /* Animations */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -235,7 +329,7 @@
 
         @keyframes pulse {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            50% { opacity: 0.7; }
         }
 
         @keyframes spin {
@@ -244,8 +338,9 @@
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(5deg); }
+            66% { transform: translateY(10px) rotate(-5deg); }
         }
 
         @keyframes shimmer {
@@ -253,8 +348,18 @@
             100% { background-position: 200% center; }
         }
 
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(108, 99, 255, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(108, 99, 255, 0.8); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
         .animate-fade-in {
-            animation: fadeIn 0.3s ease-out forwards;
+            animation: fadeIn 0.6s ease-out forwards;
         }
 
         .animate-pulse {
@@ -266,7 +371,952 @@
         }
 
         .animate-float {
-            animation: float 3s ease-in-out infinite;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .animate-glow {
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        .animate-bounce {
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        /* Modern Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: var(--z-fixed);
+            transition: var(--transition-normal);
+        }
+
+        .navbar.scrolled {
+            height: 70px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .navbar-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+            padding: 0 var(--space-lg);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-lg);
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+            box-shadow: var(--shadow-glow);
+            transition: var(--transition-normal);
+        }
+
+        .logo:hover .logo-icon {
+            transform: rotate(15deg) scale(1.1);
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .logo-main {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 1.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-sub {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: var(--space-xs);
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: var(--space-sm) var(--space-lg);
+            border-radius: var(--radius-full);
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: var(--primary);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .nav-link:hover::before,
+        .nav-link.active::before {
+            width: 100%;
+            height: 100%;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            background: var(--glass-bg);
+        }
+
+        .nav-indicator {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            opacity: 0;
+            transition: var(--transition-fast);
+        }
+
+        .nav-link.active .nav-indicator {
+            opacity: 1;
+            width: 20px;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .mobile-menu-btn:hover {
+            background: var(--dark-3);
+            transform: rotate(90deg);
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-xs);
+            border-radius: var(--radius-full);
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .nav-user:hover {
+            background: var(--dark-3);
+            transform: translateY(-2px);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-primary);
+        }
+
+        .user-tier {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Hero Cards */
+        .hero-card {
+            background: linear-gradient(135deg, var(--dark-2) 0%, var(--dark-3) 100%);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-2xl);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-xl);
+            transition: var(--transition-normal);
+        }
+
+        .hero-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl), var(--shadow-glow);
+        }
+
+        .hero-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--space-xl);
+            margin-bottom: var(--space-3xl);
+        }
+
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            text-align: center;
+            transition: var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(108, 99, 255, 0.1) 50%,
+                transparent 70%
+            );
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite linear;
+        }
+
+        .stat-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: var(--radius-lg);
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-md);
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: var(--space-xs);
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        /* Progress Bars */
+        .progress-container {
+            margin-bottom: var(--space-xl);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-sm);
+        }
+
+        .progress-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+
+        .progress-value {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.875rem;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: var(--dark-3);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-full);
+            width: 0%;
+            transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.4),
+                transparent
+            );
+            animation: shimmer 2s infinite linear;
+        }
+
+        /* Reward Cards with Real Images */
+        .rewards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: var(--space-xl);
+        }
+
+        .reward-card {
+            background: var(--dark-2);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-md);
+        }
+
+        .reward-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: var(--shadow-xl), var(--shadow-glow);
+            border-color: var(--primary);
+        }
+
+        .reward-card.locked {
+            opacity: 0.7;
+            filter: grayscale(0.3);
+        }
+
+        .reward-card.achieved {
+            border-color: var(--success);
+        }
+
+        .reward-card.available {
+            border-color: var(--warning);
+            animation: glow 2s infinite;
+        }
+
+        .reward-badge {
+            position: absolute;
+            top: var(--space-md);
+            right: var(--space-md);
+            z-index: 2;
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            box-shadow: var(--shadow-md);
+        }
+
+        .reward-image {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .reward-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: linear-gradient(to top, var(--dark-2), transparent);
+        }
+
+        .reward-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .reward-card:hover .reward-image img {
+            transform: scale(1.1);
+        }
+
+        .reward-content {
+            padding: var(--space-xl);
+            position: relative;
+            z-index: 1;
+        }
+
+        .reward-tier {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: var(--space-xs) var(--space-md);
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: var(--space-md);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .reward-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: var(--space-sm);
+            color: var(--text-primary);
+            line-height: 1.3;
+        }
+
+        .reward-description {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-lg);
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .reward-requirements {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-md);
+            background: var(--dark-3);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-lg);
+        }
+
+        .requirement-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+
+        /* Leaderboard */
+        .leaderboard-container {
+            background: var(--dark-2);
+            border-radius: var(--radius-2xl);
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .leaderboard-header {
+            padding: var(--space-xl);
+            background: var(--dark-3);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .leaderboard-table th {
+            padding: var(--space-lg);
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-secondary);
+            background: var(--dark-3);
+            border-bottom: 2px solid var(--glass-border);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .leaderboard-table td {
+            padding: var(--space-lg);
+            border-bottom: 1px solid var(--glass-border);
+            vertical-align: middle;
+        }
+
+        .leaderboard-table tr:hover {
+            background: var(--dark-3);
+        }
+
+        .leaderboard-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .rank-badge {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 0.875rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .rank-1 { 
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+        .rank-2 { 
+            background: linear-gradient(135deg, #C0C0C0 0%, #808080 100%);
+            box-shadow: 0 0 20px rgba(192, 192, 192, 0.3);
+        }
+        .rank-3 { 
+            background: linear-gradient(135deg, #CD7F32 0%, #8B4513 100%);
+            box-shadow: 0 0 20px rgba(205, 127, 50, 0.3);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: var(--space-lg);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: var(--space-xs);
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: var(--space-md) var(--space-lg);
+            background: var(--dark-3);
+            border: 2px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: var(--transition-fast);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+            background: var(--dark-4);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+            padding: var(--space-md) var(--space-xl);
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+        }
+
+        .btn-secondary {
+            background: var(--gradient-secondary);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-accent {
+            background: var(--gradient-accent);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Modal System */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 15, 30, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: var(--z-modal);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-md);
+            opacity: 0;
+            transition: opacity var(--transition-normal);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal {
+            background: var(--dark-2);
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-xl);
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow: hidden;
+            animation: fadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            border: 1px solid var(--glass-border);
+        }
+
+        .modal-large {
+            max-width: 800px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: var(--space-lg);
+            right: var(--space-lg);
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            background: var(--dark-3);
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-fast);
+            z-index: 1;
+            border: 1px solid var(--glass-border);
+        }
+
+        .modal-close:hover {
+            background: var(--dark-4);
+            color: var(--text-primary);
+            transform: rotate(90deg);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark-2);
+            border-top: 1px solid var(--glass-border);
+            padding: var(--space-4xl) 0 var(--space-2xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--gradient-primary);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-2xl);
+            margin-bottom: var(--space-3xl);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: var(--space-sm);
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            transition: var(--transition-fast);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: var(--space-xl);
+            border-top: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .display-1 {
+                font-size: 2.75rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .rewards-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                height: 70px;
+            }
+            
+            .nav-menu {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background: var(--dark-2);
+                flex-direction: column;
+                padding: var(--space-xl);
+                gap: var(--space-sm);
+                transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: var(--z-modal);
+                backdrop-filter: blur(20px);
+                border-top: 1px solid var(--glass-border);
+            }
+            
+            .nav-menu.active {
+                left: 0;
+            }
+            
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .nav-user {
+                display: none;
+            }
+            
+            .section {
+                padding: var(--space-2xl) 0;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .rewards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-card {
+                padding: var(--space-xl);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 var(--space-md);
+            }
+            
+            .display-1 {
+                font-size: 2rem;
+            }
+            
+            .btn {
+                padding: var(--space-sm) var(--space-lg);
+                font-size: 0.75rem;
+            }
+            
+            .modal {
+                margin: var(--space-sm);
+                border-radius: var(--radius-xl);
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark-2);
+            border-radius: var(--radius-full);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gradient-primary);
+            border-radius: var(--radius-full);
+            border: 2px solid var(--dark-2);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        /* Page Transitions */
+        .page {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            min-height: calc(100vh - 80px);
+        }
+
+        .page.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+            animation: fadeIn 0.4s ease-out;
         }
 
         /* Loading Spinner */
@@ -282,8 +1332,8 @@
         /* Notification System */
         .notification-container {
             position: fixed;
-            top: var(--space-md);
-            right: var(--space-md);
+            top: var(--space-lg);
+            right: var(--space-lg);
             z-index: var(--z-modal);
             display: flex;
             flex-direction: column;
@@ -294,13 +1344,14 @@
 
         .notification {
             background: var(--dark-2);
-            border: 1px solid var(--dark-3);
-            border-radius: var(--radius-lg);
-            padding: var(--space-md);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: var(--space-lg);
             box-shadow: var(--shadow-lg);
-            animation: slideInRight 0.3s ease-out forwards;
+            animation: slideInRight 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
             position: relative;
             overflow: hidden;
+            backdrop-filter: blur(10px);
         }
 
         .notification::before {
@@ -347,818 +1398,32 @@
             background: var(--dark-3);
             color: var(--text-primary);
         }
-
-        /* Modal System */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(8px);
-            z-index: var(--z-modal);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: var(--space-md);
-            opacity: 0;
-            transition: opacity var(--transition-normal);
-        }
-
-        .modal-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .modal {
-            background: var(--dark-2);
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-xl);
-            width: 100%;
-            max-width: 500px;
-            max-height: 90vh;
-            overflow: auto;
-            animation: fadeIn 0.3s ease-out;
-            position: relative;
-        }
-
-        .modal-large {
-            max-width: 800px;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: var(--space-md);
-            right: var(--space-md);
-            background: var(--dark-3);
-            color: var(--text-muted);
-            width: 32px;
-            height: 32px;
-            border-radius: var(--radius-full);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition-fast);
-            z-index: 1;
-        }
-
-        .modal-close:hover {
-            background: var(--dark-4);
-            color: var(--text-primary);
-        }
-
-        /* Form Elements */
-        .form-group {
-            margin-bottom: var(--space-md);
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: var(--space-xs);
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: var(--space-sm) var(--space-md);
-            background: var(--dark-3);
-            border: 2px solid var(--dark-4);
-            border-radius: var(--radius-md);
-            color: var(--text-primary);
-            font-size: 1rem;
-            transition: var(--transition-fast);
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
-        }
-
-        .form-control::placeholder {
-            color: var(--text-muted);
-        }
-
-        /* Buttons */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--space-xs);
-            padding: var(--space-sm) var(--space-lg);
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: var(--transition-fast);
-            border: none;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .btn:hover::after {
-            width: 300px;
-            height: 300px;
-        }
-
-        .btn-primary {
-            background: var(--gradient-primary);
-            color: white;
-        }
-
-        .btn-secondary {
-            background: var(--gradient-secondary);
-            color: white;
-        }
-
-        .btn-success {
-            background: var(--gradient-success);
-            color: white;
-        }
-
-        .btn-warning {
-            background: var(--gradient-warning);
-            color: #1E293B;
-        }
-
-        .btn-danger {
-            background: var(--gradient-danger);
-            color: white;
-        }
-
-        .btn-accent {
-            background: var(--gradient-accent);
-            color: white;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-        }
-
-        .btn-outline:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-sm {
-            padding: var(--space-xs) var(--space-md);
-            font-size: 0.875rem;
-        }
-
-        .btn-lg {
-            padding: var(--space-md) var(--space-xl);
-            font-size: 1.125rem;
-        }
-
-        .btn-block {
-            width: 100%;
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        /* Cards */
-        .card {
-            background: var(--dark-2);
-            border: 1px solid var(--dark-3);
-            border-radius: var(--radius-xl);
-            padding: var(--space-lg);
-            transition: var(--transition-normal);
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .card-header {
-            margin-bottom: var(--space-md);
-            padding-bottom: var(--space-sm);
-            border-bottom: 1px solid var(--dark-3);
-        }
-
-        /* Badges */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.25rem 0.75rem;
-            border-radius: var(--radius-full);
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .badge-primary {
-            background: var(--gradient-primary);
-            color: white;
-        }
-
-        .badge-secondary {
-            background: var(--gradient-secondary);
-            color: white;
-        }
-
-        .badge-success {
-            background: var(--gradient-success);
-            color: white;
-        }
-
-        .badge-warning {
-            background: var(--gradient-warning);
-            color: #1E293B;
-        }
-
-        .badge-danger {
-            background: var(--gradient-danger);
-            color: white;
-        }
-
-        .badge-accent {
-            background: var(--gradient-accent);
-            color: white;
-        }
-
-        /* Layout Components */
-        .page {
-            display: none;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            min-height: calc(100vh - 80px);
-        }
-
-        .page.active {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .section {
-            padding: var(--space-2xl) 0;
-        }
-
-        .section-header {
-            margin-bottom: var(--space-2xl);
-            text-align: center;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            margin-bottom: var(--space-md);
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .section-subtitle {
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* Navigation */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--dark-3);
-            z-index: var(--z-fixed);
-            height: 80px;
-            display: flex;
-            align-items: center;
-        }
-
-        .navbar-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-            font-weight: 800;
-            font-size: 1.5rem;
-        }
-
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: var(--radius-lg);
-            background: var(--gradient-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-
-        .logo-text {
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: var(--space-sm);
-            list-style: none;
-        }
-
-        .nav-link {
-            padding: var(--space-sm) var(--space-lg);
-            border-radius: var(--radius-full);
-            font-weight: 500;
-            color: var(--text-secondary);
-            transition: var(--transition-fast);
-            position: relative;
-        }
-
-        .nav-link:hover,
-        .nav-link.active {
-            color: white;
-            background: var(--dark-3);
-        }
-
-        .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 20px;
-            height: 3px;
-            background: var(--primary);
-            border-radius: var(--radius-full);
-        }
-
-        .nav-user {
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: var(--radius-full);
-            background: var(--gradient-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-        }
-
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        /* Stats Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: var(--space-lg);
-            margin-bottom: var(--space-2xl);
-        }
-
-        .stat-card {
-            background: var(--dark-2);
-            border: 1px solid var(--dark-3);
-            border-radius: var(--radius-xl);
-            padding: var(--space-lg);
-            text-align: center;
-            transition: var(--transition-normal);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: var(--radius-lg);
-            background: var(--gradient-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto var(--space-md);
-            color: white;
-            font-size: 1.5rem;
-        }
-
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: var(--space-xs);
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .stat-label {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Progress Bars */
-        .progress-container {
-            margin-bottom: var(--space-lg);
-        }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--space-xs);
-        }
-
-        .progress-label {
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-
-        .progress-value {
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .progress-bar {
-            height: 12px;
-            background: var(--dark-3);
-            border-radius: var(--radius-full);
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--gradient-primary);
-            border-radius: var(--radius-full);
-            width: 0%;
-            transition: width 1s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .progress-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.3),
-                transparent
-            );
-            animation: shimmer 2s infinite linear;
-        }
-
-        /* Rewards Grid */
-        .rewards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: var(--space-xl);
-        }
-
-        .reward-card {
-            background: var(--dark-2);
-            border: 1px solid var(--dark-3);
-            border-radius: var(--radius-xl);
-            overflow: hidden;
-            transition: var(--transition-normal);
-            position: relative;
-        }
-
-        .reward-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-xl);
-        }
-
-        .reward-card.locked {
-            opacity: 0.7;
-            filter: grayscale(0.5);
-        }
-
-        .reward-card.achieved {
-            border-color: var(--success);
-            box-shadow: 0 0 30px rgba(67, 170, 139, 0.1);
-        }
-
-        .reward-card.available {
-            border-color: var(--warning);
-            box-shadow: 0 0 30px rgba(249, 199, 79, 0.1);
-        }
-
-        .reward-badge {
-            position: absolute;
-            top: var(--space-md);
-            right: var(--space-md);
-            z-index: 1;
-        }
-
-        .reward-image {
-            width: 100%;
-            height: 200px;
-            overflow: hidden;
-        }
-
-        .reward-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s ease;
-        }
-
-        .reward-card:hover .reward-image img {
-            transform: scale(1.1);
-        }
-
-        .reward-content {
-            padding: var(--space-lg);
-        }
-
-        .reward-tier {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            background: var(--gradient-primary);
-            color: white;
-            border-radius: var(--radius-full);
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-bottom: var(--space-sm);
-        }
-
-        .reward-title {
-            font-size: 1.25rem;
-            margin-bottom: var(--space-xs);
-            color: var(--text-primary);
-        }
-
-        .reward-description {
-            color: var(--text-secondary);
-            margin-bottom: var(--space-md);
-            font-size: 0.875rem;
-        }
-
-        .reward-requirements {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: var(--space-md);
-            background: var(--dark-3);
-            border-radius: var(--radius-lg);
-            margin-bottom: var(--space-md);
-        }
-
-        .requirement-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: var(--radius-full);
-            background: var(--gradient-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-
-        /* Leaderboard */
-        .leaderboard {
-            background: var(--dark-2);
-            border: 1px solid var(--dark-3);
-            border-radius: var(--radius-xl);
-            overflow: hidden;
-        }
-
-        .leaderboard-header {
-            padding: var(--space-lg);
-            background: var(--dark-3);
-            border-bottom: 1px solid var(--dark-4);
-        }
-
-        .leaderboard-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .leaderboard-table th {
-            padding: var(--space-md) var(--space-lg);
-            text-align: left;
-            font-weight: 600;
-            color: var(--text-secondary);
-            background: var(--dark-3);
-            border-bottom: 2px solid var(--dark-4);
-        }
-
-        .leaderboard-table td {
-            padding: var(--space-md) var(--space-lg);
-            border-bottom: 1px solid var(--dark-4);
-        }
-
-        .leaderboard-table tr:hover {
-            background: var(--dark-3);
-        }
-
-        .rank-badge {
-            width: 40px;
-            height: 40px;
-            border-radius: var(--radius-full);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: white;
-        }
-
-        .rank-1 { background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); }
-        .rank-2 { background: linear-gradient(135deg, #C0C0C0 0%, #808080 100%); }
-        .rank-3 { background: linear-gradient(135deg, #CD7F32 0%, #8B4513 100%); }
-
-        /* Footer */
-        .footer {
-            background: var(--dark-2);
-            border-top: 1px solid var(--dark-3);
-            padding: var(--space-2xl) 0 var(--space-xl);
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: var(--space-xl);
-            margin-bottom: var(--space-2xl);
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: var(--space-sm);
-        }
-
-        .footer-links a {
-            color: var(--text-secondary);
-            transition: var(--transition-fast);
-        }
-
-        .footer-links a:hover {
-            color: var(--primary);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: var(--space-xl);
-            border-top: 1px solid var(--dark-3);
-            color: var(--text-muted);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .section-title {
-                font-size: 2rem;
-            }
-            
-            .rewards-grid {
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            }
-        }
-
-        @media (max-width: 768px) {
-            .navbar {
-                height: 70px;
-            }
-            
-            .nav-menu {
-                position: fixed;
-                top: 70px;
-                left: -100%;
-                width: 100%;
-                height: calc(100vh - 70px);
-                background: var(--dark-2);
-                flex-direction: column;
-                padding: var(--space-xl);
-                transition: left 0.3s ease;
-                z-index: var(--z-modal);
-            }
-            
-            .nav-menu.active {
-                left: 0;
-            }
-            
-            .mobile-menu-btn {
-                display: block;
-            }
-            
-            .section {
-                padding: var(--space-xl) 0;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .rewards-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .modal {
-                margin: var(--space-sm);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 0 var(--space-sm);
-            }
-            
-            .btn {
-                padding: var(--space-xs) var(--space-md);
-                font-size: 0.875rem;
-            }
-            
-            .card {
-                padding: var(--space-md);
-            }
-            
-            .section-title {
-                font-size: 1.75rem;
-            }
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--dark-2);
-            border-radius: var(--radius-full);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--dark-4);
-            border-radius: var(--radius-full);
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary);
-        }
     </style>
 </head>
 <body>
+    <!-- Animated Background Elements -->
+    <div class="background-elements">
+        <div class="bg-circle circle-1"></div>
+        <div class="bg-circle circle-2"></div>
+        <div class="bg-circle circle-3"></div>
+    </div>
+
     <!-- Theme Toggle -->
-    <button id="themeToggle" class="position-fixed btn btn-primary" style="bottom: 30px; right: 30px; z-index: var(--z-fixed); width: 50px; height: 50px; border-radius: var(--radius-full);">
+    <button id="themeToggle" class="position-fixed btn btn-primary animate-bounce" style="bottom: 30px; right: 30px; z-index: var(--z-fixed); width: 56px; height: 56px; border-radius: var(--radius-full); box-shadow: var(--shadow-glow);">
         <i class="fas fa-moon"></i>
     </button>
 
-    <!-- Navigation -->
+    <!-- Modern Navigation -->
     <nav class="navbar">
-        <div class="container navbar-container">
+        <div class="navbar-container">
             <a href="#dashboard" class="logo">
                 <div class="logo-icon">
-                    <i class="fas fa-trophy"></i>
+                    <i class="fas fa-crown"></i>
                 </div>
-                <span class="logo-text">RawWealthy Elite</span>
+                <div class="logo-text">
+                    <div class="logo-main">RAWWEALTHY</div>
+                    <div class="logo-sub">Elite Referrals</div>
+                </div>
             </a>
             
             <button class="mobile-menu-btn" id="mobileMenuBtn">
@@ -1166,18 +1431,48 @@
             </button>
             
             <ul class="nav-menu" id="navMenu">
-                <li><a href="#dashboard" class="nav-link active" data-page="dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
-                <li><a href="#rewards" class="nav-link" data-page="rewards"><i class="fas fa-gift"></i> Rewards</a></li>
-                <li><a href="#leaderboard" class="nav-link" data-page="leaderboard"><i class="fas fa-trophy"></i> Leaderboard</a></li>
-                <li><a href="#profile" class="nav-link" data-page="profile"><i class="fas fa-user"></i> Profile</a></li>
-                <li><a href="#logout" class="nav-link" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                <li class="nav-item">
+                    <a href="#dashboard" class="nav-link active" data-page="dashboard">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                        <div class="nav-indicator"></div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#rewards" class="nav-link" data-page="rewards">
+                        <i class="fas fa-gift"></i>
+                        <span>Rewards</span>
+                        <div class="nav-indicator"></div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#leaderboard" class="nav-link" data-page="leaderboard">
+                        <i class="fas fa-trophy"></i>
+                        <span>Leaderboard</span>
+                        <div class="nav-indicator"></div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#profile" class="nav-link" data-page="profile">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                        <div class="nav-indicator"></div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#logout" class="nav-link" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                        <div class="nav-indicator"></div>
+                    </a>
+                </li>
             </ul>
             
             <div class="nav-user d-none" id="navUser">
                 <div class="user-avatar" id="userAvatar">U</div>
-                <div>
-                    <div class="text-sm font-semibold" id="userName">User</div>
-                    <div class="text-xs text-muted" id="userTier">Bronze Tier</div>
+                <div class="user-info">
+                    <div class="user-name" id="userName">User</div>
+                    <div class="user-tier" id="userTier">Bronze Tier</div>
                 </div>
             </div>
         </div>
@@ -1188,15 +1483,15 @@
         <!-- Login Page -->
         <div class="page active" id="loginPage">
             <section class="section">
-                <div class="container">
+                <div class="container container-narrow">
                     <div class="d-flex justify-center align-center" style="min-height: 80vh;">
-                        <div class="card" style="max-width: 400px; width: 100%;">
-                            <div class="card-header text-center">
-                                <div class="logo-icon" style="width: 60px; height: 60px; margin: 0 auto var(--space-md);">
-                                    <i class="fas fa-trophy"></i>
+                        <div class="hero-card" style="max-width: 480px; width: 100%;">
+                            <div class="text-center mb-5">
+                                <div class="logo-icon" style="width: 80px; height: 80px; margin: 0 auto var(--space-lg);">
+                                    <i class="fas fa-crown"></i>
                                 </div>
-                                <h2 class="section-title" style="font-size: 2rem;">Welcome Back</h2>
-                                <p class="section-subtitle">Sign in to track your referral journey</p>
+                                <h2 class="display-2">Welcome Back</h2>
+                                <p class="text-muted">Sign in to continue your wealth journey</p>
                             </div>
                             
                             <form id="loginForm">
@@ -1210,12 +1505,12 @@
                                     <input type="password" class="form-control" id="loginPassword" placeholder="Enter your password" required>
                                 </div>
                                 
-                                <button type="submit" class="btn btn-primary btn-block btn-lg">
+                                <button type="submit" class="btn btn-primary btn-block" style="margin-top: var(--space-xl);">
                                     <i class="fas fa-sign-in-alt"></i> Sign In
                                 </button>
                                 
-                                <div class="text-center mt-3">
-                                    <p class="text-muted">Don't have an account? <a href="#register" id="showRegister">Register here</a></p>
+                                <div class="text-center mt-4">
+                                    <p class="text-muted">Don't have an account? <a href="#register" id="showRegister" class="text-gradient" style="font-weight: 600;">Join Now</a></p>
                                 </div>
                             </form>
                         </div>
@@ -1227,15 +1522,15 @@
         <!-- Register Page -->
         <div class="page" id="registerPage">
             <section class="section">
-                <div class="container">
+                <div class="container container-narrow">
                     <div class="d-flex justify-center align-center" style="min-height: 80vh;">
-                        <div class="card" style="max-width: 500px; width: 100%;">
-                            <div class="card-header text-center">
-                                <div class="logo-icon" style="width: 60px; height: 60px; margin: 0 auto var(--space-md);">
-                                    <i class="fas fa-trophy"></i>
+                        <div class="hero-card" style="max-width: 520px; width: 100%;">
+                            <div class="text-center mb-5">
+                                <div class="logo-icon" style="width: 80px; height: 80px; margin: 0 auto var(--space-lg);">
+                                    <i class="fas fa-crown"></i>
                                 </div>
-                                <h2 class="section-title" style="font-size: 2rem;">Create Account</h2>
-                                <p class="section-subtitle">Join RawWealthy and start earning rewards</p>
+                                <h2 class="display-2">Join Elite</h2>
+                                <p class="text-muted">Start your journey to wealth creation</p>
                             </div>
                             
                             <form id="registerForm">
@@ -1256,20 +1551,20 @@
                                 
                                 <div class="form-group">
                                     <label class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="registerPassword" placeholder="Create a password" required>
+                                    <input type="password" class="form-control" id="registerPassword" placeholder="Create a strong password" required>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label class="form-label">Referral Code (Optional)</label>
-                                    <input type="text" class="form-control" id="registerReferralCode" placeholder="Enter referral code">
+                                    <input type="text" class="form-control" id="registerReferralCode" placeholder="Enter referral code for bonus">
                                 </div>
                                 
-                                <button type="submit" class="btn btn-primary btn-block btn-lg">
+                                <button type="submit" class="btn btn-primary btn-block" style="margin-top: var(--space-xl);">
                                     <i class="fas fa-user-plus"></i> Create Account
                                 </button>
                                 
-                                <div class="text-center mt-3">
-                                    <p class="text-muted">Already have an account? <a href="#login" id="showLogin">Sign in here</a></p>
+                                <div class="text-center mt-4">
+                                    <p class="text-muted">Already have an account? <a href="#login" id="showLogin" class="text-gradient" style="font-weight: 600;">Sign In</a></p>
                                 </div>
                             </form>
                         </div>
@@ -1282,32 +1577,39 @@
         <div class="page" id="dashboardPage">
             <section class="section">
                 <div class="container">
-                    <!-- Hero Section -->
-                    <div class="card shadow-lg mb-5">
-                        <div class="card-body">
-                            <div class="d-grid" style="grid-template-columns: 1fr auto; gap: var(--space-xl);">
-                                <div>
-                                    <h1 class="section-title text-left" style="margin-bottom: var(--space-sm);">Welcome, <span id="dashboardUserName">User</span>!</h1>
-                                    <p class="text-lg text-muted mb-4">Track your referral progress and unlock amazing rewards</p>
-                                    
-                                    <div class="d-flex gap-3 flex-wrap">
-                                        <button class="btn btn-primary" id="shareDashboardLink">
-                                            <i class="fas fa-share-alt"></i> Share Referral Link
-                                        </button>
-                                        <button class="btn btn-outline" data-page="rewards">
-                                            <i class="fas fa-gift"></i> View Rewards
-                                        </button>
-                                        <button class="btn btn-outline" data-page="leaderboard">
-                                            <i class="fas fa-trophy"></i> View Leaderboard
-                                        </button>
+                    <!-- Hero Welcome -->
+                    <div class="hero-card mb-6">
+                        <div class="d-grid" style="grid-template-columns: 1fr auto; gap: var(--space-2xl); align-items: center;">
+                            <div>
+                                <div class="d-flex align-center gap-3 mb-4">
+                                    <div class="user-avatar" style="width: 60px; height: 60px; font-size: 1.25rem;" id="dashboardUserAvatar">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div>
+                                        <h1 class="display-1" style="font-size: 2.5rem; margin: 0;">Welcome, <span class="text-gradient" id="dashboardUserName">User</span>!</h1>
+                                        <p class="text-muted">Your journey to wealth creation continues</p>
                                     </div>
                                 </div>
                                 
-                                <div class="d-none d-md-block">
-                                    <div class="position-relative">
-                                        <div class="animate-float">
-                                            <i class="fas fa-trophy" style="font-size: 6rem; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
-                                        </div>
+                                <p class="text-lg mb-5" style="color: var(--text-secondary);">Track your referral progress and unlock amazing rewards as you grow your network</p>
+                                
+                                <div class="d-flex gap-3 flex-wrap">
+                                    <button class="btn btn-primary" id="shareDashboardLink">
+                                        <i class="fas fa-share-alt"></i> Share Link
+                                    </button>
+                                    <button class="btn btn-outline" data-page="rewards">
+                                        <i class="fas fa-gift"></i> View Rewards
+                                    </button>
+                                    <button class="btn btn-outline" data-page="leaderboard">
+                                        <i class="fas fa-trophy"></i> Leaderboard
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="d-none d-md-block">
+                                <div class="animate-float">
+                                    <div class="stat-icon" style="width: 120px; height: 120px; font-size: 3rem; background: var(--gradient-primary);">
+                                        <i class="fas fa-chart-line"></i>
                                     </div>
                                 </div>
                             </div>
@@ -1315,9 +1617,9 @@
                     </div>
 
                     <!-- Stats Overview -->
-                    <div class="section-header">
-                        <h2 class="section-title">Your Performance</h2>
-                        <p class="section-subtitle">Track your referral journey in real-time</p>
+                    <div class="section-header mb-6">
+                        <h2 class="display-2">Performance Dashboard</h2>
+                        <p class="text-muted">Real-time tracking of your referral journey</p>
                     </div>
 
                     <div class="stats-grid">
@@ -1334,11 +1636,11 @@
                                 <i class="fas fa-wallet"></i>
                             </div>
                             <div class="stat-value" id="referralEarnings">₦0</div>
-                            <div class="stat-label">Referral Earnings</div>
+                            <div class="stat-label">Total Earnings</div>
                         </div>
                         
                         <div class="stat-card">
-                            <div class="stat-icon" style="background: var(--gradient-warning);">
+                            <div class="stat-icon" style="background: var(--gradient-accent);">
                                 <i class="fas fa-gift"></i>
                             </div>
                             <div class="stat-value" id="rewardsEarned">0</div>
@@ -1346,25 +1648,28 @@
                         </div>
                         
                         <div class="stat-card">
-                            <div class="stat-icon" style="background: var(--gradient-accent);">
+                            <div class="stat-icon" style="background: var(--gradient-warning);">
                                 <i class="fas fa-medal"></i>
                             </div>
                             <div class="stat-value" id="leaderboardRank">-</div>
-                            <div class="stat-label">Leaderboard Rank</div>
+                            <div class="stat-label">Global Rank</div>
                         </div>
                     </div>
 
                     <!-- Progress Section -->
-                    <div class="card mb-5">
-                        <div class="card-header d-flex justify-between align-center">
-                            <h3 class="text-lg font-semibold">Next Reward Progress</h3>
+                    <div class="hero-card mb-6">
+                        <div class="card-header d-flex justify-between align-center mb-4">
+                            <div>
+                                <h3 class="display-2" style="font-size: 1.5rem; margin: 0;">Next Reward Progress</h3>
+                                <p class="text-muted">Keep referring to unlock amazing rewards</p>
+                            </div>
                             <span class="badge badge-warning" id="nextRewardStatus">Loading...</span>
                         </div>
                         
                         <div class="card-body">
                             <div class="progress-container">
                                 <div class="progress-header">
-                                    <span class="progress-label" id="nextRewardName">Loading...</span>
+                                    <span class="progress-label" id="nextRewardName">Loading reward...</span>
                                     <span class="progress-value" id="progressText">0/0</span>
                                 </div>
                                 <div class="progress-bar">
@@ -1372,45 +1677,54 @@
                                 </div>
                             </div>
                             
-                            <div class="d-flex align-center gap-3 mt-4 p-3 rounded-lg" style="background: var(--dark-3);">
-                                <i class="fas fa-info-circle text-primary"></i>
+                            <div class="d-flex align-center gap-3 mt-5 p-4 rounded-xl glass-effect">
+                                <i class="fas fa-info-circle text-primary fa-lg"></i>
                                 <div>
-                                    <strong>Keep going!</strong> You need <span id="referralsNeeded" class="font-bold">0</span> more referrals to unlock your next reward!
+                                    <strong class="text-primary">Keep going!</strong> You need <span id="referralsNeeded" class="font-bold text-gradient">0</span> more referrals to unlock your next reward!
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Quick Stats -->
-                    <div class="d-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-lg);">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="font-semibold">Available Balance</h4>
+                    <!-- Financial Overview -->
+                    <div class="d-grid mb-6" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-xl);">
+                        <div class="hero-card">
+                            <div class="d-flex align-center gap-3 mb-4">
+                                <div class="stat-icon" style="width: 48px; height: 48px; font-size: 1rem; background: var(--gradient-success);">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">Available Balance</h4>
+                                    <div class="text-3xl font-bold" id="availableBalance">₦0.00</div>
+                                </div>
                             </div>
-                            <div class="card-body">
-                                <div class="text-3xl font-bold mb-2" id="availableBalance">₦0.00</div>
-                                <div class="text-sm text-muted">Withdrawable earnings</div>
-                            </div>
+                            <div class="text-sm text-muted">Withdrawable earnings anytime</div>
                         </div>
                         
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="font-semibold">Total Earnings</h4>
+                        <div class="hero-card">
+                            <div class="d-flex align-center gap-3 mb-4">
+                                <div class="stat-icon" style="width: 48px; height: 48px; font-size: 1rem; background: var(--gradient-primary);">
+                                    <i class="fas fa-chart-bar"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">Total Earnings</h4>
+                                    <div class="text-3xl font-bold" id="totalEarnings">₦0.00</div>
+                                </div>
                             </div>
-                            <div class="card-body">
-                                <div class="text-3xl font-bold mb-2" id="totalEarnings">₦0.00</div>
-                                <div class="text-sm text-muted">Lifetime earnings</div>
-                            </div>
+                            <div class="text-sm text-muted">Lifetime earnings from referrals</div>
                         </div>
                         
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="font-semibold">Pending Investments</h4>
+                        <div class="hero-card">
+                            <div class="d-flex align-center gap-3 mb-4">
+                                <div class="stat-icon" style="width: 48px; height: 48px; font-size: 1rem; background: var(--gradient-warning);">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">Pending</h4>
+                                    <div class="text-3xl font-bold" id="pendingInvestments">₦0.00</div>
+                                </div>
                             </div>
-                            <div class="card-body">
-                                <div class="text-3xl font-bold mb-2" id="pendingInvestments">₦0.00</div>
-                                <div class="text-sm text-muted">Awaiting approval</div>
-                            </div>
+                            <div class="text-sm text-muted">Awaiting approval & processing</div>
                         </div>
                     </div>
                 </div>
@@ -1421,26 +1735,24 @@
         <div class="page" id="rewardsPage">
             <section class="section">
                 <div class="container">
-                    <div class="section-header">
-                        <h1 class="section-title">Elite Reward Tiers</h1>
-                        <p class="section-subtitle">Unlock amazing rewards as you refer more friends</p>
+                    <div class="section-header mb-6">
+                        <h1 class="display-1">Elite Reward Tiers</h1>
+                        <p class="text-muted">Unlock amazing rewards as you refer more friends</p>
                     </div>
 
                     <!-- Filter Tabs -->
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <div class="d-flex gap-2 flex-wrap">
-                                <button class="btn btn-sm btn-primary active" data-filter="all">All Rewards</button>
-                                <button class="btn btn-sm btn-outline" data-filter="available">Available</button>
-                                <button class="btn btn-sm btn-outline" data-filter="achieved">Achieved</button>
-                                <button class="btn btn-sm btn-outline" data-filter="locked">Locked</button>
-                            </div>
+                    <div class="hero-card mb-6">
+                        <div class="d-flex gap-2 flex-wrap justify-center">
+                            <button class="btn btn-sm btn-primary active" data-filter="all">All Rewards</button>
+                            <button class="btn btn-sm btn-outline" data-filter="available">Available</button>
+                            <button class="btn btn-sm btn-outline" data-filter="achieved">Achieved</button>
+                            <button class="btn btn-sm btn-outline" data-filter="locked">Locked</button>
                         </div>
                     </div>
 
                     <!-- Rewards Grid -->
                     <div class="rewards-grid" id="rewardsContainer">
-                        <!-- Rewards will be dynamically loaded -->
+                        <!-- Rewards will be dynamically loaded with real images -->
                     </div>
                 </div>
             </section>
@@ -1450,23 +1762,25 @@
         <div class="page" id="leaderboardPage">
             <section class="section">
                 <div class="container">
-                    <div class="section-header">
-                        <h1 class="section-title">Top Referrers</h1>
-                        <p class="section-subtitle">See who's leading the referral challenge</p>
+                    <div class="section-header mb-6">
+                        <h1 class="display-1">Global Leaderboard</h1>
+                        <p class="text-muted">See who's leading the referral challenge worldwide</p>
                     </div>
 
-                    <div class="card">
-                        <div class="card-header d-flex justify-between align-center">
-                            <h3 class="font-semibold">Global Leaderboard</h3>
-                            <div class="d-flex gap-3 align-center">
-                                <select class="form-control" style="width: auto;" id="timeFilter">
-                                    <option value="all">All Time</option>
-                                    <option value="month">This Month</option>
-                                    <option value="week">This Week</option>
-                                </select>
-                                <button class="btn btn-sm btn-primary" id="refreshLeaderboard">
-                                    <i class="fas fa-sync-alt"></i>
-                                </button>
+                    <div class="leaderboard-container mb-6">
+                        <div class="leaderboard-header">
+                            <div class="d-flex justify-between align-center">
+                                <h3 class="display-2" style="font-size: 1.5rem; margin: 0;">Top Performers</h3>
+                                <div class="d-flex gap-3 align-center">
+                                    <select class="form-control" style="width: auto; min-width: 120px;" id="timeFilter">
+                                        <option value="all">All Time</option>
+                                        <option value="month">This Month</option>
+                                        <option value="week">This Week</option>
+                                    </select>
+                                    <button class="btn btn-primary" id="refreshLeaderboard">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         
@@ -1477,7 +1791,7 @@
                                         <th style="width: 80px;">Rank</th>
                                         <th>User</th>
                                         <th style="width: 150px;">Referrals</th>
-                                        <th style="width: 150px;">Rewards</th>
+                                        <th style="width: 150px;">Earnings</th>
                                         <th style="width: 120px;">Tier</th>
                                     </tr>
                                 </thead>
@@ -1488,10 +1802,10 @@
                         </div>
                     </div>
 
-                    <!-- Your Position Card -->
-                    <div class="card mt-4">
-                        <div class="card-header">
-                            <h3 class="font-semibold">Your Position</h3>
+                    <!-- Your Position -->
+                    <div class="hero-card">
+                        <div class="card-header mb-4">
+                            <h3 class="display-2" style="font-size: 1.5rem; margin: 0;">Your Position</h3>
                         </div>
                         <div class="card-body" id="yourPosition">
                             <!-- Your position will be loaded dynamically -->
@@ -1505,37 +1819,37 @@
         <div class="page" id="profilePage">
             <section class="section">
                 <div class="container">
-                    <div class="section-header">
-                        <h1 class="section-title">Your Profile</h1>
-                        <p class="section-subtitle">Manage your account and referral settings</p>
+                    <div class="section-header mb-6">
+                        <h1 class="display-1">Your Profile</h1>
+                        <p class="text-muted">Manage your account and referral settings</p>
                     </div>
 
-                    <div class="d-grid" style="grid-template-columns: 1fr 2fr; gap: var(--space-xl);">
+                    <div class="d-grid" style="grid-template-columns: 1fr 2fr; gap: var(--space-2xl);">
                         <!-- Profile Sidebar -->
                         <div>
-                            <div class="card mb-4">
-                                <div class="card-body text-center">
-                                    <div class="user-avatar" style="width: 80px; height: 80px; margin: 0 auto var(--space-md); font-size: 1.5rem;" id="profileAvatar">
+                            <div class="hero-card mb-4">
+                                <div class="text-center p-5">
+                                    <div class="user-avatar" style="width: 100px; height: 100px; margin: 0 auto var(--space-lg); font-size: 2rem;" id="profileAvatar">
                                         <i class="fas fa-user"></i>
                                     </div>
                                     <h3 id="profileName" class="mb-2">Loading...</h3>
-                                    <p class="text-muted mb-3" id="profileEmail">Loading...</p>
+                                    <p class="text-muted mb-4" id="profileEmail">Loading...</p>
                                     
-                                    <div class="d-flex justify-center gap-2 mb-4">
+                                    <div class="d-flex justify-center gap-2 mb-5">
                                         <span class="badge badge-success" id="memberStatus">Active</span>
                                         <span class="badge badge-primary" id="memberTier">Bronze</span>
                                     </div>
                                     
                                     <div class="text-left">
-                                        <div class="d-flex justify-between mb-2">
+                                        <div class="d-flex justify-between mb-3 p-3 rounded-lg" style="background: var(--dark-3);">
                                             <span class="text-muted">Member Since</span>
                                             <span id="memberSinceDate" class="font-semibold">Loading...</span>
                                         </div>
-                                        <div class="d-flex justify-between mb-2">
+                                        <div class="d-flex justify-between mb-3 p-3 rounded-lg" style="background: var(--dark-3);">
                                             <span class="text-muted">Referral Code</span>
                                             <span id="referralCode" class="font-semibold text-primary">RW-0000</span>
                                         </div>
-                                        <div class="d-flex justify-between">
+                                        <div class="d-flex justify-between p-3 rounded-lg" style="background: var(--dark-3);">
                                             <span class="text-muted">Total Referrals</span>
                                             <span id="profileReferrals" class="font-semibold">0</span>
                                         </div>
@@ -1544,26 +1858,26 @@
                             </div>
 
                             <!-- Referral Link -->
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="font-semibold">Your Referral Link</h3>
+                            <div class="hero-card">
+                                <div class="card-header mb-4">
+                                    <h3 class="display-2" style="font-size: 1.25rem; margin: 0;">Your Referral Link</h3>
                                 </div>
                                 <div class="card-body">
-                                    <div class="d-flex gap-2 mb-3">
+                                    <div class="d-flex gap-2 mb-4">
                                         <input type="text" class="form-control" id="referralLinkInput" readonly>
                                         <button class="btn btn-primary" id="copyReferralLink">
                                             <i class="fas fa-copy"></i>
                                         </button>
                                     </div>
                                     
-                                    <div class="d-flex flex-wrap gap-2">
-                                        <button class="btn btn-sm btn-outline" data-share="whatsapp">
+                                    <div class="d-flex flex-wrap gap-2 justify-center">
+                                        <button class="btn btn-outline" data-share="whatsapp">
                                             <i class="fab fa-whatsapp"></i> WhatsApp
                                         </button>
-                                        <button class="btn btn-sm btn-outline" data-share="telegram">
+                                        <button class="btn btn-outline" data-share="telegram">
                                             <i class="fab fa-telegram"></i> Telegram
                                         </button>
-                                        <button class="btn btn-sm btn-outline" data-share="twitter">
+                                        <button class="btn btn-outline" data-share="twitter">
                                             <i class="fab fa-twitter"></i> Twitter
                                         </button>
                                     </div>
@@ -1574,10 +1888,10 @@
                         <!-- Main Content -->
                         <div>
                             <!-- Referral History -->
-                            <div class="card mb-4">
-                                <div class="card-header d-flex justify-between align-center">
-                                    <h3 class="font-semibold">Recent Referrals</h3>
-                                    <button class="btn btn-sm btn-secondary" id="refreshReferrals">
+                            <div class="hero-card mb-6">
+                                <div class="card-header d-flex justify-between align-center mb-4">
+                                    <h3 class="display-2" style="font-size: 1.25rem; margin: 0;">Recent Referrals</h3>
+                                    <button class="btn btn-primary" id="refreshReferrals">
                                         <i class="fas fa-sync-alt"></i> Refresh
                                     </button>
                                 </div>
@@ -1589,9 +1903,9 @@
                             </div>
 
                             <!-- Achievement Progress -->
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="font-semibold">Achievement Progress</h3>
+                            <div class="hero-card">
+                                <div class="card-header mb-4">
+                                    <h3 class="display-2" style="font-size: 1.25rem; margin: 0;">Achievement Progress</h3>
                                 </div>
                                 <div class="card-body">
                                     <div id="achievementProgress">
@@ -1611,11 +1925,14 @@
         <div class="container">
             <div class="footer-grid">
                 <div>
-                    <div class="logo mb-3">
-                        <div class="logo-icon" style="width: 40px; height: 40px;">
-                            <i class="fas fa-trophy"></i>
+                    <div class="logo mb-4">
+                        <div class="logo-icon" style="width: 48px; height: 48px;">
+                            <i class="fas fa-crown"></i>
                         </div>
-                        <span class="logo-text">RawWealthy Elite</span>
+                        <div class="logo-text">
+                            <div class="logo-main">RAWWEALTHY</div>
+                            <div class="logo-sub">Elite Referrals</div>
+                        </div>
                     </div>
                     <p class="text-muted mb-4">
                         The ultimate referral challenge platform that rewards you for building wealth with friends.
@@ -1623,36 +1940,36 @@
                 </div>
                 
                 <div>
-                    <h4 class="font-semibold mb-3">Platform</h4>
+                    <h4 class="font-semibold mb-4 text-uppercase">Platform</h4>
                     <ul class="footer-links">
-                        <li><a href="#dashboard" data-page="dashboard">Dashboard</a></li>
-                        <li><a href="#rewards" data-page="rewards">Rewards</a></li>
-                        <li><a href="#leaderboard" data-page="leaderboard">Leaderboard</a></li>
-                        <li><a href="#profile" data-page="profile">Profile</a></li>
+                        <li><a href="#dashboard" data-page="dashboard"><i class="fas fa-chevron-right"></i> Dashboard</a></li>
+                        <li><a href="#rewards" data-page="rewards"><i class="fas fa-chevron-right"></i> Rewards</a></li>
+                        <li><a href="#leaderboard" data-page="leaderboard"><i class="fas fa-chevron-right"></i> Leaderboard</a></li>
+                        <li><a href="#profile" data-page="profile"><i class="fas fa-chevron-right"></i> Profile</a></li>
                     </ul>
                 </div>
                 
                 <div>
-                    <h4 class="font-semibold mb-3">Support</h4>
+                    <h4 class="font-semibold mb-4 text-uppercase">Support</h4>
                     <ul class="footer-links">
-                        <li><a href="#" id="contactSupport">Contact Support</a></li>
-                        <li><a href="#" id="termsConditions">Terms & Conditions</a></li>
-                        <li><a href="#" id="privacyPolicy">Privacy Policy</a></li>
+                        <li><a href="#" id="contactSupport"><i class="fas fa-chevron-right"></i> Contact Support</a></li>
+                        <li><a href="#" id="termsConditions"><i class="fas fa-chevron-right"></i> Terms & Conditions</a></li>
+                        <li><a href="#" id="privacyPolicy"><i class="fas fa-chevron-right"></i> Privacy Policy</a></li>
                     </ul>
                 </div>
                 
                 <div>
-                    <h4 class="font-semibold mb-3">Contact Info</h4>
+                    <h4 class="font-semibold mb-4 text-uppercase">Contact Info</h4>
                     <ul class="footer-links">
-                        <li><i class="fas fa-envelope mr-2"></i> support@rawwealthy.com</li>
-                        <li><i class="fas fa-phone mr-2"></i> +234 916 180 6424</li>
-                        <li><i class="fas fa-map-marker-alt mr-2"></i> Lagos, Nigeria</li>
+                        <li><a href="mailto:support@rawwealthy.com"><i class="fas fa-envelope"></i> support@rawwealthy.com</a></li>
+                        <li><a href="tel:+2349161806424"><i class="fas fa-phone"></i> +234 916 180 6424</a></li>
+                        <li><a href="#"><i class="fas fa-map-marker-alt"></i> Lagos, Nigeria</a></li>
                     </ul>
                 </div>
             </div>
             
             <div class="footer-bottom">
-                <p>&copy; 2024 RawWealthy Elite Referral Challenges. All rights reserved.</p>
+                <p>&copy; 2024 RawWealthy Elite Referral Platform. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -1661,23 +1978,23 @@
     <div class="modal-overlay" id="claimModal">
         <div class="modal modal-large">
             <button class="modal-close">&times;</button>
-            <div class="p-5">
-                <div class="text-center mb-5">
-                    <div class="stat-icon mb-3" style="background: var(--gradient-success); width: 60px; height: 60px; margin: 0 auto;">
+            <div class="p-6">
+                <div class="text-center mb-6">
+                    <div class="stat-icon mb-4" style="background: var(--gradient-success); width: 80px; height: 80px; margin: 0 auto; font-size: 2rem;">
                         <i class="fas fa-gift"></i>
                     </div>
-                    <h2 class="section-title" style="font-size: 1.75rem;">Claim Your Reward!</h2>
-                    <p class="section-subtitle">Fill in your details to receive your reward</p>
+                    <h2 class="display-2" style="font-size: 2rem;">Claim Your Reward!</h2>
+                    <p class="text-muted">Fill in your details to receive your reward</p>
                 </div>
                 
                 <form id="claimForm">
-                    <div class="d-grid" style="grid-template-columns: 1fr 1fr; gap: var(--space-xl);">
+                    <div class="d-grid" style="grid-template-columns: 1fr 1fr; gap: var(--space-2xl);">
                         <div>
-                            <div class="card">
-                                <div class="card-body">
-                                    <h4 id="claimRewardName" class="font-semibold mb-2">Reward Name</h4>
-                                    <p class="text-muted mb-3" id="claimRewardDesc">Reward description</p>
-                                    <div class="d-flex gap-2 mb-3">
+                            <div class="hero-card h-100">
+                                <div class="p-4">
+                                    <h4 id="claimRewardName" class="font-semibold mb-3">Reward Name</h4>
+                                    <p class="text-muted mb-4" id="claimRewardDesc">Reward description</p>
+                                    <div class="d-flex gap-2 mb-4">
                                         <span class="badge badge-primary" id="claimRewardTier">Tier</span>
                                         <span class="badge badge-success" id="claimRewardReferrals">0 Referrals</span>
                                     </div>
@@ -1706,7 +2023,7 @@
                                 <textarea class="form-control" id="claimAddress" rows="3" required></textarea>
                             </div>
                             
-                            <button type="submit" class="btn btn-success btn-block">
+                            <button type="submit" class="btn btn-success btn-block" style="margin-top: var(--space-lg);">
                                 <i class="fas fa-paper-plane"></i> Submit Claim Request
                             </button>
                         </div>
@@ -1720,15 +2037,15 @@
     <div class="modal-overlay" id="shareModal">
         <div class="modal">
             <button class="modal-close">&times;</button>
-            <div class="p-5">
-                <div class="text-center mb-5">
-                    <i class="fas fa-share-alt" style="font-size: 3rem; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
-                    <h2 class="section-title" style="font-size: 1.75rem;">Share Referral Link</h2>
-                    <p class="section-subtitle">Share your link to start earning rewards</p>
+            <div class="p-6">
+                <div class="text-center mb-6">
+                    <i class="fas fa-share-alt" style="font-size: 3rem; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: var(--space-md);"></i>
+                    <h2 class="display-2" style="font-size: 2rem;">Share Referral Link</h2>
+                    <p class="text-muted">Share your link to start earning rewards</p>
                 </div>
                 
-                <div class="mb-4">
-                    <label class="form-label">Your Referral Link</label>
+                <div class="mb-6">
+                    <label class="form-label mb-2">Your Referral Link</label>
                     <div class="d-flex gap-2">
                         <input type="text" class="form-control" id="shareLinkInput" readonly>
                         <button class="btn btn-primary" id="copyShareLink">
@@ -1737,7 +2054,7 @@
                     </div>
                 </div>
                 
-                <div class="d-grid" style="grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: var(--space-sm);">
+                <div class="d-grid" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--space-md);">
                     <button class="btn btn-outline" data-share-platform="whatsapp">
                         <i class="fab fa-whatsapp"></i> WhatsApp
                     </button>
@@ -1761,11 +2078,11 @@
     <!-- JavaScript -->
     <script>
         // ==============================================
-        // RAWWEALTHY ADVANCED FRONTEND v3.0
-        // Mobile-First, Modern Design with Backend Integration
+        // RAWWEALTHY ELITE v4.0
+        // World-Class Modern Design with Full Functionality
         // ==============================================
 
-        // Configuration
+        // Enhanced Configuration
         const CONFIG = {
             API_BASE_URL: window.location.origin.includes('localhost') 
                 ? 'http://localhost:10000' 
@@ -1778,7 +2095,7 @@
                 DEPOSITS: '/api/deposits',
                 WITHDRAWALS: '/api/withdrawals',
                 REFERRALS: '/api/referrals/stats',
-                LEADERBOARD: '/api/admin/users', // Will filter for ranking
+                LEADERBOARD: '/api/admin/users',
                 TRANSACTIONS: '/api/transactions',
                 NOTIFICATIONS: '/api/notifications',
                 UPLOAD: '/api/upload'
@@ -1790,7 +2107,8 @@
                     description: "Instant airtime or data bonus for your mobile line",
                     requiredReferrals: 5,
                     type: "digital",
-                    tier: "Bronze"
+                    tier: "Bronze",
+                    image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 },
                 {
                     id: 2,
@@ -1798,7 +2116,8 @@
                     description: "Credit added to your RawWealthy wallet",
                     requiredReferrals: 10,
                     type: "digital",
-                    tier: "Bronze"
+                    tier: "Bronze",
+                    image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 },
                 {
                     id: 3,
@@ -1806,7 +2125,8 @@
                     description: "Premium quality branded t-shirt",
                     requiredReferrals: 15,
                     type: "merchandise",
-                    tier: "Silver"
+                    tier: "Silver",
+                    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 },
                 {
                     id: 4,
@@ -1814,7 +2134,8 @@
                     description: "Bonus credit for your investment portfolio",
                     requiredReferrals: 25,
                     type: "digital",
-                    tier: "Silver"
+                    tier: "Silver",
+                    image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 },
                 {
                     id: 5,
@@ -1822,7 +2143,8 @@
                     description: "Portable wireless Bluetooth speaker",
                     requiredReferrals: 30,
                     type: "electronics",
-                    tier: "Silver"
+                    tier: "Silver",
+                    image: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 },
                 {
                     id: 6,
@@ -1830,7 +2152,8 @@
                     description: "Ergonomic wireless mouse with gaming mousepad",
                     requiredReferrals: 40,
                     type: "electronics",
-                    tier: "Gold"
+                    tier: "Gold",
+                    image: "https://images.unsplash.com/photo-1527814050087-3793815479db?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 },
                 {
                     id: 7,
@@ -1838,7 +2161,8 @@
                     description: "Professional lighting for content creators",
                     requiredReferrals: 60,
                     type: "electronics",
-                    tier: "Gold"
+                    tier: "Gold",
+                    image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 },
                 {
                     id: 8,
@@ -1846,7 +2170,8 @@
                     description: "Premium quality branded backpack",
                     requiredReferrals: 80,
                     type: "merchandise",
-                    tier: "Gold"
+                    tier: "Gold",
+                    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 },
                 {
                     id: 9,
@@ -1854,7 +2179,8 @@
                     description: "Latest Android tablet with premium features",
                     requiredReferrals: 120,
                     type: "electronics",
-                    tier: "Platinum"
+                    tier: "Platinum",
+                    image: "https://images.unsplash.com/photo-1546054454-aa26e2b734c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 },
                 {
                     id: 10,
@@ -1862,7 +2188,8 @@
                     description: "Mid-range Android smartphone",
                     requiredReferrals: 150,
                     type: "electronics",
-                    tier: "Platinum"
+                    tier: "Platinum",
+                    image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 },
                 {
                     id: 11,
@@ -1870,7 +2197,8 @@
                     description: "4G router with 1-month unlimited data",
                     requiredReferrals: 180,
                     type: "electronics",
-                    tier: "Platinum"
+                    tier: "Platinum",
+                    image: "https://images.unsplash.com/photo-1614332287897-cdc485fa562d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 },
                 {
                     id: 12,
@@ -1878,7 +2206,8 @@
                     description: "Choice of cash or investment credit",
                     requiredReferrals: 250,
                     type: "financial",
-                    tier: "Diamond"
+                    tier: "Diamond",
+                    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 },
                 {
                     id: 13,
@@ -1886,7 +2215,8 @@
                     description: "Professional gaming headset with mic",
                     requiredReferrals: 350,
                     type: "electronics",
-                    tier: "Diamond"
+                    tier: "Diamond",
+                    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 },
                 {
                     id: 14,
@@ -1894,7 +2224,8 @@
                     description: "Kitchen appliance combo",
                     requiredReferrals: 600,
                     type: "appliances",
-                    tier: "Elite"
+                    tier: "Elite",
+                    image: "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 },
                 {
                     id: 15,
@@ -1902,7 +2233,8 @@
                     description: "High-capacity solar-charged power bank",
                     requiredReferrals: 800,
                     type: "electronics",
-                    tier: "Elite"
+                    tier: "Elite",
+                    image: "https://images.unsplash.com/photo-1566807380483-50e2a5c08f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 },
                 {
                     id: 16,
@@ -1910,7 +2242,8 @@
                     description: "Power backup solution for your home",
                     requiredReferrals: 1500,
                     type: "appliances",
-                    tier: "Legendary"
+                    tier: "Legendary",
+                    image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 },
                 {
                     id: 17,
@@ -1918,7 +2251,8 @@
                     description: "Brand new 125cc motorcycle",
                     requiredReferrals: 2000,
                     type: "vehicle",
-                    tier: "Legendary"
+                    tier: "Legendary",
+                    image: "https://images.unsplash.com/photo-1558981285-6f0c94958bb6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 },
                 {
                     id: 18,
@@ -1926,7 +2260,8 @@
                     description: "Quality used SUV in excellent condition",
                     requiredReferrals: 7000,
                     type: "vehicle",
-                    tier: "Mythic"
+                    tier: "Mythic",
+                    image: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 },
                 {
                     id: 19,
@@ -1934,7 +2269,8 @@
                     description: "Funding for your business idea",
                     requiredReferrals: 12000,
                     type: "financial",
-                    tier: "Mythic"
+                    tier: "Mythic",
+                    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 },
                 {
                     id: 20,
@@ -1942,12 +2278,13 @@
                     description: "Modern duplex in RawWealthy estate",
                     requiredReferrals: 25000,
                     type: "property",
-                    tier: "God-Tier"
+                    tier: "God-Tier",
+                    image: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 }
             ]
         };
 
-        // State Management
+        // Enhanced State Management
         class StateManager {
             constructor() {
                 this.currentUser = null;
@@ -2000,7 +2337,7 @@
             }
         }
 
-        // API Service
+        // Enhanced API Service
         class APIService {
             constructor(state) {
                 this.state = state;
@@ -2025,7 +2362,6 @@
                     });
 
                     if (response.status === 401) {
-                        // Token expired
                         this.state.clear();
                         window.location.hash = '#login';
                         throw new Error('Session expired. Please login again.');
@@ -2105,7 +2441,6 @@
                     }
                     throw new Error('Failed to fetch referral stats');
                 } catch (error) {
-                    // If endpoint doesn't exist, return mock data
                     return {
                         stats: {
                             total_referrals: Math.floor(Math.random() * 100),
@@ -2130,7 +2465,6 @@
                 try {
                     const data = await this.request(CONFIG.ENDPOINTS.LEADERBOARD);
                     if (data.success) {
-                        // Sort users by referral count
                         const leaderboard = data.data.users
                             .filter(user => user.role !== 'admin' && user.role !== 'super_admin')
                             .map(user => ({
@@ -2150,7 +2484,6 @@
                     }
                     throw new Error('Failed to fetch leaderboard');
                 } catch (error) {
-                    // Generate mock leaderboard
                     return this.generateMockLeaderboard();
                 }
             }
@@ -2195,7 +2528,6 @@
                     isCurrentUser: false
                 })).sort((a, b) => b.referrals - a.referrals);
 
-                // Add current user
                 if (this.state.currentUser) {
                     leaderboard.push({
                         id: 999,
@@ -2213,7 +2545,7 @@
             }
         }
 
-        // UI Manager
+        // Enhanced UI Manager
         class UIManager {
             constructor(state, api) {
                 this.state = state;
@@ -2225,6 +2557,7 @@
             init() {
                 this.setupEventListeners();
                 this.setupTheme();
+                this.setupScrollEffects();
                 this.checkAuth();
             }
 
@@ -2246,6 +2579,9 @@
                 if (mobileBtn && navMenu) {
                     mobileBtn.addEventListener('click', () => {
                         navMenu.classList.toggle('active');
+                        mobileBtn.innerHTML = navMenu.classList.contains('active') 
+                            ? '<i class="fas fa-times"></i>' 
+                            : '<i class="fas fa-bars"></i>';
                     });
                 }
 
@@ -2255,6 +2591,7 @@
                         !e.target.closest('#navMenu') && 
                         !e.target.closest('#mobileMenuBtn')) {
                         navMenu.classList.remove('active');
+                        mobileBtn.innerHTML = '<i class="fas fa-bars"></i>';
                     }
                 });
 
@@ -2382,6 +2719,37 @@
                 }
             }
 
+            setupScrollEffects() {
+                // Navbar scroll effect
+                window.addEventListener('scroll', () => {
+                    const navbar = document.querySelector('.navbar');
+                    if (window.scrollY > 50) {
+                        navbar.classList.add('scrolled');
+                    } else {
+                        navbar.classList.remove('scrolled');
+                    }
+                });
+
+                // Fade in animations
+                const observerOptions = {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('animate-fade-in');
+                        }
+                    });
+                }, observerOptions);
+
+                // Observe all cards and stats
+                document.querySelectorAll('.stat-card, .reward-card, .hero-card').forEach(el => {
+                    observer.observe(el);
+                });
+            }
+
             toggleTheme() {
                 this.state.theme = this.state.theme === 'dark' ? 'light' : 'dark';
                 localStorage.setItem('theme', this.state.theme);
@@ -2407,19 +2775,28 @@
             navigateTo(page) {
                 // Close mobile menu
                 const navMenu = document.getElementById('navMenu');
-                if (navMenu) navMenu.classList.remove('active');
-
-                // Hide all pages
-                document.querySelectorAll('.page').forEach(p => {
-                    p.classList.remove('active');
-                });
+                const mobileBtn = document.getElementById('mobileMenuBtn');
+                if (navMenu) {
+                    navMenu.classList.remove('active');
+                    if (mobileBtn) mobileBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                }
 
                 // Update navigation
                 document.querySelectorAll('.nav-link').forEach(link => {
                     link.classList.remove('active');
+                    const indicator = link.querySelector('.nav-indicator');
+                    if (indicator) indicator.style.opacity = '0';
+                    
                     if (link.getAttribute('data-page') === page) {
                         link.classList.add('active');
+                        const indicator = link.querySelector('.nav-indicator');
+                        if (indicator) indicator.style.opacity = '1';
                     }
+                });
+
+                // Hide all pages
+                document.querySelectorAll('.page').forEach(p => {
+                    p.classList.remove('active');
                 });
 
                 // Show target page
@@ -2427,6 +2804,7 @@
                 if (targetPage) {
                     targetPage.classList.add('active');
                     this.currentPage = page;
+                    window.location.hash = page;
 
                     // Load page data
                     this.loadPageData(page);
@@ -2455,22 +2833,24 @@
 
                 try {
                     // Update user info
-                    document.getElementById('dashboardUserName').textContent = this.state.currentUser.full_name.split(' ')[0];
+                    const firstName = this.state.currentUser.full_name?.split(' ')[0] || 'User';
+                    document.getElementById('dashboardUserName').textContent = firstName;
                     document.getElementById('userName').textContent = this.state.currentUser.full_name;
                     document.getElementById('userAvatar').textContent = this.getInitials(this.state.currentUser.full_name);
+                    document.getElementById('dashboardUserAvatar').textContent = this.getInitials(this.state.currentUser.full_name);
 
                     // Get referral stats
                     const referralStats = await this.api.getReferralStats();
                     
-                    // Update stats
-                    this.updateElement('totalReferrals', referralStats.stats.total_referrals);
-                    this.updateElement('referralEarnings', `₦${this.formatNumber(referralStats.stats.referral_earnings)}`);
+                    // Update stats with animations
+                    this.animateCounter('totalReferrals', referralStats.stats.total_referrals);
+                    this.animateCounter('referralEarnings', referralStats.stats.referral_earnings, true);
                     
                     // Calculate rewards earned
                     const earnedRewards = CONFIG.REWARDS.filter(r => 
                         referralStats.stats.total_referrals >= r.requiredReferrals
                     ).length;
-                    this.updateElement('rewardsEarned', earnedRewards);
+                    this.animateCounter('rewardsEarned', earnedRewards);
                     
                     // Update leaderboard rank
                     const leaderboard = await this.api.getLeaderboard();
@@ -2481,9 +2861,9 @@
                     this.updateNextRewardProgress(referralStats.stats.total_referrals);
                     
                     // Update financial stats
-                    this.updateElement('availableBalance', `₦${this.formatNumber(this.state.currentUser.balance || 0)}`);
-                    this.updateElement('totalEarnings', `₦${this.formatNumber(this.state.currentUser.total_earnings || 0)}`);
-                    this.updateElement('pendingInvestments', `₦${this.formatNumber(this.state.currentUser.pending_investment_amount || 0)}`);
+                    this.animateCounter('availableBalance', this.state.currentUser.balance || 0, true);
+                    this.animateCounter('totalEarnings', this.state.currentUser.total_earnings || 0, true);
+                    this.animateCounter('pendingInvestments', this.state.currentUser.pending_investment_amount || 0, true);
 
                     // Update referral link
                     const referralLink = referralStats.stats.referral_link || 
@@ -2538,10 +2918,12 @@
                         card.innerHTML = `
                             <div class="reward-badge ${badgeClass}">${badgeText}</div>
                             <div class="reward-image">
-                                <img src="https://images.unsplash.com/photo-${this.getRewardImage(reward.id)}?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="${reward.name}">
+                                <img src="${reward.image}" alt="${reward.name}" loading="lazy">
                             </div>
                             <div class="reward-content">
-                                <span class="reward-tier">${reward.tier} Tier</span>
+                                <span class="reward-tier">
+                                    <i class="fas fa-star"></i> ${reward.tier} Tier
+                                </span>
                                 <h3 class="reward-title">${reward.name}</h3>
                                 <p class="reward-description">${reward.description}</p>
                                 
@@ -2556,7 +2938,7 @@
                                 </div>
                                 
                                 ${!isAchieved ? `
-                                    <div class="text-center p-2 rounded-md mb-3" style="background: var(--dark-3);">
+                                    <div class="text-center p-3 rounded-lg mb-3" style="background: var(--dark-3);">
                                         <i class="fas fa-lock mr-2"></i>
                                         Need ${this.formatNumber(referralsNeeded)} more referrals
                                     </div>
@@ -2625,12 +3007,12 @@
                         row.innerHTML = `
                             <td>${rankBadge}</td>
                             <td>
-                                <div class="d-flex align-center gap-2">
+                                <div class="d-flex align-center gap-3">
                                     <div class="user-avatar">
                                         ${this.getInitials(user.name)}
                                     </div>
                                     <div>
-                                        <div class="font-semibold">${user.name} ${user.isCurrentUser ? '(You)' : ''}</div>
+                                        <div class="font-semibold">${user.name} ${user.isCurrentUser ? '<span class="text-primary">(You)</span>' : ''}</div>
                                         <div class="text-sm text-muted">${user.email}</div>
                                     </div>
                                 </div>
@@ -2640,7 +3022,7 @@
                                 <div class="text-sm text-muted">referrals</div>
                             </td>
                             <td>
-                                <div class="font-semibold">${this.formatNumber(user.earnings)}</div>
+                                <div class="font-semibold">₦${this.formatNumber(user.earnings)}</div>
                                 <div class="text-sm text-muted">earnings</div>
                             </td>
                             <td>
@@ -2654,25 +3036,29 @@
                     // Render user position card
                     if (userData) {
                         yourPosition.innerHTML = `
-                            <div class="d-grid" style="grid-template-columns: auto 1fr; gap: var(--space-lg); align-items: center;">
-                                <div class="rank-badge ${userRank <= 3 ? `rank-${userRank}` : ''}" style="width: 60px; height: 60px; font-size: 1.5rem;">
+                            <div class="d-grid" style="grid-template-columns: auto 1fr; gap: var(--space-xl); align-items: center;">
+                                <div class="rank-badge ${userRank <= 3 ? `rank-${userRank}` : ''}" style="width: 80px; height: 80px; font-size: 1.75rem;">
                                     ${userRank}
                                 </div>
                                 <div>
-                                    <h4 class="font-semibold mb-1">${userData.name}</h4>
+                                    <h4 class="font-semibold mb-2">${userData.name}</h4>
                                     <div class="d-flex justify-between mb-2">
                                         <span class="text-muted">Referrals:</span>
                                         <span class="font-semibold">${this.formatNumber(userData.referrals)}</span>
                                     </div>
-                                    <div class="d-flex justify-between">
+                                    <div class="d-flex justify-between mb-2">
                                         <span class="text-muted">Earnings:</span>
                                         <span class="font-semibold">₦${this.formatNumber(userData.earnings)}</span>
+                                    </div>
+                                    <div class="d-flex justify-between">
+                                        <span class="text-muted">Tier:</span>
+                                        <span class="font-semibold text-primary">${userData.tier}</span>
                                     </div>
                                 </div>
                             </div>
                             ${userRank > 10 ? `
-                                <div class="mt-3 p-3 rounded-lg" style="background: var(--dark-3);">
-                                    <i class="fas fa-info-circle mr-2"></i>
+                                <div class="mt-4 p-4 rounded-xl glass-effect">
+                                    <i class="fas fa-info-circle mr-2 text-primary"></i>
                                     You're ranked #${userRank}. Keep referring to climb higher!
                                 </div>
                             ` : ''}
@@ -2730,16 +3116,16 @@
                     
                     if (!referralsList) return;
 
-                    // Filter referral transactions
                     const referralTransactions = transactions.transactions
                         .filter(t => t.type === 'referral_bonus' || t.description.includes('referral'))
                         .slice(0, 10);
 
                     if (referralTransactions.length === 0) {
                         referralsList.innerHTML = `
-                            <div class="text-center p-4">
+                            <div class="text-center p-6">
                                 <i class="fas fa-users text-4xl text-muted mb-3"></i>
                                 <p class="text-muted">No referral activity yet</p>
+                                <p class="text-sm text-muted mt-2">Start sharing your referral link to see activity here</p>
                             </div>
                         `;
                         return;
@@ -2749,10 +3135,10 @@
                         <div class="overflow-auto">
                             <table style="width: 100%; border-collapse: collapse;">
                                 <thead>
-                                    <tr style="border-bottom: 1px solid var(--dark-4);">
-                                        <th class="text-left p-2">Date</th>
-                                        <th class="text-left p-2">Description</th>
-                                        <th class="text-left p-2">Amount</th>
+                                    <tr style="border-bottom: 1px solid var(--glass-border);">
+                                        <th class="text-left p-3 text-sm text-muted">Date</th>
+                                        <th class="text-left p-3 text-sm text-muted">Description</th>
+                                        <th class="text-left p-3 text-sm text-muted">Amount</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -2761,10 +3147,10 @@
                     referralTransactions.forEach(transaction => {
                         const date = new Date(transaction.createdAt).toLocaleDateString();
                         html += `
-                            <tr style="border-bottom: 1px solid var(--dark-4);">
-                                <td class="p-2">${date}</td>
-                                <td class="p-2">${transaction.description}</td>
-                                <td class="p-2 font-semibold ${transaction.amount > 0 ? 'text-success' : 'text-danger'}">
+                            <tr style="border-bottom: 1px solid var(--glass-border);">
+                                <td class="p-3">${date}</td>
+                                <td class="p-3">${transaction.description}</td>
+                                <td class="p-3 font-semibold ${transaction.amount > 0 ? 'text-success' : 'text-danger'}">
                                     ${transaction.amount > 0 ? '+' : ''}₦${this.formatNumber(Math.abs(transaction.amount))}
                                 </td>
                             </tr>
@@ -2795,7 +3181,7 @@
 
                 if (upcomingRewards.length === 0) {
                     container.innerHTML = `
-                        <div class="text-center p-4">
+                        <div class="text-center p-6">
                             <i class="fas fa-trophy text-4xl text-warning mb-3"></i>
                             <p class="font-semibold">All rewards achieved!</p>
                             <p class="text-muted">You've unlocked all available rewards</p>
@@ -2810,7 +3196,7 @@
                     const needed = reward.requiredReferrals - totalReferrals;
                     
                     html += `
-                        <div class="mb-4">
+                        <div class="mb-5">
                             <div class="d-flex justify-between align-center mb-2">
                                 <span class="font-semibold">${reward.name}</span>
                                 <span class="font-semibold text-primary">${Math.round(progress)}%</span>
@@ -2818,7 +3204,7 @@
                             <div class="progress-bar">
                                 <div class="progress-fill" style="width: ${progress}%"></div>
                             </div>
-                            <div class="d-flex justify-between mt-1 text-sm text-muted">
+                            <div class="d-flex justify-between mt-2 text-sm text-muted">
                                 <span>${this.formatNumber(totalReferrals)}/${this.formatNumber(reward.requiredReferrals)}</span>
                                 <span>${this.formatNumber(needed)} more needed</span>
                             </div>
@@ -2843,7 +3229,9 @@
                     
                     const progressBar = document.getElementById('progressBar');
                     if (progressBar) {
-                        progressBar.style.width = `${progress}%`;
+                        setTimeout(() => {
+                            progressBar.style.width = `${progress}%`;
+                        }, 300);
                     }
                 } else {
                     this.updateElement('nextRewardName', 'All Rewards Achieved!');
@@ -2863,7 +3251,7 @@
                 
                 // Update active filter button
                 document.querySelectorAll('[data-filter]').forEach(btn => {
-                    btn.classList.remove('btn-primary');
+                    btn.classList.remove('btn-primary', 'btn-outline');
                     btn.classList.add('btn-outline');
                     if (btn.getAttribute('data-filter') === filter) {
                         btn.classList.remove('btn-outline');
@@ -2889,7 +3277,7 @@
                     await this.api.login(email, password);
                     await this.loadDashboardData();
                     this.navigateTo('dashboard');
-                    this.showNotification('Login successful!', 'success');
+                    this.showNotification('Login successful! Welcome back!', 'success');
                 } catch (error) {
                     this.showNotification(error.message || 'Login failed', 'error');
                 } finally {
@@ -2925,7 +3313,7 @@
                     await this.api.register(userData);
                     await this.loadDashboardData();
                     this.navigateTo('dashboard');
-                    this.showNotification('Registration successful!', 'success');
+                    this.showNotification('Registration successful! Welcome to RawWealthy Elite!', 'success');
                 } catch (error) {
                     this.showNotification(error.message || 'Registration failed', 'error');
                 } finally {
@@ -2986,7 +3374,7 @@
                 localStorage.setItem('claimedRewards', JSON.stringify(this.state.claimedRewards));
 
                 // Show success message
-                this.showNotification(`Claim submitted for ${reward.name}! Admin will contact you.`, 'success');
+                this.showNotification(`Claim submitted for ${reward.name}! Our team will contact you within 24 hours.`, 'success');
 
                 // Close modal
                 this.closeAllModals();
@@ -3013,14 +3401,14 @@
                 const copyBtn = document.getElementById('copyShareLink');
                 if (copyBtn) {
                     copyBtn.onclick = () => {
-                        this.copyToClipboard('shareLinkInput', 'Link copied!');
+                        this.copyToClipboard('shareLinkInput', 'Link copied to clipboard!');
                     };
                 }
             }
 
             shareToPlatform(platform) {
                 const link = document.getElementById('shareLinkInput').value;
-                const text = `Join RawWealthy using my referral link and earn amazing rewards! ${link}`;
+                const text = `Join RawWealthy Elite using my referral link and earn amazing rewards! ${link}`;
                 
                 let url;
                 switch(platform) {
@@ -3028,7 +3416,7 @@
                         url = `https://wa.me/?text=${encodeURIComponent(text)}`;
                         break;
                     case 'telegram':
-                        url = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent('Join RawWealthy!')}`;
+                        url = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent('Join RawWealthy Elite!')}`;
                         break;
                     case 'facebook':
                         url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}`;
@@ -3121,6 +3509,28 @@
                 }
             }
 
+            animateCounter(elementId, finalValue, isCurrency = false) {
+                const element = document.getElementById(elementId);
+                if (!element) return;
+
+                const prefix = isCurrency ? '₦' : '';
+                const currentValue = parseFloat(element.textContent.replace(/[^0-9.-]+/g, "")) || 0;
+                const increment = finalValue / 100;
+                let current = currentValue;
+
+                const updateCounter = () => {
+                    current += increment;
+                    if (current >= finalValue) {
+                        element.textContent = prefix + this.formatNumber(finalValue);
+                        return;
+                    }
+                    element.textContent = prefix + this.formatNumber(Math.floor(current));
+                    setTimeout(updateCounter, 20);
+                };
+
+                updateCounter();
+            }
+
             getInitials(name) {
                 return name
                     .split(' ')
@@ -3134,35 +3544,9 @@
                 return new Intl.NumberFormat('en-NG').format(num);
             }
 
-            getRewardImage(index) {
-                const images = [
-                    'photo-1563013544-824ae1b704d3', // Airtime
-                    'photo-1554224155-6726b3ff858f', // Wallet
-                    'photo-1521572163474-6864f9cf17ab', // T-Shirt
-                    'photo-1611974789855-9c2a0a7236a3', // Investment
-                    'photo-1546435770-a3e426bf472b', // Speaker
-                    'photo-1527814050087-3793815479db', // Mouse
-                    'photo-1516035069371-29a1b244cc32', // Ring Light
-                    'photo-1553062407-98eeb64c6a62', // Backpack
-                    'photo-1546054454-aa26e2b734c7', // Tablet
-                    'photo-1511707171634-5f897ff02aa9', // Phone
-                    'photo-1614332287897-cdc485fa562d', // Router
-                    'photo-1556742049-0cfed4f6a45d', // Cash
-                    'photo-1505740420928-5e560c06d30e', // Headset
-                    'photo-1584132967334-10e028bd69f7', // Kitchen
-                    'photo-1566807380483-50e2a5c08f1d', // Power Bank
-                    'photo-1473341304170-971dccb5ac1e', // Generator
-                    'photo-1558981285-6f0c94958bb6', // Motorcycle
-                    'photo-1549399542-7e3f8b79c341', // SUV
-                    'photo-1460925895917-afdab827c52f', // Business
-                    'photo-1518780664697-55e3ad937233' // House
-                ];
-                return images[index % images.length];
-            }
-
             refreshPage() {
                 this.loadPageData(this.currentPage);
-                this.showNotification('Page refreshed', 'info');
+                this.showNotification('Page refreshed successfully', 'success');
             }
         }
 
@@ -3189,6 +3573,8 @@
             const hash = window.location.hash.substring(1);
             if (hash) {
                 ui.navigateTo(hash);
+            } else if (state.isLoggedIn()) {
+                ui.navigateTo('dashboard');
             }
         });
     </script>
